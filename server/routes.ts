@@ -37,12 +37,18 @@ export async function registerRoutes(
       waiterCount: 2,
       cookCount: 1,
       dishwasherCount: 1,
+      waiterPerPerson: "37.50",
+      cookPerPerson: "20",
+      dishwasherPerPerson: "5",
     });
     await storage.createCalculation({
       totalAmount: "50.50",
       waiterCount: 1,
       cookCount: 2,
       dishwasherCount: 0,
+      waiterPerPerson: "37.875",
+      cookPerPerson: "6.3125",
+      dishwasherPerPerson: "0",
     });
   }
 

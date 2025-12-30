@@ -8,6 +8,9 @@ export const calculations = pgTable("calculations", {
   waiterCount: integer("waiter_count").notNull(),
   cookCount: integer("cook_count").notNull(),
   dishwasherCount: integer("dishwasher_count").notNull(),
+  waiterPerPerson: numeric("waiter_per_person").notNull(),
+  cookPerPerson: numeric("cook_per_person").notNull(),
+  dishwasherPerPerson: numeric("dishwasher_per_person").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

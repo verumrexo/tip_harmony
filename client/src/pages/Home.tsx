@@ -37,6 +37,10 @@ export default function Home() {
   const cookTotal = amount * cookSharePct;
   const dishwasherTotal = amount * dishwasherSharePct;
 
+  const waiterPerPerson = waiterCount > 0 ? waiterTotal / waiterCount : 0;
+  const cookPerPerson = cookCount > 0 ? cookTotal / cookCount : 0;
+  const dishwasherPerPerson = dishwasherCount > 0 ? dishwasherTotal / dishwasherCount : 0;
+
   const handleSave = async () => {
     if (!amount || amount <= 0) {
       toast({
@@ -53,6 +57,9 @@ export default function Home() {
         waiterCount,
         cookCount,
         dishwasherCount,
+        waiterPerPerson: waiterPerPerson.toString(),
+        cookPerPerson: cookPerPerson.toString(),
+        dishwasherPerPerson: dishwasherPerPerson.toString(),
       });
       toast({
         title: "Saved!",
@@ -181,9 +188,15 @@ export default function Home() {
                 {isLoadingHistory ? (
                   <div className="text-center py-8 text-muted-foreground text-sm animate-pulse">Loading history...</div>
                 ) : history && history.length > 0 ? (
-                  history.map((calc) => (
-                    <HistoryItem key={calc.id} calculation={calc} />
-                  ))
+                  <>
+                    {history.map((calc) => (
+                      <HistoryItem key={calc.id} calculation={calc} />
+                    ))}
+                    <div className="mt-4 p-4 bg-primary/5 rounded-2xl border border-primary/10">
+                      <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">Daily Total</p>
+                      <p className="text-2xl font-bold text-foreground">€{history.reduce((sum, calc) => sum + Number(calc.totalAmount), 0).toFixed(2)}</p>
+                    </div>
+                  </>
                 ) : (
                   <div className="text-center py-8 bg-muted/30 rounded-2xl border border-dashed border-muted-foreground/20">
                     <p className="text-sm text-muted-foreground">No calculations saved yet.</p>
