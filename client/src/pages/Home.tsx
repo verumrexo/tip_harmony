@@ -184,19 +184,49 @@ export default function Home() {
                 <h2 className="text-lg font-bold text-foreground">Recent History</h2>
               </div>
               
-              <div className="space-y-3">
+              <div className="space-y-6">
                 {isLoadingHistory ? (
                   <div className="text-center py-8 text-muted-foreground text-sm animate-pulse">Loading history...</div>
                 ) : history && history.length > 0 ? (
-                  <>
-                    {history.map((calc) => (
-                      <HistoryItem key={calc.id} calculation={calc} />
-                    ))}
-                    <div className="mt-4 p-4 bg-primary/5 rounded-2xl border border-primary/10">
-                      <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">Daily Total</p>
-                      <p className="text-2xl font-bold text-foreground">€{history.reduce((sum, calc) => sum + Number(calc.totalAmount), 0).toFixed(2)}</p>
-                    </div>
-                  </>
+                  (() => {
+                    // Group calculations by date
+                    const groupedByDate: { [key: string]: typeof history } = {};
+                    history.forEach((calc) => {
+                      const date = calc.createdAt ? new Date(calc.createdAt).toLocaleDateString() : 'Unknown';
+                      if (!groupedByDate[date]) {
+                        groupedByDate[date] = [];
+                      }
+                      groupedByDate[date].push(calc);
+                    });
+
+                    // Sort dates in descending order
+                    const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
+                      const dateA = new Date(a);
+                      const dateB = new Date(b);
+                      return dateB.getTime() - dateA.getTime();
+                    });
+
+                    return (
+                      <>
+                        {sortedDates.map((date) => {
+                          const dayCalculations = groupedByDate[date];
+                          const dayTotal = dayCalculations.reduce((sum, calc) => sum + Number(calc.totalAmount), 0);
+                          return (
+                            <div key={date} className="space-y-3">
+                              <div className="text-sm font-semibold text-muted-foreground px-1">{date}</div>
+                              {dayCalculations.map((calc) => (
+                                <HistoryItem key={calc.id} calculation={calc} />
+                              ))}
+                              <div className="mt-3 p-3 bg-primary/5 rounded-2xl border border-primary/10 ml-1 mr-1">
+                                <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-1">Daily Total</p>
+                                <p className="text-xl font-bold text-foreground">€{dayTotal.toFixed(2)}</p>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </>
+                    );
+                  })()
                 ) : (
                   <div className="text-center py-8 bg-muted/30 rounded-2xl border border-dashed border-muted-foreground/20">
                     <p className="text-sm text-muted-foreground">No calculations saved yet.</p>
