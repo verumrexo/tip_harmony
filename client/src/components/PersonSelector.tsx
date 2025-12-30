@@ -16,13 +16,13 @@ export function PersonSelector({ label, value, options, onChange, icon }: Person
         {icon || <Users className="w-4 h-4 text-primary" />}
         <label className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">{label}</label>
       </div>
-      <div className="flex gap-2 p-1 bg-muted/50 rounded-xl overflow-x-auto no-scrollbar">
+      <div className="flex gap-2 p-1 bg-muted/50 rounded-[21px] overflow-x-auto no-scrollbar">
         {options.map((option) => (
           <button
             key={option}
             onClick={() => onChange(option)}
             className={cn(
-              "flex-1 min-w-[3rem] py-3 rounded-lg font-bold text-lg transition-all duration-200 tap-highlight-transparent",
+              "flex-1 min-w-[3rem] py-3 rounded-[18px] font-bold text-lg transition-all duration-200 tap-highlight-transparent",
               value === option
                 ? "bg-card text-primary shadow-md shadow-black/5 dark:shadow-black/20 scale-[1.02]"
                 : "text-muted-foreground hover:bg-muted/80 active:scale-95"
