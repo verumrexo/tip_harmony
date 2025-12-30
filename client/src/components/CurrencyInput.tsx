@@ -10,7 +10,7 @@ export function CurrencyInput({ label, className, ...props }: CurrencyInputProps
     <div className="flex flex-col gap-2">
       <label className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">{label}</label>
       <div className="relative group">
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-medium text-lg">$</span>
+        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-medium text-lg">€</span>
         <input
           type="number"
           step="0.01"

@@ -33,13 +33,13 @@ export function ResultCard({ title, amount, count, percentage, icon: Icon, color
       <div className="flex justify-between items-end">
         <div>
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">Total Share</p>
-          <p className="text-xl font-bold text-foreground">${amount.toFixed(2)}</p>
+          <p className="text-xl font-bold text-foreground">€{amount.toFixed(2)}</p>
         </div>
         
         {count > 0 && (
           <div className="text-right">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">Per Person</p>
-            <p className={cn("text-2xl font-bold", colorClass)}>${perPerson.toFixed(2)}</p>
+            <p className={cn("text-2xl font-bold", colorClass)}>€{perPerson.toFixed(2)}</p>
           </div>
         )}
       </div>

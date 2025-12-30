@@ -40,6 +40,37 @@
   --radius: 1rem;
 }
 
+.dark {
+  /* Dark mode palette */
+  --background: 224 71% 9%;
+  --foreground: 210 20% 98%;
+  
+  --card: 224 71% 15%;
+  --card-foreground: 210 20% 98%;
+  
+  --popover: 224 71% 15%;
+  --popover-foreground: 210 20% 98%;
+  
+  --primary: 243 75% 59%;
+  --primary-foreground: 224 71% 9%;
+  
+  --secondary: 160 84% 39%;
+  --secondary-foreground: 224 71% 9%;
+  
+  --muted: 220 14% 25%;
+  --muted-foreground: 220 8% 60%;
+  
+  --accent: 243 75% 59%;
+  --accent-foreground: 224 71% 9%;
+  
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 224 71% 9%;
+  
+  --border: 220 13% 25%;
+  --input: 220 13% 25%;
+  --ring: 243 75% 59%;
+}
+
 @layer base {
   * {
     @apply border-border;
