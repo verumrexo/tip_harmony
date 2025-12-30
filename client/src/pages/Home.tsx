@@ -75,17 +75,8 @@ export default function Home() {
         <header className="px-6 py-6 bg-card/80 backdrop-blur-xl border-b sticky top-0 z-20">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src="/logo.svg" alt="Gril Restorans" className="h-10 w-auto" />
-              <div>
-                <h1 className="text-xl font-bold text-foreground">Tip Splitter</h1>
-                <p className="text-xs text-muted-foreground font-medium">Fair & fast distribution</p>
-              </div>
-            </div>
-            {/* Display total distribution check */}
-            <div className="text-right hidden sm:block">
-              <span className="text-xs font-bold text-primary bg-primary/5 px-2 py-1 rounded-full">
-                {(waiterSharePct + cookSharePct + dishwasherSharePct) * 100}% Total
-              </span>
+              <img src="/gril-logo.png" alt="Gril Restorans" className="h-10 w-auto" />
+              <h1 className="text-xl font-bold text-foreground">Tip Splitter</h1>
             </div>
           </div>
         </header>
@@ -190,7 +181,7 @@ export default function Home() {
                 {isLoadingHistory ? (
                   <div className="text-center py-8 text-muted-foreground text-sm animate-pulse">Loading history...</div>
                 ) : history && history.length > 0 ? (
-                  history.slice().reverse().map((calc) => (
+                  history.map((calc) => (
                     <HistoryItem key={calc.id} calculation={calc} />
                   ))
                 ) : (
