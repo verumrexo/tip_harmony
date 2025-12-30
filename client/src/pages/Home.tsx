@@ -72,7 +72,7 @@ export default function Home() {
       <div className="max-w-md mx-auto min-h-screen bg-background shadow-2xl overflow-hidden flex flex-col">
         
         {/* Header */}
-        <header className="px-6 py-6 bg-white/80 backdrop-blur-xl border-b sticky top-0 z-20">
+        <header className="px-6 py-6 bg-card/80 backdrop-blur-xl border-b sticky top-0 z-20">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-primary/20">
@@ -156,7 +156,7 @@ export default function Home() {
                   count={waiterCount}
                   icon={Utensils}
                   colorClass="text-orange-600"
-                  bgClass="bg-orange-50/50 border-orange-100"
+                  bgClass="bg-orange-50/50 border-orange-100 dark:bg-orange-950/30 dark:border-orange-800"
                 />
 
                 <ResultCard
@@ -166,7 +166,7 @@ export default function Home() {
                   count={cookCount}
                   icon={ChefHat}
                   colorClass="text-emerald-600"
-                  bgClass="bg-emerald-50/50 border-emerald-100"
+                  bgClass="bg-emerald-50/50 border-emerald-100 dark:bg-emerald-950/30 dark:border-emerald-800"
                 />
 
                 <ResultCard
@@ -176,7 +176,7 @@ export default function Home() {
                   count={dishwasherCount}
                   icon={Waves}
                   colorClass="text-blue-600"
-                  bgClass={dishwasherCount > 0 ? "bg-blue-50/50 border-blue-100" : "bg-muted/30 border-transparent opacity-50 grayscale"}
+                  bgClass={dishwasherCount > 0 ? "bg-blue-50/50 border-blue-100 dark:bg-blue-950/30 dark:border-blue-800" : "bg-muted/30 border-transparent opacity-50 grayscale dark:bg-muted/20"}
                 />
               </div>
             </section>
