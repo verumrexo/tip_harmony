@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChefHat, Utensils, Waves, Save, History, Calculator } from "lucide-react";
+import { ChefHat, Utensils, Waves, Save, History } from "lucide-react";
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { PersonSelector } from "@/components/PersonSelector";
 import { ResultCard } from "@/components/ResultCard";
@@ -75,9 +75,7 @@ export default function Home() {
         <header className="px-6 py-6 bg-card/80 backdrop-blur-xl border-b sticky top-0 z-20">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-primary/20">
-                <Calculator className="w-5 h-5" />
-              </div>
+              <img src="/logo.svg" alt="Gril Restorans" className="h-10 w-auto" />
               <div>
                 <h1 className="text-xl font-bold text-foreground">Tip Splitter</h1>
                 <p className="text-xs text-muted-foreground font-medium">Fair & fast distribution</p>
@@ -156,7 +154,7 @@ export default function Home() {
                   count={waiterCount}
                   icon={Utensils}
                   colorClass="text-orange-600"
-                  bgClass="bg-orange-50/50 border-orange-100 dark:bg-orange-950/30 dark:border-orange-800"
+                  bgClass="bg-orange-50/50 border-orange-100"
                 />
 
                 <ResultCard
@@ -166,7 +164,7 @@ export default function Home() {
                   count={cookCount}
                   icon={ChefHat}
                   colorClass="text-emerald-600"
-                  bgClass="bg-emerald-50/50 border-emerald-100 dark:bg-emerald-950/30 dark:border-emerald-800"
+                  bgClass="bg-emerald-50/50 border-emerald-100"
                 />
 
                 <ResultCard
@@ -176,7 +174,7 @@ export default function Home() {
                   count={dishwasherCount}
                   icon={Waves}
                   colorClass="text-blue-600"
-                  bgClass={dishwasherCount > 0 ? "bg-blue-50/50 border-blue-100 dark:bg-blue-950/30 dark:border-blue-800" : "bg-muted/30 border-transparent opacity-50 grayscale dark:bg-muted/20"}
+                  bgClass={dishwasherCount > 0 ? "bg-blue-50/50 border-blue-100" : "bg-muted/30 border-transparent opacity-50 grayscale"}
                 />
               </div>
             </section>
