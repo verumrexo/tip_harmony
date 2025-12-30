@@ -16,7 +16,7 @@ export function CurrencyInput({ label, className, ...props }: CurrencyInputProps
           step="0.01"
           min="0"
           className={cn(
-            "w-full pl-10 pr-4 py-4 rounded-2xl bg-white border-2 border-transparent shadow-sm text-2xl font-bold text-foreground placeholder:text-muted/50 input-ring group-hover:shadow-md transition-all",
+            "w-full pl-10 pr-4 py-4 rounded-2xl bg-card border-2 border-transparent shadow-sm text-2xl font-bold text-foreground placeholder:text-muted/50 input-ring group-hover:shadow-md transition-all",
             className
           )}
           {...props}

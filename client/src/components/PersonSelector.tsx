@@ -24,8 +24,8 @@ export function PersonSelector({ label, value, options, onChange, icon }: Person
             className={cn(
               "flex-1 min-w-[3rem] py-3 rounded-lg font-bold text-lg transition-all duration-200 tap-highlight-transparent",
               value === option
-                ? "bg-white text-primary shadow-md shadow-black/5 scale-[1.02]"
-                : "text-muted-foreground hover:bg-white/50 active:scale-95"
+                ? "bg-card text-primary shadow-md shadow-black/5 dark:shadow-black/20 scale-[1.02]"
+                : "text-muted-foreground hover:bg-muted/80 active:scale-95"
             )}
           >
             {option}
