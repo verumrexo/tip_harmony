@@ -1,74 +1,74 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500;600;700&family=Roboto+Condensed:wght@400;500;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --font-display: 'Outfit', sans-serif;
-  --font-body: 'DM Sans', sans-serif;
+  --font-display: 'Roboto Condensed', Arial, sans-serif;
+  --font-body: 'Roboto Slab', serif;
 
-  /* Clean, mobile-first palette: Indigo & Mint */
-  --background: 210 20% 98%;
-  --foreground: 224 71% 4%;
+  /* Gril Restorans warm earthy palette */
+  --background: 0 0% 99%;
+  --foreground: 20 13% 24%;
   
   --card: 0 0% 100%;
-  --card-foreground: 224 71% 4%;
+  --card-foreground: 20 13% 24%;
   
   --popover: 0 0% 100%;
-  --popover-foreground: 224 71% 4%;
+  --popover-foreground: 20 13% 24%;
   
-  --primary: 243 75% 59%;
-  --primary-foreground: 210 20% 98%;
+  --primary: 10 35% 67%;
+  --primary-foreground: 0 0% 100%;
   
-  --secondary: 160 84% 39%;
-  --secondary-foreground: 210 20% 98%;
+  --secondary: 20 13% 24%;
+  --secondary-foreground: 0 0% 99%;
   
-  --muted: 220 14% 94%;
-  --muted-foreground: 220 8% 46%;
+  --muted: 0 0% 92%;
+  --muted-foreground: 20 8% 50%;
   
-  --accent: 243 75% 59%;
-  --accent-foreground: 210 20% 98%;
+  --accent: 20 13% 24%;
+  --accent-foreground: 0 0% 99%;
   
   --destructive: 0 84% 60%;
-  --destructive-foreground: 210 20% 98%;
+  --destructive-foreground: 0 0% 100%;
   
-  --border: 220 13% 91%;
-  --input: 220 13% 91%;
-  --ring: 243 75% 59%;
+  --border: 0 0% 88%;
+  --input: 0 0% 94%;
+  --ring: 10 35% 67%;
   
-  --radius: 1rem;
+  --radius: 1.3125rem;
 }
 
 .dark {
-  /* Dark mode palette */
-  --background: 224 71% 9%;
-  --foreground: 210 20% 98%;
+  /* Dark mode with warm earthy palette */
+  --background: 20 10% 16%;
+  --foreground: 0 0% 95%;
   
-  --card: 224 71% 15%;
-  --card-foreground: 210 20% 98%;
+  --card: 20 10% 22%;
+  --card-foreground: 0 0% 95%;
   
-  --popover: 224 71% 15%;
-  --popover-foreground: 210 20% 98%;
+  --popover: 20 10% 22%;
+  --popover-foreground: 0 0% 95%;
   
-  --primary: 243 75% 59%;
-  --primary-foreground: 224 71% 9%;
+  --primary: 10 40% 58%;
+  --primary-foreground: 20 10% 16%;
   
-  --secondary: 160 84% 39%;
-  --secondary-foreground: 224 71% 9%;
+  --secondary: 20 13% 24%;
+  --secondary-foreground: 0 0% 95%;
   
-  --muted: 220 14% 25%;
-  --muted-foreground: 220 8% 60%;
+  --muted: 20 8% 35%;
+  --muted-foreground: 0 0% 70%;
   
-  --accent: 243 75% 59%;
-  --accent-foreground: 224 71% 9%;
+  --accent: 10 40% 58%;
+  --accent-foreground: 20 10% 16%;
   
   --destructive: 0 84% 60%;
-  --destructive-foreground: 224 71% 9%;
+  --destructive-foreground: 20 10% 16%;
   
-  --border: 220 13% 25%;
-  --input: 220 13% 25%;
-  --ring: 243 75% 59%;
+  --border: 20 8% 28%;
+  --input: 20 8% 28%;
+  --ring: 10 40% 58%;
 }
 
 @layer base {

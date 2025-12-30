@@ -1,0 +1,84 @@
+{
+  "colorScheme": "light",
+  "fonts": [
+    {
+      "family": "Roboto Slab",
+      "count": 18
+    },
+    {
+      "family": "serif",
+      "count": 18
+    },
+    {
+      "family": "Arial",
+      "count": 13
+    },
+    {
+      "family": "sans-serif",
+      "count": 11
+    },
+    {
+      "family": "Roboto Condensed",
+      "count": 2
+    },
+    {
+      "family": "Helvetica Neue",
+      "count": 2
+    }
+  ],
+  "colors": {
+    "primary": "#C8968F",
+    "accent": "#453F34",
+    "background": "#FCFCFC",
+    "textPrimary": "#453F34",
+    "link": "#453F34"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "Roboto Slab",
+      "heading": "Arial"
+    },
+    "fontStacks": {
+      "body": [
+        "Roboto Slab",
+        "serif"
+      ],
+      "heading": [
+        "Arial",
+        "sans-serif"
+      ],
+      "paragraph": [
+        "Roboto Slab",
+        "serif"
+      ]
+    },
+    "fontSizes": {
+      "h1": "40px",
+      "h2": "40px",
+      "body": "14px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 4,
+    "borderRadius": "21px"
+  },
+  "components": {},
+  "images": {
+    "logo": "https://www.grilrestorans.lv/uploads/2021/07/grilrestorans_logo-1.svg",
+    "favicon": "https://www.grilrestorans.lv/themes/base/favicon.png",
+    "ogImage": null
+  },
+  "__framework_hints": [
+    "WordPress 5.9.3"
+  ],
+  "__llm_logo_reasoning": {
+    "selectedIndex": 0,
+    "reasoning": "Strong indicators: header logo linking to homepage, header location, visible, top-left position, src contains logo, class contains logo, reasonable size. Score: 110 (clear winner by 38 points)",
+    "confidence": 0.9
+  },
+  "confidence": {
+    "buttons": 0,
+    "colors": 0,
+    "overall": 0
+  }
+}
