@@ -37,9 +37,13 @@ export function ResultCard({ title, amount, count, percentage, icon: Icon, color
         </div>
         
         {count > 0 && (
-          <div className="text-right bg-primary/10 px-4 py-3 rounded-[18px] border border-primary/20">
-            <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-1">Per Person</p>
-            <p className="text-3xl font-bold text-primary">€{perPerson.toFixed(2)}</p>
+          <div className={cn("text-right px-4 py-3 rounded-[18px] border", {
+            "bg-orange-50/70 border-orange-200": colorClass === "text-orange-600",
+            "bg-emerald-50/70 border-emerald-200": colorClass === "text-emerald-600",
+            "bg-blue-50/70 border-blue-200": colorClass === "text-blue-600",
+          })}>
+            <p className={cn("text-xs font-semibold uppercase tracking-wider mb-1", colorClass)}>Per Person</p>
+            <p className={cn("text-3xl font-bold", colorClass)}>€{perPerson.toFixed(2)}</p>
           </div>
         )}
       </div>
