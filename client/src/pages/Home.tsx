@@ -85,6 +85,19 @@ export default function Home() {
               <img src="/gril-logo.png" alt="Gril Restorans" className="h-10 w-auto" />
               <h1 className="text-xl font-bold text-foreground">Tip Splitter</h1>
             </div>
+            {history && history.length > 0 && (
+              <div className="text-right">
+                <p className="text-[10px] font-bold text-primary uppercase tracking-wider leading-none mb-1">Month Total</p>
+                <p className="text-lg font-bold text-foreground leading-none">
+                  €{history.filter(calc => {
+                    if (!calc.createdAt) return false;
+                    const date = new Date(calc.createdAt);
+                    const now = new Date();
+                    return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+                  }).reduce((sum, calc) => sum + Number(calc.totalAmount), 0).toFixed(2)}
+                </p>
+              </div>
+            )}
           </div>
         </header>
 
@@ -181,7 +194,7 @@ export default function Home() {
             <section className="pb-10">
               <div className="flex items-center gap-2 mb-4">
                 <History className="w-4 h-4 text-muted-foreground" />
-                <h2 className="text-lg font-bold text-foreground">Recent History</h2>
+                <h2 className="text-lg font-bold text-foreground">History</h2>
               </div>
               
               <div className="space-y-6">
@@ -189,42 +202,67 @@ export default function Home() {
                   <div className="text-center py-8 text-muted-foreground text-sm animate-pulse">Loading history...</div>
                 ) : history && history.length > 0 ? (
                   (() => {
-                    // Group calculations by date
-                    const groupedByDate: { [key: string]: typeof history } = {};
+                    // Group calculations by month then date
+                    const groupedByMonth: { [key: string]: { [key: string]: typeof history } } = {};
                     history.forEach((calc) => {
-                      const date = calc.createdAt ? new Date(calc.createdAt).toLocaleDateString() : 'Unknown';
-                      if (!groupedByDate[date]) {
-                        groupedByDate[date] = [];
+                      if (!calc.createdAt) return;
+                      const dateObj = new Date(calc.createdAt);
+                      const monthKey = dateObj.toLocaleString('default', { month: 'long', year: 'numeric' });
+                      const dateKey = dateObj.toLocaleDateString();
+                      
+                      if (!groupedByMonth[monthKey]) {
+                        groupedByMonth[monthKey] = {};
                       }
-                      groupedByDate[date].push(calc);
+                      if (!groupedByMonth[monthKey][dateKey]) {
+                        groupedByMonth[monthKey][dateKey] = [];
+                      }
+                      groupedByMonth[monthKey][dateKey].push(calc);
                     });
 
-                    // Sort dates in descending order
-                    const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
-                      const dateA = new Date(a);
-                      const dateB = new Date(b);
-                      return dateB.getTime() - dateA.getTime();
+                    // Sort months in descending order
+                    const sortedMonths = Object.keys(groupedByMonth).sort((a, b) => {
+                      return new Date(b).getTime() - new Date(a).getTime();
                     });
 
                     return (
-                      <>
-                        {sortedDates.map((date) => {
-                          const dayCalculations = groupedByDate[date];
-                          const dayTotal = dayCalculations.reduce((sum, calc) => sum + Number(calc.totalAmount), 0);
+                      <div className="space-y-8">
+                        {sortedMonths.map((month) => {
+                          const monthData = groupedByMonth[month];
+                          const sortedDates = Object.keys(monthData).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+                          const monthTotal = Object.values(monthData).flat().reduce((sum, calc) => sum + Number(calc.totalAmount), 0);
+
                           return (
-                            <div key={date} className="space-y-3">
-                              <div className="text-sm font-semibold text-muted-foreground px-1">{date}</div>
-                              {dayCalculations.map((calc) => (
-                                <HistoryItem key={calc.id} calculation={calc} />
-                              ))}
-                              <div className="mt-3 p-3 bg-primary/5 rounded-2xl border border-primary/10 ml-1 mr-1">
-                                <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-1">Daily Total</p>
-                                <p className="text-xl font-bold text-foreground">€{dayTotal.toFixed(2)}</p>
+                            <div key={month} className="space-y-4">
+                              <div className="flex items-center justify-between px-1 border-b pb-2 border-primary/10">
+                                <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">{month}</h3>
+                                <div className="text-right">
+                                  <span className="text-[10px] font-bold text-primary uppercase mr-2">Monthly Total:</span>
+                                  <span className="text-sm font-bold text-foreground">€{monthTotal.toFixed(2)}</span>
+                                </div>
+                              </div>
+                              <div className="space-y-6">
+                                {sortedDates.map((date) => {
+                                  const dayCalculations = monthData[date];
+                                  const dayTotal = dayCalculations.reduce((sum, calc) => sum + Number(calc.totalAmount), 0);
+                                  return (
+                                    <div key={date} className="space-y-2">
+                                      <div className="flex items-center justify-between px-1">
+                                        <div className="text-[11px] font-semibold text-muted-foreground">{date}</div>
+                                        <div className="text-[11px] font-bold text-primary/70">Day: €{dayTotal.toFixed(2)}</div>
+                                      </div>
+                                      <div className="space-y-2">
+                                        {dayCalculations.map((calc) => (
+                                          <HistoryItem key={calc.id} calculation={calc} />
+                                        ))}
+                                      </div>
+                                    </div>
+                                  );
+                                })}
                               </div>
                             </div>
                           );
                         })}
-                      </>
+                      </div>
                     );
                   })()
                 ) : (
