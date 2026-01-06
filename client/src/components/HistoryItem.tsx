@@ -33,15 +33,15 @@ export function HistoryItem({ calculation }: HistoryItemProps) {
       
       <div className="grid grid-cols-3 gap-2 pt-2 border-t border-border/30">
         <div className="text-center">
-          <p className="text-xs font-semibold text-orange-600 uppercase tracking-wide mb-0.5">Waiters</p>
+          <p className="text-[10px] font-semibold text-orange-500 uppercase tracking-wide mb-0.5">Waiters</p>
           <p className="text-sm font-bold text-foreground">€{waiterPP.toFixed(2)}</p>
         </div>
         <div className="text-center">
-          <p className="text-xs font-semibold text-emerald-600 uppercase tracking-wide mb-0.5">Cooks</p>
+          <p className="text-[10px] font-semibold text-emerald-500 uppercase tracking-wide mb-0.5">Cooks</p>
           <p className="text-sm font-bold text-foreground">€{cookPP.toFixed(2)}</p>
         </div>
         <div className="text-center">
-          <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-0.5">Dishwashers</p>
+          <p className="text-[10px] font-semibold text-blue-500 uppercase tracking-wide mb-0.5">Dishwashers</p>
           <p className="text-sm font-bold text-foreground">€{dishwasherPP.toFixed(2)}</p>
         </div>
       </div>

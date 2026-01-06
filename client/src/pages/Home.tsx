@@ -79,16 +79,13 @@ export default function Home() {
       <div className="max-w-md mx-auto min-h-screen bg-background shadow-2xl overflow-hidden flex flex-col">
         
         {/* Header */}
-        <header className="px-6 py-6 bg-card/80 backdrop-blur-xl border-b sticky top-0 z-20">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <img src="/gril-logo.png" alt="Gril Restorans" className="h-10 w-auto" />
-              <h1 className="text-xl font-bold text-foreground">Tip Splitter</h1>
-            </div>
+        <header className="px-4 py-3 bg-card border-b sticky top-0 z-20">
+          <div className="flex items-center justify-between gap-4">
+            <h1 className="text-lg font-bold text-foreground">Tip Splitter</h1>
             {history && history.length > 0 && (
               <div className="text-right">
                 <p className="text-[10px] font-bold text-primary uppercase tracking-wider leading-none mb-1">Month Total</p>
-                <p className="text-lg font-bold text-foreground leading-none">
+                <p className="text-base font-bold text-foreground leading-none">
                   €{history.filter(calc => {
                     if (!calc.createdAt) return false;
                     const date = new Date(calc.createdAt);
@@ -157,15 +154,15 @@ export default function Home() {
                 </Button>
               </div>
 
-              <div className="grid gap-4">
+              <div className="grid gap-3">
                 <ResultCard
                   title="Waiters"
                   percentage={waiterSharePct * 100}
                   amount={waiterTotal}
                   count={waiterCount}
                   icon={Utensils}
-                  colorClass="text-orange-600"
-                  bgClass="bg-orange-50/50 border-orange-100"
+                  colorClass="text-orange-500"
+                  bgClass=""
                 />
 
                 <ResultCard
@@ -174,8 +171,8 @@ export default function Home() {
                   amount={cookTotal}
                   count={cookCount}
                   icon={ChefHat}
-                  colorClass="text-emerald-600"
-                  bgClass="bg-emerald-50/50 border-emerald-100"
+                  colorClass="text-emerald-500"
+                  bgClass=""
                 />
 
                 <ResultCard
@@ -184,8 +181,8 @@ export default function Home() {
                   amount={dishwasherTotal}
                   count={dishwasherCount}
                   icon={Waves}
-                  colorClass="text-blue-600"
-                  bgClass={dishwasherCount > 0 ? "bg-blue-50/50 border-blue-100" : "bg-muted/30 border-transparent opacity-50 grayscale"}
+                  colorClass="text-blue-500"
+                  bgClass={dishwasherCount > 0 ? "" : "opacity-40 grayscale"}
                 />
               </div>
             </section>

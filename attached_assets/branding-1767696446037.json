@@ -1,0 +1,75 @@
+{
+  "colorScheme": "light",
+  "fonts": [
+    {
+      "family": "Roboto Condensed",
+      "count": 7
+    },
+    {
+      "family": "sans-serif",
+      "count": 7
+    },
+    {
+      "family": "Roboto Slab",
+      "count": 6
+    },
+    {
+      "family": "serif",
+      "count": 6
+    }
+  ],
+  "colors": {
+    "primary": "#81796E",
+    "accent": "#9CA3AF",
+    "background": "#FCFCFC",
+    "textPrimary": "#3B3630",
+    "link": "#9CA3AF"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "Roboto Condensed",
+      "heading": "Roboto Condensed"
+    },
+    "fontStacks": {
+      "body": [
+        "Roboto Condensed",
+        "sans-serif"
+      ],
+      "heading": [
+        "Roboto Condensed",
+        "sans-serif"
+      ],
+      "paragraph": [
+        "Roboto Slab",
+        "serif"
+      ]
+    },
+    "fontSizes": {
+      "h1": "18px",
+      "h2": "18px",
+      "body": "14px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 4,
+    "borderRadius": "12px"
+  },
+  "components": {},
+  "images": {
+    "logo": "File saved at: attached_assets/logo.svg",
+    "favicon": "https://vks-shift-planner.replit.app/favicon.png",
+    "ogImage": null
+  },
+  "__framework_hints": [],
+  "__llm_logo_reasoning": {
+    "selectedIndex": 0,
+    "reasoning": "Logo rejected: Red flags detected (small square icon). Heuristic fallback: Good indicators: variant bonus (+8), in header, no link (brand logos usually link to homepage, penalty), header location, visible, highest logo on page, too small (likely icon, penalty), small square icon (likely UI icon, heavy penalty), SVG format. Score: 48 (ahead by 48 points)",
+    "confidence": 0.65,
+    "rejected": true
+  },
+  "confidence": {
+    "buttons": 0,
+    "colors": 0,
+    "overall": 0
+  }
+}

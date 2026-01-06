@@ -8,7 +8,7 @@
   --font-display: 'Roboto Condensed', Arial, sans-serif;
   --font-body: 'Roboto Slab', serif;
 
-  /* Gril Restorans warm earthy palette */
+  /* Gril Restorans warm earthy palette - Light mode */
   --background: 0 0% 99%;
   --foreground: 20 13% 24%;
   
@@ -37,7 +37,38 @@
   --input: 0 0% 94%;
   --ring: 10 35% 67%;
   
-  --radius: 1.3125rem;
+  --radius: 0.75rem;
+}
+
+/* Dark mode - default */
+.dark {
+  --background: 0 0% 7%;
+  --foreground: 0 0% 95%;
+  
+  --card: 0 0% 10%;
+  --card-foreground: 0 0% 95%;
+  
+  --popover: 0 0% 10%;
+  --popover-foreground: 0 0% 95%;
+  
+  --primary: 10 35% 67%;
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 0 0% 18%;
+  --secondary-foreground: 0 0% 95%;
+  
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 60%;
+  
+  --accent: 0 0% 18%;
+  --accent-foreground: 0 0% 95%;
+  
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  
+  --border: 0 0% 20%;
+  --input: 0 0% 15%;
+  --ring: 10 35% 67%;
 }
 
 
