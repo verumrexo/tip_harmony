@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChefHat, Utensils, Waves, Save, History, Coins } from "lucide-react";
+import { ChefHat, Utensils, Waves, Save, History, Coins, ChevronDown } from "lucide-react";
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { PersonSelector } from "@/components/PersonSelector";
 import { ResultCard } from "@/components/ResultCard";
@@ -9,6 +9,7 @@ import { useCalculations, useCreateCalculation } from "@/hooks/use-calculations"
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 export default function Home() {
   // State
@@ -230,42 +231,49 @@ export default function Home() {
                       return new Date(b).getTime() - new Date(a).getTime();
                     });
 
+                    const currentMonthKey = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
+
                     return (
-                      <div className="space-y-8">
-                        {sortedMonths.map((month) => {
+                      <div className="space-y-3">
+                        {sortedMonths.map((month, index) => {
                           const monthData = groupedByMonth[month];
                           const sortedDates = Object.keys(monthData).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
                           const monthTotal = Object.values(monthData).flat().reduce((sum, calc) => sum + Number(calc.totalAmount), 0);
+                          const isCurrentMonth = month === currentMonthKey;
 
                           return (
-                            <div key={month} className="space-y-4">
-                              <div className="flex items-center justify-between px-1 border-b pb-2 border-primary/10">
-                                <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">{month}</h3>
-                                <div className="text-right">
-                                  <span className="text-[10px] font-bold text-primary uppercase mr-2">Monthly Total:</span>
-                                  <span className="text-sm font-bold text-foreground">€{monthTotal.toFixed(2)}</span>
+                            <Collapsible key={month} defaultOpen={isCurrentMonth}>
+                              <CollapsibleTrigger className="w-full" data-testid={`button-month-toggle-${index}`}>
+                                <div className="flex items-center justify-between px-3 py-2 bg-muted/50 rounded-lg hover-elevate cursor-pointer">
+                                  <div className="flex items-center gap-2">
+                                    <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform duration-200 [[data-state=closed]_&]:-rotate-90" />
+                                    <h3 className="text-sm font-bold text-foreground">{month}</h3>
+                                  </div>
+                                  <span className="text-sm font-bold text-primary">€{monthTotal.toFixed(2)}</span>
                                 </div>
-                              </div>
-                              <div className="space-y-6">
-                                {sortedDates.map((date) => {
-                                  const dayCalculations = monthData[date];
-                                  const dayTotal = dayCalculations.reduce((sum, calc) => sum + Number(calc.totalAmount), 0);
-                                  return (
-                                    <div key={date} className="space-y-2">
-                                      <div className="flex items-center justify-between px-1">
-                                        <div className="text-[11px] font-semibold text-muted-foreground">{date}</div>
-                                        <div className="text-[11px] font-bold text-primary/70">Day: €{dayTotal.toFixed(2)}</div>
+                              </CollapsibleTrigger>
+                              <CollapsibleContent>
+                                <div className="space-y-4 pt-3 pl-2">
+                                  {sortedDates.map((date) => {
+                                    const dayCalculations = monthData[date];
+                                    const dayTotal = dayCalculations.reduce((sum, calc) => sum + Number(calc.totalAmount), 0);
+                                    return (
+                                      <div key={date} className="space-y-2">
+                                        <div className="flex items-center justify-between px-1">
+                                          <div className="text-[11px] font-semibold text-muted-foreground">{date}</div>
+                                          <div className="text-[11px] font-bold text-primary/70">Day: €{dayTotal.toFixed(2)}</div>
+                                        </div>
+                                        <div className="space-y-2">
+                                          {dayCalculations.map((calc) => (
+                                            <HistoryItem key={calc.id} calculation={calc} />
+                                          ))}
+                                        </div>
                                       </div>
-                                      <div className="space-y-2">
-                                        {dayCalculations.map((calc) => (
-                                          <HistoryItem key={calc.id} calculation={calc} />
-                                        ))}
-                                      </div>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </div>
+                                    );
+                                  })}
+                                </div>
+                              </CollapsibleContent>
+                            </Collapsible>
                           );
                         })}
                       </div>
