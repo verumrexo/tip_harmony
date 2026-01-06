@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChefHat, Utensils, Waves, Save, History } from "lucide-react";
+import { ChefHat, Utensils, Waves, Save, History, Coins } from "lucide-react";
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { PersonSelector } from "@/components/PersonSelector";
 import { ResultCard } from "@/components/ResultCard";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useCalculations, useCreateCalculation } from "@/hooks/use-calculations";
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function Home() {
   // State
@@ -81,20 +82,28 @@ export default function Home() {
         {/* Header */}
         <header className="px-4 py-3 bg-card border-b sticky top-0 z-20">
           <div className="flex items-center justify-between gap-4">
-            <h1 className="text-lg font-bold text-foreground">Tip Splitter</h1>
-            {history && history.length > 0 && (
-              <div className="text-right">
-                <p className="text-[10px] font-bold text-primary uppercase tracking-wider leading-none mb-1">Month Total</p>
-                <p className="text-base font-bold text-foreground leading-none">
-                  €{history.filter(calc => {
-                    if (!calc.createdAt) return false;
-                    const date = new Date(calc.createdAt);
-                    const now = new Date();
-                    return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
-                  }).reduce((sum, calc) => sum + Number(calc.totalAmount), 0).toFixed(2)}
-                </p>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+                <Coins className="w-4 h-4 text-primary-foreground" />
               </div>
-            )}
+              <h1 className="text-lg font-bold text-foreground">Tip Splitter</h1>
+            </div>
+            <div className="flex items-center gap-2">
+              {history && history.length > 0 && (
+                <div className="text-right mr-1">
+                  <p className="text-[10px] font-bold text-primary uppercase tracking-wider leading-none mb-1">Month</p>
+                  <p className="text-sm font-bold text-foreground leading-none">
+                    €{history.filter(calc => {
+                      if (!calc.createdAt) return false;
+                      const date = new Date(calc.createdAt);
+                      const now = new Date();
+                      return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+                    }).reduce((sum, calc) => sum + Number(calc.totalAmount), 0).toFixed(2)}
+                  </p>
+                </div>
+              )}
+              <ThemeToggle />
+            </div>
           </div>
         </header>
 
