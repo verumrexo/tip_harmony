@@ -13,7 +13,8 @@ export function CurrencyInput({ label, className, ...props }: CurrencyInputProps
         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-medium text-lg">€</span>
         <input
           type="number"
-          inputMode="decimal"
+          inputMode="numeric"
+          pattern="[0-9]*"
           step="0.01"
           min="0"
           className={cn(
