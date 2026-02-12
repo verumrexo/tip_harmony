@@ -31,7 +31,7 @@ export function CurrencyInput({ label, value, onValueChange, className, ...props
 
   // Force cursor to end on render/update
   useEffect(() => {
-    if (inputRef.current) {
+    if (inputRef.current && document.activeElement === inputRef.current) {
       const len = inputRef.current.value.length;
       inputRef.current.setSelectionRange(len, len);
     }
