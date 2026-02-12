@@ -133,8 +133,16 @@ input[type=number] {
 
 /* Custom Utilities for Polish */
 @layer utilities {
+  .glass {
+    @apply bg-background/60 backdrop-blur-xl border border-white/10 shadow-2xl;
+  }
+
   .glass-card {
-    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-xl shadow-black/5;
+    @apply bg-card/60 backdrop-blur-md border border-white/10 shadow-lg;
+  }
+
+  .glass-input {
+    @apply bg-white/5 backdrop-blur-sm border-white/10 text-foreground placeholder:text-muted-foreground/50 transition-all focus:bg-white/10 focus:border-primary/50;
   }
 
   .input-ring {
