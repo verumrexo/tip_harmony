@@ -3,6 +3,13 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
+const isBuild = process.argv.includes("build");
+if (isBuild && !process.env.VITE_SUPABASE_URL) {
+  // In GitHub Actions, secrets are passed as env vars.
+  // Warning: explicit check might fail if relying on .env loading in some setups, but for CI it's good.
+  console.warn("WARNING: VITE_SUPABASE_URL is missing in build environment!");
+}
+
 export default defineConfig({
   base: '/tip_harmony/',
   plugins: [
