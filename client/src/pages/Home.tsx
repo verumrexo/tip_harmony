@@ -121,7 +121,7 @@ export default function Home() {
                 label="Total Tip Amount"
                 placeholder="0.00"
                 value={totalAmount}
-                onChange={(e) => setTotalAmount(e.target.value)}
+                onValueChange={setTotalAmount}
                 autoFocus
               />
 
