@@ -65,7 +65,6 @@ export function PinLock({ children }: { children: React.ReactNode }) {
                                 maxLength={4}
                                 value={pin}
                                 onChange={(e) => setPin(e.target.value)}
-                                autoFocus
                             />
                         </div>
                         <Button type="submit" className="w-full" disabled={pin.length < 4}>
