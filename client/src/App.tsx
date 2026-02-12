@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
+import { PinLock } from "@/components/PinLock";
 import Home from "@/pages/Home";
 import { useEffect } from "react";
 
@@ -24,10 +25,12 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL}>
-          <AppRouter />
-        </WouterRouter>
-        <Toaster />
+        <PinLock>
+          <WouterRouter base={import.meta.env.BASE_URL}>
+            <AppRouter />
+          </WouterRouter>
+          <Toaster />
+        </PinLock>
       </TooltipProvider>
     </QueryClientProvider>
   );

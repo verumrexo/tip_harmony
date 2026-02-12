@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Analytics } from "@/components/Analytics";
 
 export default function Home() {
   // State
@@ -25,12 +26,12 @@ export default function Home() {
 
   // Logic
   const amount = parseFloat(totalAmount) || 0;
-  
+
   // Percentages logic
   // Waiters: 75%
   // Cooks: 20% (25% if 0 dishwashers)
   // Dishwashers: 5% (0% if 0 dishwashers)
-  
+
   const waiterSharePct = 0.75;
   const cookSharePct = dishwasherCount === 0 ? 0.25 : 0.20;
   const dishwasherSharePct = dishwasherCount === 0 ? 0.0 : 0.05;
@@ -79,7 +80,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-muted/30 pb-20 md:pb-0">
       <div className="max-w-md mx-auto min-h-screen bg-background shadow-2xl overflow-hidden flex flex-col">
-        
+
         {/* Header */}
         <header className="px-4 py-3 bg-card border-b sticky top-0 z-20">
           <div className="flex items-center justify-between gap-4">
@@ -87,7 +88,7 @@ export default function Home() {
               <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
                 <Coins className="w-4 h-4 text-primary-foreground" />
               </div>
-              <h1 className="text-lg font-bold text-foreground">Tip Splitter</h1>
+              <h1 className="text-lg font-bold text-foreground">Tip Harmony</h1>
             </div>
             <div className="flex items-center gap-2">
               {history && history.length > 0 && (
@@ -110,11 +111,12 @@ export default function Home() {
 
         <ScrollArea className="flex-1">
           <div className="p-6 space-y-8">
-            
+            <Analytics />
+
             {/* Input Section */}
             <section className="space-y-6">
-              <CurrencyInput 
-                label="Total Tip Amount" 
+              <CurrencyInput
+                label="Total Tip Amount"
                 placeholder="0.00"
                 value={totalAmount}
                 onChange={(e) => setTotalAmount(e.target.value)}
@@ -129,7 +131,7 @@ export default function Home() {
                   options={[1, 2, 3, 4]}
                   onChange={setWaiterCount}
                 />
-                
+
                 <PersonSelector
                   label="Cooks"
                   icon={<ChefHat className="w-4 h-4 text-emerald-500" />}
@@ -137,7 +139,7 @@ export default function Home() {
                   options={[1, 2, 3]}
                   onChange={setCookCount}
                 />
-                
+
                 <PersonSelector
                   label="Dishwashers"
                   icon={<Waves className="w-4 h-4 text-blue-500" />}
@@ -152,9 +154,9 @@ export default function Home() {
             <section className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-bold text-foreground">Distribution</h2>
-                <Button 
-                  size="sm" 
-                  variant="outline" 
+                <Button
+                  size="sm"
+                  variant="outline"
                   className="h-8 text-xs gap-2 rounded-lg hover:bg-primary hover:text-primary-foreground border-primary/20 transition-all"
                   onClick={handleSave}
                   disabled={createCalculation.isPending || !amount}
@@ -203,7 +205,7 @@ export default function Home() {
                 <History className="w-4 h-4 text-muted-foreground" />
                 <h2 className="text-lg font-bold text-foreground">History</h2>
               </div>
-              
+
               <div className="space-y-6">
                 {isLoadingHistory ? (
                   <div className="text-center py-8 text-muted-foreground text-sm animate-pulse">Loading history...</div>
@@ -216,7 +218,7 @@ export default function Home() {
                       const dateObj = new Date(calc.createdAt);
                       const monthKey = dateObj.toLocaleString('default', { month: 'long', year: 'numeric' });
                       const dateKey = dateObj.toLocaleDateString();
-                      
+
                       if (!groupedByMonth[monthKey]) {
                         groupedByMonth[monthKey] = {};
                       }
