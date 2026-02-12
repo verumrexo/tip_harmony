@@ -10,6 +10,17 @@ interface PersonSelectorProps {
 }
 
 export function PersonSelector({ label, value, options, onChange, icon }: PersonSelectorProps) {
+
+  const handleSelect = (option: number) => {
+    // 1. Haptic Feedback (if supported)
+    if (navigator.vibrate) {
+      navigator.vibrate(10); // 10ms "tick"
+    }
+
+    // 2. Change Value
+    onChange(option);
+  };
+
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-2">
@@ -20,15 +31,22 @@ export function PersonSelector({ label, value, options, onChange, icon }: Person
         {options.map((option) => (
           <button
             key={option}
-            onClick={() => onChange(option)}
+            onClick={() => handleSelect(option)}
             className={cn(
-              "flex-1 min-w-[3rem] py-3 rounded-[18px] font-bold text-lg transition-all duration-200 tap-highlight-transparent",
+              "flex-1 min-w-[3rem] py-3 rounded-[18px] font-bold text-lg transition-all duration-200 tap-highlight-transparent select-none",
+              // Active State: Scale up slightly, shadow, colored
               value === option
-                ? "bg-card text-primary shadow-md shadow-black/5 dark:shadow-black/20 scale-[1.02]"
+                ? "bg-card text-primary shadow-md shadow-black/5 dark:shadow-black/20 scale-105"
+                // Inactive State: Scale down slightly on press
                 : "text-muted-foreground hover:bg-muted/80 active:scale-95"
             )}
           >
-            {option}
+            <span className={cn(
+              "block transition-transform duration-300",
+              value === option ? "scale-110" : "scale-100"
+            )}>
+              {option}
+            </span>
           </button>
         ))}
       </div>
