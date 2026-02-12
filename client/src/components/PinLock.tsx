@@ -25,36 +25,18 @@ export function PinLock({ children }: { children: React.ReactNode }) {
         inputMode="numeric"
         pattern="[0-9]*"
         placeholder="PIN Code"
-        className="text-center text-lg tracking-widest"
-        maxLength={4}
-        value={pin}
-        onChange={(e) => setPin(e.target.value)}
-        autoComplete="off"
-        readOnly={isReadOnly}
-    />
-    const unlocked = localStorage.getItem(SESSION_KEY);
-    if (unlocked === "true") {
-        setIsUnlocked(true);
-    }
-}, []);
-
-const handleUnlock = (e?: React.FormEvent) => {
-    e?.preventDefault();
-    if (pin === PIN_CODE) {
-        localStorage.setItem(SESSION_KEY, "true");
-        setIsUnlocked(true);
         toast({
             title: "Unlocked",
             description: "Welcome back.",
         });
-    } else {
-        toast({
-            title: "Access Denied",
-            description: "Incorrect PIN code.",
-            variant: "destructive",
-        });
-        setPin("");
-    }
+} else {
+    toast({
+        title: "Access Denied",
+        description: "Incorrect PIN code.",
+        variant: "destructive",
+    });
+    setPin("");
+}
 };
 
 if (isUnlocked) {
