@@ -65,11 +65,13 @@ export function PinLock({ children }: { children: React.ReactNode }) {
                                 maxLength={4}
                                 value={pin}
                                 onChange={(e) => setPin(e.target.value)}
+                                autoComplete="off"
                             />
                         </div>
                         <Button type="submit" className="w-full" disabled={pin.length < 4}>
                             Unlock <ArrowRight className="w-4 h-4 ml-2" />
                         </Button>
+                        <p className="text-xs text-center text-muted-foreground/30 font-mono pt-4">v1.1</p>
                     </form>
                 </CardContent>
             </Card>
