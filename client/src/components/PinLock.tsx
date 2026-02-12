@@ -14,7 +14,7 @@ export function PinLock({ children }: { children: React.ReactNode }) {
     const { toast } = useToast();
 
     useEffect(() => {
-        const unlocked = sessionStorage.getItem(SESSION_KEY);
+        const unlocked = localStorage.getItem(SESSION_KEY);
         if (unlocked === "true") {
             setIsUnlocked(true);
         }
@@ -23,7 +23,7 @@ export function PinLock({ children }: { children: React.ReactNode }) {
     const handleUnlock = (e?: React.FormEvent) => {
         e?.preventDefault();
         if (pin === PIN_CODE) {
-            sessionStorage.setItem(SESSION_KEY, "true");
+            localStorage.setItem(SESSION_KEY, "true");
             setIsUnlocked(true);
             toast({
                 title: "Unlocked",

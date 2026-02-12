@@ -122,7 +122,6 @@ export default function Home() {
                 placeholder="0.00"
                 value={totalAmount}
                 onValueChange={setTotalAmount}
-                autoFocus
               />
 
               <div className="space-y-5">
