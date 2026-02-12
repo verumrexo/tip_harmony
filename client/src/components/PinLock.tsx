@@ -58,6 +58,8 @@ export function PinLock({ children }: { children: React.ReactNode }) {
                         <div className="space-y-2">
                             <Input
                                 type="password"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
                                 placeholder="PIN Code"
                                 className="text-center text-lg tracking-widest"
                                 maxLength={4}
