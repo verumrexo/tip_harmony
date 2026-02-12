@@ -19,6 +19,8 @@ export default function Home() {
   const [cookCount, setCookCount] = useState<number>(1);
   const [dishwasherCount, setDishwasherCount] = useState<number>(1);
 
+  const [showAverages, setShowAverages] = useState(false);
+
   // Queries & Mutations
   const { data: history, isLoading: isLoadingHistory } = useCalculations();
   const createCalculation = useCreateCalculation();
@@ -111,7 +113,7 @@ export default function Home() {
 
         <ScrollArea className="flex-1">
           <div className="p-6 space-y-8">
-            <Analytics />
+
 
             {/* Input Section */}
             <section className="space-y-6">
@@ -199,11 +201,26 @@ export default function Home() {
               </div>
             </section>
 
+            {/* Analytics Section */}
+            <section className="space-y-4">
+              <Analytics />
+            </section>
+
             {/* History Section */}
             <section className="pb-10">
-              <div className="flex items-center gap-2 mb-4">
-                <History className="w-4 h-4 text-muted-foreground" />
-                <h2 className="text-lg font-bold text-foreground">History</h2>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <History className="w-4 h-4 text-muted-foreground" />
+                  <h2 className="text-lg font-bold text-foreground">History</h2>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowAverages(!showAverages)}
+                  className="h-8 text-[10px] uppercase font-bold tracking-wider text-muted-foreground hover:text-foreground"
+                >
+                  {showAverages ? "Hide Averages" : "Show Averages"}
+                </Button>
               </div>
 
               <div className="space-y-6">
@@ -243,15 +260,57 @@ export default function Home() {
                           const monthTotal = Object.values(monthData).flat().reduce((sum, calc) => sum + Number(calc.totalAmount), 0);
                           const isCurrentMonth = month === currentMonthKey;
 
+                          // Calculate monthly averages per role (only counting shifts where that role was present)
+                          const flatMonthData = Object.values(monthData).flat();
+
+                          const waiterShifts = flatMonthData.filter(c => c.waiterCount > 0);
+                          const cookShifts = flatMonthData.filter(c => c.cookCount > 0);
+                          const dishwasherShifts = flatMonthData.filter(c => c.dishwasherCount > 0);
+
+                          const avgWaiter = waiterShifts.length > 0
+                            ? waiterShifts.reduce((sum, calc) => sum + Number(calc.waiterPerPerson), 0) / waiterShifts.length
+                            : 0;
+
+                          const avgCook = cookShifts.length > 0
+                            ? cookShifts.reduce((sum, calc) => sum + Number(calc.cookPerPerson), 0) / cookShifts.length
+                            : 0;
+
+                          const avgDishwasher = dishwasherShifts.length > 0
+                            ? dishwasherShifts.reduce((sum, calc) => sum + Number(calc.dishwasherPerPerson), 0) / dishwasherShifts.length
+                            : 0;
+
                           return (
-                            <Collapsible key={month} defaultOpen={isCurrentMonth}>
+                            <Collapsible key={month} defaultOpen={false}>
                               <CollapsibleTrigger className="w-full" data-testid={`button-month-toggle-${index}`}>
-                                <div className="flex items-center justify-between px-3 py-2 bg-muted/50 rounded-lg hover-elevate cursor-pointer">
-                                  <div className="flex items-center gap-2">
+                                <div className="grid grid-cols-[1fr_auto_1fr] items-center px-3 py-2 bg-muted/50 rounded-lg hover-elevate cursor-pointer gap-2">
+                                  {/* Left: Date */}
+                                  <div className="flex items-center gap-2 justify-start">
                                     <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform duration-200 [[data-state=closed]_&]:-rotate-90" />
-                                    <h3 className="text-sm font-bold text-foreground">{month}</h3>
+                                    <h3 className="text-sm font-bold text-foreground truncate">{month}</h3>
                                   </div>
-                                  <span className="text-sm font-bold text-primary">€{monthTotal.toFixed(2)}</span>
+
+                                  {/* Center: Averages */}
+                                  {showAverages && (
+                                    <div className="flex items-center justify-center gap-3 text-[10px] font-mono text-muted-foreground">
+                                      <div className="flex items-center gap-1">
+                                        <span className="font-semibold">W:</span>
+                                        <span className="text-orange-500">€{avgWaiter.toFixed(0)}</span>
+                                      </div>
+                                      <div className="flex items-center gap-1">
+                                        <span className="font-semibold">C:</span>
+                                        <span className="text-emerald-500">€{avgCook.toFixed(0)}</span>
+                                      </div>
+                                      <div className="flex items-center gap-1">
+                                        <span className="font-semibold">D:</span>
+                                        <span className="text-blue-500">€{avgDishwasher.toFixed(0)}</span>
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {/* Right: Total */}
+                                  <div className="flex justify-end">
+                                    <span className="text-sm font-bold text-primary">€{monthTotal.toFixed(2)}</span>
+                                  </div>
                                 </div>
                               </CollapsibleTrigger>
                               <CollapsibleContent>
