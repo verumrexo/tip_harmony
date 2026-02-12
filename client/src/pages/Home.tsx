@@ -80,11 +80,15 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-muted/30 pb-20 md:pb-0">
-      <div className="max-w-md mx-auto min-h-screen bg-background shadow-2xl overflow-hidden flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-slate-900 to-black pb-20 md:pb-0 relative overflow-hidden">
+      {/* Ambient Background Blobs */}
+      <div className="fixed top-[-20%] left-[-10%] w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[100px] pointer-events-none animate-pulse" />
+      <div className="fixed bottom-[-20%] right-[-10%] w-[400px] h-[400px] bg-blue-500/20 rounded-full blur-[100px] pointer-events-none animate-pulse delay-1000" />
+
+      <div className="max-w-md mx-auto min-h-screen bg-background/40 backdrop-blur-md shadow-2xl overflow-hidden flex flex-col border-x border-white/5">
 
         {/* Header */}
-        <header className="px-4 py-3 bg-card border-b sticky top-0 z-20">
+        <header className="px-4 py-3 bg-transparent backdrop-blur-sm sticky top-0 z-20 border-b border-white/5">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">

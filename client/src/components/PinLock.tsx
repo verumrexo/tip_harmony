@@ -51,8 +51,11 @@ export function PinLock({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        <div className="min-h-screen bg-background flex items-center justify-center p-4">
-            <Card className="w-full max-w-sm shadow-2xl">
+        <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-slate-900 to-black flex items-center justify-center p-4 relative overflow-hidden">
+            {/* Ambient Background Blobs */}
+            <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[100px] pointer-events-none" />
+
+            <Card className="w-full max-w-sm shadow-2xl glass border-white/10 bg-black/40">
                 <CardHeader className="text-center space-y-2">
                     <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
                         <Lock className="w-6 h-6 text-primary" />
@@ -68,7 +71,7 @@ export function PinLock({ children }: { children: React.ReactNode }) {
                                 inputMode="numeric"
                                 pattern="[0-9]*"
                                 placeholder="PIN Code"
-                                className="text-center text-lg tracking-widest"
+                                className="text-center text-lg tracking-widest glass-input placeholder:text-muted-foreground/50 text-white"
                                 maxLength={4}
                                 value={pin}
                                 onChange={(e) => setPin(e.target.value)}
