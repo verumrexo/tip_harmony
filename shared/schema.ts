@@ -14,7 +14,12 @@ export const calculations = pgTable("calculations", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertCalculationSchema = createInsertSchema(calculations).omit({ id: true, createdAt: true });
+export const insertCalculationSchema = createInsertSchema(calculations, {
+  totalAmount: z.string().regex(/^\d*\.?\d+$/, "Must be a valid positive number"),
+  waiterPerPerson: z.string().regex(/^\d*\.?\d+$/, "Must be a valid positive number"),
+  cookPerPerson: z.string().regex(/^\d*\.?\d+$/, "Must be a valid positive number"),
+  dishwasherPerPerson: z.string().regex(/^\d*\.?\d+$/, "Must be a valid positive number"),
+}).omit({ id: true, createdAt: true });
 
 export type Calculation = typeof calculations.$inferSelect;
 export type InsertCalculation = z.infer<typeof insertCalculationSchema>;
