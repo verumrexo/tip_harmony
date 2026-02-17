@@ -33,7 +33,8 @@ export function Analytics() {
         startDate.setDate(today.getDate() - dayCount);
 
         // Filter history based on selected date range
-        const filteredHistory = history.filter(calc => {
+        const filteredHistory = history.filter((calc): calc is typeof calc & { createdAt: Date } => {
+            if (!calc.createdAt) return false;
             const d = new Date(calc.createdAt);
             return d >= startDate && d <= today;
         });
