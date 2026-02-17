@@ -143,7 +143,7 @@ export default function Home() {
   }, [history]);
 
   // Logic
-  const amount = parseFloat(totalAmount) || 0;
+  const amount = parseFloat(totalAmount.replace(',', '.')) || 0;
 
   // Percentages logic
   const waiterSharePct = TIP_PERCENTAGES.WAITER;
