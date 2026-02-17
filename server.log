@@ -1,0 +1,10 @@
+
+> tip-harmony@1.0.0 dev
+> vite
+
+
+  VITE v7.3.0  ready in 351 ms
+
+  ➜  Local:   http://localhost:5173/tip_harmony/
+  ➜  Network: use --host to expose
+10:32:20 AM [vite] (client) hmr update /src/components/PinLock.tsx, /src/index.css

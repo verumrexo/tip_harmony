@@ -40,7 +40,7 @@ export function ResultCard({ title, amount, count, percentage, icon: Icon, color
           <div className={cn(
             "glass-card p-4 rounded-2xl flex items-center justify-between group transition-all duration-300 hover:bg-white/5 border-white/10",
             bgClass
-          )}>  <p className={cn("text-[10px] font-semibold uppercase tracking-wider mb-0.5", colorClass)}>Per Person</p>
+          )}>
             <p className={cn("text-2xl font-bold", colorClass)}>€{perPerson.toFixed(2)}</p>
           </div>
         )}
