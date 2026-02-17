@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Lock, Unlock, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { useIOSInputZoomFix } from "@/hooks/use-ios-input-zoom-fix";
 
-const PIN_CODE = "2519";
+const PIN_CODE = import.meta.env.VITE_PIN_CODE || "2519";
 const SESSION_KEY = "tip_harmony_unlocked";
 
 export function PinLock({ children }: { children: React.ReactNode }) {
