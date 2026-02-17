@@ -2,9 +2,38 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
+import helmet from "helmet";
 
 const app = express();
 const httpServer = createServer(app);
+
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        imgSrc: [
+          "'self'",
+          "data:",
+          ...(process.env.VITE_SUPABASE_URL
+            ? [process.env.VITE_SUPABASE_URL]
+            : []),
+        ],
+        connectSrc: [
+          "'self'",
+          "https://fonts.googleapis.com",
+          "https://fonts.gstatic.com",
+          ...(process.env.VITE_SUPABASE_URL
+            ? [process.env.VITE_SUPABASE_URL]
+            : []),
+        ],
+      },
+    },
+  }),
+);
 
 declare module "http" {
   interface IncomingMessage {
