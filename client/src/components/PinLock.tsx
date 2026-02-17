@@ -51,10 +51,7 @@ export function PinLock({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-slate-900 to-black flex items-center justify-center p-4 relative overflow-hidden">
-            {/* Ambient Background Blobs */}
-            <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[100px] pointer-events-none" />
-
+        <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
             <Card className="w-full max-w-sm shadow-2xl glass border-white/10 bg-black/40 text-foreground">
                 <CardHeader className="text-center space-y-2">
                     <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">

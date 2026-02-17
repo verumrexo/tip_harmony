@@ -196,10 +196,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-slate-900 to-black pb-20 md:pb-0 relative overflow-hidden text-foreground">
-      {/* Ambient Background Blobs */}
-      <div className="fixed top-[-20%] left-[-10%] w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[120px] pointer-events-none animate-pulse" />
-      <div className="fixed bottom-[-20%] right-[-10%] w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[100px] pointer-events-none animate-pulse delay-1000" />
+    <div className="min-h-screen pb-20 md:pb-0 relative overflow-hidden text-foreground">
 
       <div className="max-w-md mx-auto min-h-screen bg-background/30 backdrop-blur-xl shadow-2xl overflow-hidden flex flex-col border-x border-white/5 relative z-10">
 
