@@ -11,6 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Analytics } from "@/components/Analytics";
+import { TIP_PERCENTAGES } from "@/lib/constants";
 
 export default function Home() {
   // State
@@ -30,13 +31,13 @@ export default function Home() {
   const amount = parseFloat(totalAmount) || 0;
 
   // Percentages logic
-  // Waiters: 75%
-  // Cooks: 20% (25% if 0 dishwashers)
-  // Dishwashers: 5% (0% if 0 dishwashers)
-
-  const waiterSharePct = 0.75;
-  const cookSharePct = dishwasherCount === 0 ? 0.25 : 0.20;
-  const dishwasherSharePct = dishwasherCount === 0 ? 0.0 : 0.05;
+  const waiterSharePct = TIP_PERCENTAGES.WAITER;
+  const cookSharePct = dishwasherCount === 0
+    ? TIP_PERCENTAGES.COOK_NO_DISHWASHER
+    : TIP_PERCENTAGES.COOK_BASE;
+  const dishwasherSharePct = dishwasherCount === 0
+    ? 0.0
+    : TIP_PERCENTAGES.DISHWASHER;
 
   const waiterTotal = amount * waiterSharePct;
   const cookTotal = amount * cookSharePct;
