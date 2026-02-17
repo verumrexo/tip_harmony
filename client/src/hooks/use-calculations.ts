@@ -1,17 +1,29 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import type { InsertCalculation } from "@shared/schema";
+import type { Calculation, InsertCalculation } from "@shared/schema";
+
+interface CalculationDB {
+  id: number;
+  total_amount: number | string;
+  waiter_count: number;
+  cook_count: number;
+  dishwasher_count: number;
+  waiter_per_person: number | string;
+  cook_per_person: number | string;
+  dishwasher_per_person: number | string;
+  created_at: string;
+}
 
 // Helper to map snake_case DB result to camelCase frontend model
-const mapToCamel = (data: any) => ({
+const mapToCamel = (data: CalculationDB): Calculation => ({
   id: data.id,
-  totalAmount: data.total_amount,
+  totalAmount: String(data.total_amount),
   waiterCount: data.waiter_count,
   cookCount: data.cook_count,
   dishwasherCount: data.dishwasher_count,
-  waiterPerPerson: data.waiter_per_person,
-  cookPerPerson: data.cook_per_person,
-  dishwasherPerPerson: data.dishwasher_per_person,
+  waiterPerPerson: String(data.waiter_per_person),
+  cookPerPerson: String(data.cook_per_person),
+  dishwasherPerPerson: String(data.dishwasher_per_person),
   createdAt: new Date(data.created_at),
 });
 
