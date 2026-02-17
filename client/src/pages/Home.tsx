@@ -82,29 +82,53 @@ export default function Home() {
         }
       }
 
-      let waiterSum = 0, waiterCount = 0;
-      let cookSum = 0, cookCount = 0;
-      let dishwasherSum = 0, dishwasherCount = 0;
+      let totalWaiterSum = 0, daysWithWaiter = 0;
+      let totalCookSum = 0, daysWithCook = 0;
+      let totalDishwasherSum = 0, daysWithDishwasher = 0;
 
-      for (let i = 0; i < flatMonthData.length; i++) {
-        const c = flatMonthData[i];
-        if (c.waiterCount > 0) {
-          waiterSum += Number(c.waiterPerPerson);
-          waiterCount++;
+      for (const dateKey in monthData) {
+        const dayCalcs = monthData[dateKey];
+
+        let dailyWaiterSum = 0;
+        let dailyCookSum = 0;
+        let dailyDishwasherSum = 0;
+
+        let hasWaiter = false;
+        let hasCook = false;
+        let hasDishwasher = false;
+
+        for (const c of dayCalcs) {
+           if (c.waiterCount > 0) {
+             dailyWaiterSum += Number(c.waiterPerPerson);
+             hasWaiter = true;
+           }
+           if (c.cookCount > 0) {
+             dailyCookSum += Number(c.cookPerPerson);
+             hasCook = true;
+           }
+           if (c.dishwasherCount > 0) {
+             dailyDishwasherSum += Number(c.dishwasherPerPerson);
+             hasDishwasher = true;
+           }
         }
-        if (c.cookCount > 0) {
-          cookSum += Number(c.cookPerPerson);
-          cookCount++;
+
+        if (hasWaiter) {
+          totalWaiterSum += dailyWaiterSum;
+          daysWithWaiter++;
         }
-        if (c.dishwasherCount > 0) {
-          dishwasherSum += Number(c.dishwasherPerPerson);
-          dishwasherCount++;
+        if (hasCook) {
+          totalCookSum += dailyCookSum;
+          daysWithCook++;
+        }
+        if (hasDishwasher) {
+          totalDishwasherSum += dailyDishwasherSum;
+          daysWithDishwasher++;
         }
       }
 
-      const avgWaiter = waiterCount > 0 ? waiterSum / waiterCount : 0;
-      const avgCook = cookCount > 0 ? cookSum / cookCount : 0;
-      const avgDishwasher = dishwasherCount > 0 ? dishwasherSum / dishwasherCount : 0;
+      const avgWaiter = daysWithWaiter > 0 ? totalWaiterSum / daysWithWaiter : 0;
+      const avgCook = daysWithCook > 0 ? totalCookSum / daysWithCook : 0;
+      const avgDishwasher = daysWithDishwasher > 0 ? totalDishwasherSum / daysWithDishwasher : 0;
 
       return {
         month,
@@ -346,15 +370,15 @@ export default function Home() {
                                     <div className="flex items-center justify-center gap-3 text-[10px] font-mono text-muted-foreground">
                                       <div className="flex items-center gap-1">
                                         <span className="font-semibold">W:</span>
-                                        <span className="text-orange-500">€{avgWaiter.toFixed(0)}</span>
+                                        <span className="text-orange-500" data-testid="avg-waiter">€{avgWaiter.toFixed(0)}</span>
                                       </div>
                                       <div className="flex items-center gap-1">
                                         <span className="font-semibold">C:</span>
-                                        <span className="text-emerald-500">€{avgCook.toFixed(0)}</span>
+                                        <span className="text-emerald-500" data-testid="avg-cook">€{avgCook.toFixed(0)}</span>
                                       </div>
                                       <div className="flex items-center gap-1">
                                         <span className="font-semibold">D:</span>
-                                        <span className="text-blue-500">€{avgDishwasher.toFixed(0)}</span>
+                                        <span className="text-blue-500" data-testid="avg-dishwasher">€{avgDishwasher.toFixed(0)}</span>
                                       </div>
                                     </div>
                                   )}
