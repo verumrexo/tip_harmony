@@ -1,4 +1,5 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { cn } from "@/lib/utils";
 
 interface CurrencyInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
@@ -9,6 +10,7 @@ interface CurrencyInputProps extends Omit<React.InputHTMLAttributes<HTMLInputEle
 
 export function CurrencyInput({ label, value, onValueChange, className, ...props }: CurrencyInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isFocused, setIsFocused] = useState(false);
 
   // Use the value directly, default to empty string if undefined
   const displayValue = value ?? "";
@@ -39,19 +41,17 @@ export function CurrencyInput({ label, value, onValueChange, className, ...props
   };
 
   const handleCommaClick = (e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault(); // Prevent losing focus
+    e.preventDefault(); // Prevent losing focus from input
+    e.stopPropagation();
+
     if (!displayValue.includes(',')) {
       const newValue = displayValue + ',';
       onValueChange(newValue);
+    }
 
-      // Focus input
-      if (inputRef.current) {
+    // Always refocus input
+    if (inputRef.current) {
         inputRef.current.focus();
-      }
-    } else {
-         if (inputRef.current) {
-            inputRef.current.focus();
-         }
     }
   };
 
@@ -90,7 +90,7 @@ export function CurrencyInput({ label, value, onValueChange, className, ...props
 
         {/* Visual Layer (Ghost) */}
         <div className={cn(
-          "absolute inset-0 w-full pl-10 pr-16 py-4 rounded-2xl bg-card border-none shadow-sm flex items-center text-2xl font-bold pointer-events-none z-0 transition-all group-hover:shadow-md",
+          "absolute inset-0 w-full pl-10 pr-4 py-4 rounded-2xl bg-card border-none shadow-sm flex items-center text-2xl font-bold pointer-events-none z-0 transition-all group-hover:shadow-md",
           className
         )}>
           <span className="text-muted-foreground/30 select-none">{gray}</span>
@@ -104,8 +104,13 @@ export function CurrencyInput({ label, value, onValueChange, className, ...props
           inputMode="decimal"
           value={displayValue}
           onChange={handleChange}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => {
+            // Small delay to allow button click to register before hiding
+            setTimeout(() => setIsFocused(false), 150);
+          }}
           className={cn(
-            "w-full pl-10 pr-16 py-4 rounded-2xl bg-transparent border-none text-2xl font-bold text-transparent caret-primary focus:outline-none z-10",
+            "w-full pl-10 pr-4 py-4 rounded-2xl bg-transparent border-none text-2xl font-bold text-transparent caret-primary focus:outline-none z-10",
             // Remove text shadow or other artifacts
             "placeholder:text-transparent selection:bg-transparent"
           )}
@@ -113,17 +118,21 @@ export function CurrencyInput({ label, value, onValueChange, className, ...props
           {...props}
         />
 
-        {/* Comma Button */}
-        <button
-            type="button"
-            onMouseDown={handleCommaClick}
-            onTouchStart={handleCommaClick}
-            className="absolute right-2 top-1/2 -translate-y-1/2 w-12 h-10 rounded-xl bg-muted/50 hover:bg-muted text-foreground flex items-center justify-center z-20 transition-colors font-bold text-2xl pb-1 cursor-pointer select-none active:scale-95"
-            aria-label="Add decimal comma"
-            tabIndex={-1}
-        >
-            ,
-        </button>
+        {/* Floating Comma Button - Only visible when focused */}
+        {isFocused && createPortal(
+            <div className="fixed bottom-0 left-0 right-0 p-4 z-50 flex justify-end pointer-events-none pb-[env(safe-area-inset-bottom)] animate-in fade-in slide-in-from-bottom-4 duration-200">
+                <button
+                    type="button"
+                    onMouseDown={handleCommaClick}
+                    onTouchStart={handleCommaClick}
+                    className="pointer-events-auto bg-foreground text-background font-bold text-3xl w-14 h-14 rounded-full shadow-lg flex items-center justify-center mb-2 mr-2 active:scale-95 transition-transform cursor-pointer"
+                    aria-label="Add decimal comma"
+                >
+                    ,
+                </button>
+            </div>,
+            document.body
+        )}
       </div>
     </div>
   );
