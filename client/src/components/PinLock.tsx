@@ -4,21 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { useIOSInputZoomFix } from "@/hooks/use-ios-input-zoom-fix";
 
 const PIN_CODE = "2519";
 const SESSION_KEY = "tip_harmony_unlocked";
 
 export function PinLock({ children }: { children: React.ReactNode }) {
-    const [isReadOnly, setIsReadOnly] = useState(true);
+    const isReadOnly = useIOSInputZoomFix();
     const [pin, setPin] = useState("");
     const [isUnlocked, setIsUnlocked] = useState(false);
     const { toast } = useToast();
-
-    useEffect(() => {
-        // Hack to prevent iOS auto-zoom/focus on load
-        const timer = setTimeout(() => setIsReadOnly(false), 500);
-        return () => clearTimeout(timer);
-    }, []);
 
     useEffect(() => {
         const unlocked = localStorage.getItem(SESSION_KEY);
