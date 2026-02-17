@@ -1,3 +1,4 @@
+import React, { useId } from 'react';
 import { cn } from "@/lib/utils";
 import { Users } from "lucide-react";
 
@@ -10,6 +11,7 @@ interface PersonSelectorProps {
 }
 
 export function PersonSelector({ label, value, options, onChange, icon }: PersonSelectorProps) {
+  const labelId = useId();
 
   const handleSelect = (option: number) => {
     // 1. Haptic Feedback (if supported)
@@ -22,16 +24,27 @@ export function PersonSelector({ label, value, options, onChange, icon }: Person
   };
 
   return (
-    <div className="flex flex-col gap-3">
+    <div
+      className="flex flex-col gap-3"
+      role="group"
+      aria-labelledby={labelId}
+    >
       <div className="flex items-center gap-2">
         {icon || <Users className="w-4 h-4 text-primary" />}
-        <label className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">{label}</label>
+        <label
+          id={labelId}
+          className="text-sm font-semibold text-muted-foreground uppercase tracking-wider"
+        >
+          {label}
+        </label>
       </div>
       <div className="flex gap-2 p-1 bg-muted/50 rounded-[21px] overflow-x-auto no-scrollbar">
         {options.map((option) => (
           <button
             key={option}
+            type="button"
             onClick={() => handleSelect(option)}
+            aria-pressed={value === option}
             className={cn(
               "flex-1 min-w-[3rem] py-3 rounded-[18px] font-bold text-lg transition-all duration-200 tap-highlight-transparent select-none",
               // Active State: Scale up slightly, shadow, colored
