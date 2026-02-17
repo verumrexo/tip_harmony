@@ -3,6 +3,7 @@ import type { Server } from "http";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
+import { type InsertCalculation } from "@shared/schema";
 
 const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) =>
   (req: Request, res: Response, next: NextFunction) => {
@@ -37,24 +38,30 @@ export async function registerRoutes(
   // Seed data
   const existing = await storage.getCalculations();
   if (existing.length === 0) {
-    await storage.createCalculation({
-      totalAmount: "100",
-      waiterCount: 2,
-      cookCount: 1,
-      dishwasherCount: 1,
-      waiterPerPerson: "37.50",
-      cookPerPerson: "20",
-      dishwasherPerPerson: "5",
-    });
-    await storage.createCalculation({
-      totalAmount: "50.50",
-      waiterCount: 1,
-      cookCount: 2,
-      dishwasherCount: 0,
-      waiterPerPerson: "37.875",
-      cookPerPerson: "6.3125",
-      dishwasherPerPerson: "0",
-    });
+    const SEED_DATA: InsertCalculation[] = [
+      {
+        totalAmount: "100",
+        waiterCount: 2,
+        cookCount: 1,
+        dishwasherCount: 1,
+        waiterPerPerson: "37.50",
+        cookPerPerson: "20",
+        dishwasherPerPerson: "5",
+      },
+      {
+        totalAmount: "50.50",
+        waiterCount: 1,
+        cookCount: 2,
+        dishwasherCount: 0,
+        waiterPerPerson: "37.875",
+        cookPerPerson: "6.3125",
+        dishwasherPerPerson: "0",
+      },
+    ];
+
+    for (const calculation of SEED_DATA) {
+      await storage.createCalculation(calculation);
+    }
   }
 
   return httpServer;
