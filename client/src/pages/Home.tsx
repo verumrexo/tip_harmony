@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ChefHat, Utensils, Waves, Save, History, Coins, ChevronDown } from "lucide-react";
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { PersonSelector } from "@/components/PersonSelector";
@@ -25,6 +25,97 @@ export default function Home() {
   const { data: history, isLoading: isLoadingHistory } = useCalculations();
   const createCalculation = useCreateCalculation();
   const { toast } = useToast();
+
+  const processedHistory = useMemo(() => {
+    if (!history || history.length === 0) return [];
+
+    // Group calculations by month then date
+    const groupedByMonth: { [key: string]: { [key: string]: typeof history } } = {};
+    const monthCache = new Map<string, string>();
+    const dateCache = new Map<number, string>();
+
+    history.forEach((calc) => {
+      if (!calc.createdAt) return;
+      const dateObj = new Date(calc.createdAt);
+
+      const monthKeyCacheKey = `${dateObj.getMonth()}-${dateObj.getFullYear()}`;
+      let monthKey = monthCache.get(monthKeyCacheKey);
+      if (!monthKey) {
+        monthKey = dateObj.toLocaleString('default', { month: 'long', year: 'numeric' });
+        monthCache.set(monthKeyCacheKey, monthKey);
+      }
+
+      const dateKeyCacheKey = dateObj.getTime();
+      let dateKey = dateCache.get(dateKeyCacheKey);
+      if (!dateKey) {
+        dateKey = dateObj.toLocaleDateString();
+        dateCache.set(dateKeyCacheKey, dateKey);
+      }
+
+      if (!groupedByMonth[monthKey]) {
+        groupedByMonth[monthKey] = {};
+      }
+      if (!groupedByMonth[monthKey][dateKey]) {
+        groupedByMonth[monthKey][dateKey] = [];
+      }
+      groupedByMonth[monthKey][dateKey].push(calc);
+    });
+
+    // Sort months in descending order
+    const sortedMonths = Object.keys(groupedByMonth).sort((a, b) => {
+      return new Date(b).getTime() - new Date(a).getTime();
+    });
+
+    return sortedMonths.map((month) => {
+      const monthData = groupedByMonth[month];
+      const sortedDates = Object.keys(monthData).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+
+      let monthTotal = 0;
+      const flatMonthData = [];
+      for (const dateKey in monthData) {
+        const dayCalcs = monthData[dateKey];
+        for (let i = 0; i < dayCalcs.length; i++) {
+          const calc = dayCalcs[i];
+          monthTotal += Number(calc.totalAmount);
+          flatMonthData.push(calc);
+        }
+      }
+
+      let waiterSum = 0, waiterCount = 0;
+      let cookSum = 0, cookCount = 0;
+      let dishwasherSum = 0, dishwasherCount = 0;
+
+      for (let i = 0; i < flatMonthData.length; i++) {
+        const c = flatMonthData[i];
+        if (c.waiterCount > 0) {
+          waiterSum += Number(c.waiterPerPerson);
+          waiterCount++;
+        }
+        if (c.cookCount > 0) {
+          cookSum += Number(c.cookPerPerson);
+          cookCount++;
+        }
+        if (c.dishwasherCount > 0) {
+          dishwasherSum += Number(c.dishwasherPerPerson);
+          dishwasherCount++;
+        }
+      }
+
+      const avgWaiter = waiterCount > 0 ? waiterSum / waiterCount : 0;
+      const avgCook = cookCount > 0 ? cookSum / cookCount : 0;
+      const avgDishwasher = dishwasherCount > 0 ? dishwasherSum / dishwasherCount : 0;
+
+      return {
+        month,
+        monthTotal,
+        avgWaiter,
+        avgCook,
+        avgDishwasher,
+        sortedDates,
+        monthData,
+      };
+    });
+  }, [history]);
 
   // Logic
   const amount = parseFloat(totalAmount) || 0;
@@ -230,60 +321,17 @@ export default function Home() {
                 {isLoadingHistory ? (
                   <div className="text-center py-8 text-muted-foreground text-sm animate-pulse">Loading history...</div>
                 ) : history && history.length > 0 ? (
-                  (() => {
-                    // Group calculations by month then date
-                    const groupedByMonth: { [key: string]: { [key: string]: typeof history } } = {};
-                    history.forEach((calc) => {
-                      if (!calc.createdAt) return;
-                      const dateObj = new Date(calc.createdAt);
-                      const monthKey = dateObj.toLocaleString('default', { month: 'long', year: 'numeric' });
-                      const dateKey = dateObj.toLocaleDateString();
-
-                      if (!groupedByMonth[monthKey]) {
-                        groupedByMonth[monthKey] = {};
-                      }
-                      if (!groupedByMonth[monthKey][dateKey]) {
-                        groupedByMonth[monthKey][dateKey] = [];
-                      }
-                      groupedByMonth[monthKey][dateKey].push(calc);
-                    });
-
-                    // Sort months in descending order
-                    const sortedMonths = Object.keys(groupedByMonth).sort((a, b) => {
-                      return new Date(b).getTime() - new Date(a).getTime();
-                    });
-
-                    const currentMonthKey = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
-
-                    return (
-                      <div className="space-y-3">
-                        {sortedMonths.map((month, index) => {
-                          const monthData = groupedByMonth[month];
-                          const sortedDates = Object.keys(monthData).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
-                          const monthTotal = Object.values(monthData).flat().reduce((sum, calc) => sum + Number(calc.totalAmount), 0);
-                          const isCurrentMonth = month === currentMonthKey;
-
-                          // Calculate monthly averages per role (only counting shifts where that role was present)
-                          const flatMonthData = Object.values(monthData).flat();
-
-                          const waiterShifts = flatMonthData.filter(c => c.waiterCount > 0);
-                          const cookShifts = flatMonthData.filter(c => c.cookCount > 0);
-                          const dishwasherShifts = flatMonthData.filter(c => c.dishwasherCount > 0);
-
-                          const avgWaiter = waiterShifts.length > 0
-                            ? waiterShifts.reduce((sum, calc) => sum + Number(calc.waiterPerPerson), 0) / waiterShifts.length
-                            : 0;
-
-                          const avgCook = cookShifts.length > 0
-                            ? cookShifts.reduce((sum, calc) => sum + Number(calc.cookPerPerson), 0) / cookShifts.length
-                            : 0;
-
-                          const avgDishwasher = dishwasherShifts.length > 0
-                            ? dishwasherShifts.reduce((sum, calc) => sum + Number(calc.dishwasherPerPerson), 0) / dishwasherShifts.length
-                            : 0;
-
-                          return (
-                            <Collapsible key={month} defaultOpen={false}>
+                  <div className="space-y-3">
+                    {processedHistory.map(({
+                      month,
+                      monthTotal,
+                      avgWaiter,
+                      avgCook,
+                      avgDishwasher,
+                      sortedDates,
+                      monthData
+                    }, index) => (
+                      <Collapsible key={month} defaultOpen={false}>
                               <CollapsibleTrigger className="w-full" data-testid={`button-month-toggle-${index}`}>
                                 <div className="grid grid-cols-[1fr_auto_1fr] items-center px-3 py-2 bg-muted/50 rounded-lg hover-elevate cursor-pointer gap-2">
                                   {/* Left: Date */}
@@ -338,11 +386,8 @@ export default function Home() {
                                 </div>
                               </CollapsibleContent>
                             </Collapsible>
-                          );
-                        })}
-                      </div>
-                    );
-                  })()
+                    ))}
+                  </div>
                 ) : (
                   <div className="text-center py-8 bg-muted/30 rounded-2xl border border-dashed border-muted-foreground/20">
                     <p className="text-sm text-muted-foreground">No calculations saved yet.</p>
