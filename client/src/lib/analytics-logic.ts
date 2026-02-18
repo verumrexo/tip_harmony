@@ -2,7 +2,7 @@
 export interface Calculation {
     id: number;
     totalAmount: string | number;
-    createdAt: Date | string;
+    createdAt: Date | string | null;
     [key: string]: any;
 }
 
@@ -43,6 +43,8 @@ export function calculateAnalytics(history: Calculation[] | undefined | null, da
 
     // Single pass over history
     for (const calc of history) {
+        if (!calc.createdAt) continue;
+
         // calc.createdAt is likely a Date object (from useCalculations)
         // If it's a string, we create a new Date.
         const d = calc.createdAt instanceof Date ? calc.createdAt : new Date(calc.createdAt);
@@ -71,12 +73,6 @@ export function calculateAnalytics(history: Calculation[] | undefined | null, da
             dailyEntry.amount += amount;
             dailyEntry.count += 1;
 
-            // 2. Weekly Pattern
-            const dayIndex = d.getDay();
-            const weekEntry = weekMap[dayIndex];
-            weekEntry.total += amount;
-            weekEntry.count += 1;
-
             // 3. Monthly Trends
             const monthKey = `${year}-${month}`;
             let monthEntry = monthMap.get(monthKey);
@@ -99,6 +95,14 @@ export function calculateAnalytics(history: Calculation[] | undefined | null, da
             else if (amount < 200) bins[3].count++;
             else bins[4].count++;
         }
+    }
+
+    // 2. Weekly Pattern (Group by day)
+    for (const daily of Array.from(dailyMap.values())) {
+        const dayIndex = daily.fullDate.getDay();
+        const weekEntry = weekMap[dayIndex];
+        weekEntry.total += daily.amount;
+        weekEntry.count += 1;
     }
 
     // Post-processing (Trend Data filling)

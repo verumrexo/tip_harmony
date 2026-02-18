@@ -1,0 +1,12 @@
+
+> tip-harmony@1.0.0 dev
+> vite
+
+
+  VITE v7.3.0  ready in 298 ms
+
+  ➜  Local:   http://localhost:5173/tip_harmony/
+  ➜  Network: use --host to expose
+4:10:25 PM [vite] (client) hmr update /src/index.css, /src/pages/Home.tsx, /src/components/Analytics.tsx
+4:10:30 PM [vite] .env changed, restarting server...
+4:10:30 PM [vite] server restarted.
