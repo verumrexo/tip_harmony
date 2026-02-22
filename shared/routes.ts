@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { insertCalculationSchema, calculations } from './schema';
+import { insertCalculationSchema, insertDrinkOrderSchema, calculations, drinkOrders } from './schema';
 
 export const errorSchemas = {
   validation: z.object({
@@ -24,6 +24,24 @@ export const api = {
       responses: {
         201: z.custom<typeof calculations.$inferSelect>(),
         400: errorSchemas.validation,
+      },
+    },
+  },
+  drinkOrders: {
+    create: {
+      method: 'POST' as const,
+      path: '/api/drink-orders',
+      input: insertDrinkOrderSchema,
+      responses: {
+        201: z.custom<typeof drinkOrders.$inferSelect>(),
+        400: errorSchemas.validation,
+      },
+    },
+    report: {
+      method: 'GET' as const,
+      path: '/api/drink-orders/report',
+      responses: {
+        200: z.any(),
       },
     },
   },

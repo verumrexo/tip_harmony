@@ -12,6 +12,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Analytics } from "@/components/Analytics";
 import { TIP_PERCENTAGES } from "@/lib/constants";
+import { DrinkOrderFlow } from "@/components/DrinkOrderFlow";
 
 export default function Home() {
   // State
@@ -21,6 +22,7 @@ export default function Home() {
   const [dishwasherCount, setDishwasherCount] = useState<number>(1);
 
   const [showAverages, setShowAverages] = useState(false);
+  const [showDrinkFlow, setShowDrinkFlow] = useState(false);
 
   // Queries & Mutations
   const { data: history, isLoading: isLoadingHistory } = useCalculations();
@@ -98,18 +100,18 @@ export default function Home() {
         let hasDishwasher = false;
 
         for (const c of dayCalcs) {
-           if (c.waiterCount > 0) {
-             dailyWaiterSum += Number(c.waiterPerPerson);
-             hasWaiter = true;
-           }
-           if (c.cookCount > 0) {
-             dailyCookSum += Number(c.cookPerPerson);
-             hasCook = true;
-           }
-           if (c.dishwasherCount > 0) {
-             dailyDishwasherSum += Number(c.dishwasherPerPerson);
-             hasDishwasher = true;
-           }
+          if (c.waiterCount > 0) {
+            dailyWaiterSum += Number(c.waiterPerPerson);
+            hasWaiter = true;
+          }
+          if (c.cookCount > 0) {
+            dailyCookSum += Number(c.cookPerPerson);
+            hasCook = true;
+          }
+          if (c.dishwasherCount > 0) {
+            dailyDishwasherSum += Number(c.dishwasherPerPerson);
+            hasDishwasher = true;
+          }
         }
 
         if (hasWaiter) {
@@ -186,6 +188,8 @@ export default function Home() {
         title: "Saved!",
         description: "Calculation added to history.",
       });
+      // Open drink write-off flow after successful save
+      setShowDrinkFlow(true);
     } catch (error) {
       toast({
         title: "Error",
@@ -201,13 +205,13 @@ export default function Home() {
       <div className="max-w-md mx-auto min-h-screen bg-background/30 backdrop-blur-xl shadow-2xl overflow-hidden flex flex-col border-x border-white/5 relative z-10">
 
         {/* Header */}
-        <header className="px-4 py-3 bg-transparent backdrop-blur-md border-b border-white/5 sticky top-0 z-20">
+        <header className="px-4 py-3 bg-card border-b sticky top-0 z-20">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
                 <Coins className="w-4 h-4 text-primary-foreground" />
               </div>
-              <h1 className="text-lg font-bold text-foreground tracking-tight">Tip Harmony</h1>
+              <h1 className="text-lg font-bold text-foreground">Tip Harmony</h1>
             </div>
             <div className="flex items-center gap-2">
               {history && history.length > 0 && (
@@ -354,60 +358,60 @@ export default function Home() {
                       monthData
                     }, index) => (
                       <Collapsible key={month} defaultOpen={false}>
-                              <CollapsibleTrigger className="w-full" data-testid={`button-month-toggle-${index}`}>
-                                <div className="grid grid-cols-[1fr_auto_1fr] items-center px-3 py-2 bg-muted/50 rounded-lg hover-elevate cursor-pointer gap-2">
-                                  {/* Left: Date */}
-                                  <div className="flex items-center gap-2 justify-start">
-                                    <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform duration-200 [[data-state=closed]_&]:-rotate-90" />
-                                    <h3 className="text-sm font-bold text-foreground truncate">{month}</h3>
+                        <CollapsibleTrigger className="w-full" data-testid={`button-month-toggle-${index}`}>
+                          <div className="grid grid-cols-[1fr_auto_1fr] items-center px-3 py-2 bg-muted/50 rounded-lg hover-elevate cursor-pointer gap-2">
+                            {/* Left: Date */}
+                            <div className="flex items-center gap-2 justify-start">
+                              <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform duration-200 [[data-state=closed]_&]:-rotate-90" />
+                              <h3 className="text-sm font-bold text-foreground truncate">{month}</h3>
+                            </div>
+
+                            {/* Center: Averages */}
+                            {showAverages && (
+                              <div className="flex items-center justify-center gap-3 text-[10px] font-mono text-muted-foreground">
+                                <div className="flex items-center gap-1">
+                                  <span className="font-semibold">W:</span>
+                                  <span className="text-orange-500" data-testid="avg-waiter">€{avgWaiter.toFixed(0)}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <span className="font-semibold">C:</span>
+                                  <span className="text-emerald-500" data-testid="avg-cook">€{avgCook.toFixed(0)}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <span className="font-semibold">D:</span>
+                                  <span className="text-blue-500" data-testid="avg-dishwasher">€{avgDishwasher.toFixed(0)}</span>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Right: Total */}
+                            <div className="flex justify-end">
+                              <span className="text-sm font-bold text-primary">€{monthTotal.toFixed(2)}</span>
+                            </div>
+                          </div>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent>
+                          <div className="space-y-4 pt-3 pl-2">
+                            {sortedDates.map((date) => {
+                              const dayCalculations = monthData[date];
+                              const dayTotal = dayCalculations.reduce((sum, calc) => sum + Number(calc.totalAmount), 0);
+                              return (
+                                <div key={date} className="space-y-2">
+                                  <div className="flex items-center justify-between px-1">
+                                    <div className="text-[11px] font-semibold text-muted-foreground">{date}</div>
+                                    <div className="text-[11px] font-bold text-primary/70">Day: €{dayTotal.toFixed(2)}</div>
                                   </div>
-
-                                  {/* Center: Averages */}
-                                  {showAverages && (
-                                    <div className="flex items-center justify-center gap-3 text-[10px] font-mono text-muted-foreground">
-                                      <div className="flex items-center gap-1">
-                                        <span className="font-semibold">W:</span>
-                                        <span className="text-orange-500" data-testid="avg-waiter">€{avgWaiter.toFixed(0)}</span>
-                                      </div>
-                                      <div className="flex items-center gap-1">
-                                        <span className="font-semibold">C:</span>
-                                        <span className="text-emerald-500" data-testid="avg-cook">€{avgCook.toFixed(0)}</span>
-                                      </div>
-                                      <div className="flex items-center gap-1">
-                                        <span className="font-semibold">D:</span>
-                                        <span className="text-blue-500" data-testid="avg-dishwasher">€{avgDishwasher.toFixed(0)}</span>
-                                      </div>
-                                    </div>
-                                  )}
-
-                                  {/* Right: Total */}
-                                  <div className="flex justify-end">
-                                    <span className="text-sm font-bold text-primary">€{monthTotal.toFixed(2)}</span>
+                                  <div className="space-y-2">
+                                    {dayCalculations.map((calc) => (
+                                      <HistoryItem key={calc.id} calculation={calc} />
+                                    ))}
                                   </div>
                                 </div>
-                              </CollapsibleTrigger>
-                              <CollapsibleContent>
-                                <div className="space-y-4 pt-3 pl-2">
-                                  {sortedDates.map((date) => {
-                                    const dayCalculations = monthData[date];
-                                    const dayTotal = dayCalculations.reduce((sum, calc) => sum + Number(calc.totalAmount), 0);
-                                    return (
-                                      <div key={date} className="space-y-2">
-                                        <div className="flex items-center justify-between px-1">
-                                          <div className="text-[11px] font-semibold text-muted-foreground">{date}</div>
-                                          <div className="text-[11px] font-bold text-primary/70">Day: €{dayTotal.toFixed(2)}</div>
-                                        </div>
-                                        <div className="space-y-2">
-                                          {dayCalculations.map((calc) => (
-                                            <HistoryItem key={calc.id} calculation={calc} />
-                                          ))}
-                                        </div>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </CollapsibleContent>
-                            </Collapsible>
+                              );
+                            })}
+                          </div>
+                        </CollapsibleContent>
+                      </Collapsible>
                     ))}
                   </div>
                 ) : (
@@ -420,6 +424,11 @@ export default function Home() {
           </div>
         </ScrollArea>
       </div>
+
+      <DrinkOrderFlow
+        open={showDrinkFlow}
+        onClose={() => setShowDrinkFlow(false)}
+      />
     </div>
   );
 }

@@ -63,7 +63,7 @@ export function PinLock({ children }: { children: React.ReactNode }) {
                                 inputMode="numeric"
                                 pattern="[0-9]*"
                                 placeholder="PIN Code"
-                                className="text-center text-lg tracking-widest glass-input text-foreground border-none placeholder:text-muted-foreground/50 text-white"
+                                className="text-center text-lg tracking-widest"
                                 maxLength={4}
                                 value={pin}
                                 onChange={(e) => setPin(e.target.value)}
