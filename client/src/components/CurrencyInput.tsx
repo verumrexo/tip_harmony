@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
 import { cn } from "@/lib/utils";
 
 interface CurrencyInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
@@ -38,21 +37,6 @@ export function CurrencyInput({ label, value, onValueChange, className, ...props
     }
 
     onValueChange(newValue);
-  };
-
-  const handleCommaClick = (e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault(); // Prevent losing focus from input
-    e.stopPropagation();
-
-    if (!displayValue.includes(',')) {
-      const newValue = displayValue + ',';
-      onValueChange(newValue);
-    }
-
-    // Always refocus input
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
   };
 
   // Determine split for styling
@@ -118,21 +102,7 @@ export function CurrencyInput({ label, value, onValueChange, className, ...props
           {...props}
         />
 
-        {/* Floating Comma Button - Only visible when focused */}
-        {isFocused && createPortal(
-          <div className="fixed bottom-0 left-0 right-0 p-4 z-50 flex justify-end pointer-events-none pb-[env(safe-area-inset-bottom)] animate-in fade-in slide-in-from-bottom-4 duration-200">
-            <button
-              type="button"
-              onMouseDown={handleCommaClick}
-              onTouchStart={handleCommaClick}
-              className="pointer-events-auto bg-foreground text-background font-mono font-bold text-3xl w-14 h-14 border-3 border-foreground flex items-center justify-center mb-2 mr-2 active:translate-x-[2px] active:translate-y-[2px] transition-transform cursor-pointer brutal-shadow"
-              aria-label="Add decimal comma"
-            >
-              ,
-            </button>
-          </div>,
-          document.body
-        )}
+
       </div>
     </div>
   );

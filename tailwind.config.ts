@@ -129,12 +129,17 @@ export default {
           "25%": { transform: "translateX(-4px)" },
           "75%": { transform: "translateX(4px)" },
         },
+        "rainbow": {
+          "0%": { "background-position": "0%" },
+          "100%": { "background-position": "200%" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "brutal-pop": "brutal-pop 0.3s ease-in-out",
         "brutal-shake": "brutal-shake 0.3s ease-in-out",
+        "rainbow": "rainbow var(--speed, 30s) infinite linear",
       },
     },
   },

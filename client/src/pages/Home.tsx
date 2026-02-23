@@ -15,6 +15,7 @@ import { Analytics } from "@/components/Analytics";
 import { TIP_PERCENTAGES } from "@/lib/constants";
 import { DrinkOrderFlow } from "@/components/DrinkOrderFlow";
 import { OrderModal } from "@/components/OrderModal";
+import { RainbowButton } from "@/components/ui/rainbow-button";
 
 export default function Home() {
   // State
@@ -291,22 +292,48 @@ export default function Home() {
 
             {/* Save Section — The primary action */}
             <section className="pt-2">
+              {amount > 0 ? (
+                <RainbowButton
+                  className="w-full h-14 text-base gap-3 font-black uppercase tracking-[0.15em] rounded-none brutal-shadow brutal-hover shadow-[0_0_20px_hsl(var(--primary)/0.4)]"
+                  onClick={handleSave}
+                  disabled={createCalculation.isPending}
+                >
+                  {createCalculation.isPending ? (
+                    <>Saving...</>
+                  ) : (
+                    <>
+                      <Save className="w-5 h-5" />
+                      Save
+                    </>
+                  )}
+                </RainbowButton>
+              ) : (
+                <Button
+                  className="w-full h-14 text-base gap-3 font-black uppercase tracking-[0.15em] border-3 border-foreground rounded-none transition-all duration-300 bg-muted text-muted-foreground cursor-not-allowed"
+                  disabled
+                >
+                  <Save className="w-5 h-5" />
+                  Save
+                </Button>
+              )}
+            </section>
+
+            {/* Action Buttons Section */}
+            <section className="grid grid-cols-2 gap-3 pt-2">
               <Button
-                className={`w-full h-14 text-base gap-3 font-black uppercase tracking-[0.15em] border-3 border-foreground rounded-none transition-all duration-300 ${amount > 0
-                  ? "bg-primary text-primary-foreground brutal-shadow brutal-hover shadow-[0_0_20px_hsl(var(--primary)/0.4)] brutal-save-pulse"
-                  : "bg-muted text-muted-foreground cursor-not-allowed"
-                  }`}
-                onClick={handleSave}
-                disabled={createCalculation.isPending || !amount}
+                className="w-full h-12 text-sm gap-2 font-black uppercase tracking-[0.1em] border-3 border-foreground rounded-none bg-purple-600 text-white brutal-shadow brutal-hover hover:bg-purple-700 transition-all duration-300"
+                onClick={() => setShowDrinkFlow(true)}
               >
-                {createCalculation.isPending ? (
-                  <>Saving...</>
-                ) : (
-                  <>
-                    <Save className="w-5 h-5" />
-                    Save
-                  </>
-                )}
+                <Wine className="w-4 h-4" />
+                Write Off
+              </Button>
+
+              <Button
+                className="w-full h-12 text-sm gap-2 font-black uppercase tracking-[0.1em] border-3 border-foreground rounded-none bg-blue-600 text-white brutal-shadow brutal-hover hover:bg-blue-700 transition-all duration-300"
+                onClick={() => setShowOrderModal(true)}
+              >
+                <FileText className="w-4 h-4" />
+                Supplier
               </Button>
             </section>
 
@@ -475,27 +502,7 @@ export default function Home() {
               </div>
             </section>
 
-            {/* Drink Order Button */}
-            <section className="pb-2">
-              <Button
-                className="w-full h-12 text-base gap-3 font-black uppercase tracking-[0.15em] border-3 border-foreground rounded-none bg-purple-600 text-white brutal-shadow brutal-hover hover:bg-purple-700 transition-all duration-300"
-                onClick={() => setShowDrinkFlow(true)}
-              >
-                <Wine className="w-5 h-5" />
-                Write Off
-              </Button>
-            </section>
-
-            {/* Supplier Order Button */}
-            <section className="pb-4">
-              <Button
-                className="w-full h-12 text-base gap-3 font-black uppercase tracking-[0.15em] border-3 border-foreground rounded-none bg-blue-600 text-white brutal-shadow brutal-hover hover:bg-blue-700 transition-all duration-300"
-                onClick={() => setShowOrderModal(true)}
-              >
-                <FileText className="w-5 h-5" />
-                Supplier Order
-              </Button>
-            </section>
+            {/* (Action Buttons moved up) */}
           </div>
         </ScrollArea>
       </div>
@@ -509,6 +516,6 @@ export default function Home() {
         open={showOrderModal}
         onOpenChange={setShowOrderModal}
       />
-    </div>
+    </div >
   );
 }
