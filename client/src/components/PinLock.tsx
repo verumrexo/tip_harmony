@@ -62,7 +62,7 @@ export function PinLock({ children }: { children: React.ReactNode }) {
 
                     {/* Title */}
                     <div className="space-y-1">
-                        <h1 className="text-3xl font-bold tracking-tight uppercase">Tip Harmony</h1>
+                        <h1 className="text-3xl font-bold tracking-tight uppercase">Tip Harmony+</h1>
                         <p className="text-sm text-muted-foreground font-mono uppercase tracking-widest">Enter PIN to access</p>
                     </div>
 

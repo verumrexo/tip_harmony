@@ -52,7 +52,7 @@ describe('PinLock', () => {
       </PinLock>
     );
 
-    expect(screen.getByText('Tip Harmony')).toBeInTheDocument();
+    expect(screen.getByText('Tip Harmony+')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('PIN Code')).toBeInTheDocument();
     expect(screen.queryByText('Secret Content')).not.toBeInTheDocument();
   });
@@ -111,7 +111,7 @@ describe('PinLock', () => {
     );
 
     expect(screen.getByText('Secret Content')).toBeInTheDocument();
-    expect(screen.queryByText('Tip Harmony')).not.toBeInTheDocument();
+    expect(screen.queryByText('Tip Harmony+')).not.toBeInTheDocument();
   });
 
   it('respects VITE_PIN_CODE environment variable', async () => {

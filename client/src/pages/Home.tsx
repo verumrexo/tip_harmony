@@ -188,7 +188,7 @@ export default function Home() {
         title: "Saved!",
         description: "Calculation added to history.",
       });
-      // Open drink write-off flow after successful save
+      setTotalAmount("");
       setShowDrinkFlow(true);
     } catch (error) {
       toast({
@@ -216,7 +216,7 @@ export default function Home() {
               <div className="w-9 h-9 border-3 border-foreground bg-primary flex items-center justify-center brutal-shadow-sm">
                 <Coins className="w-4 h-4 text-primary-foreground" />
               </div>
-              <h1 className="text-lg font-black text-foreground uppercase tracking-wider">Tip Harmony</h1>
+              <h1 className="text-lg font-black text-foreground uppercase tracking-wider">Tip Harmony+</h1>
             </div>
             <div className="flex items-center gap-3">
               {history && history.length > 0 && (
@@ -276,19 +276,31 @@ export default function Home() {
               </div>
             </section>
 
-            {/* Results Section */}
+            {/* Save Section — The primary action */}
+            <section className="pt-2">
+              <Button
+                className={`w-full h-14 text-base gap-3 font-black uppercase tracking-[0.15em] border-3 border-foreground rounded-none transition-all duration-300 ${amount > 0
+                  ? "bg-primary text-primary-foreground brutal-shadow brutal-hover shadow-[0_0_20px_hsl(var(--primary)/0.4)] brutal-save-pulse"
+                  : "bg-muted text-muted-foreground cursor-not-allowed"
+                  }`}
+                onClick={handleSave}
+                disabled={createCalculation.isPending || !amount}
+              >
+                {createCalculation.isPending ? (
+                  <>Saving...</>
+                ) : (
+                  <>
+                    <Save className="w-5 h-5" />
+                    Save
+                  </>
+                )}
+              </Button>
+            </section>
+
+            {/* Distribution Section */}
             <section className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-base font-black text-foreground uppercase tracking-wider">Distribution</h2>
-                <Button
-                  size="sm"
-                  className="h-9 text-xs gap-2 font-black uppercase tracking-wider border-3 border-foreground bg-primary text-primary-foreground hover:bg-primary/90 rounded-none brutal-shadow-sm brutal-hover"
-                  onClick={handleSave}
-                  disabled={createCalculation.isPending || !amount}
-                >
-                  <Save className="w-3.5 h-3.5" />
-                  {createCalculation.isPending ? "Saving..." : "Save"}
-                </Button>
               </div>
 
               <div className="grid gap-3">

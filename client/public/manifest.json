@@ -1,6 +1,6 @@
 {
-    "name": "Tip Harmony",
-    "short_name": "Tip Harmony",
+    "name": "Tip Harmony+",
+    "short_name": "Tip Harmony+",
     "description": "Calculate and distribute daily tips easily.",
     "start_url": "./",
     "display": "standalone",
