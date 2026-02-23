@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Plus, Minus, Send, Wine, FileText } from "lucide-react";
+import { ArrowLeft, Plus, Minus, Send, Wine, FileText, Copy, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import {
@@ -15,7 +15,7 @@ import { drinkCategories, type DrinkCategory } from "@/lib/drinkData";
 import { useCreateDrinkOrder, type DrinkOrderItem } from "@/hooks/use-drink-orders";
 import { useToast } from "@/hooks/use-toast";
 
-type Step = "confirm" | "categories" | "items";
+type Step = "confirm" | "categories" | "items" | "report";
 
 interface DrinkOrderFlowProps {
     open: boolean;
@@ -26,6 +26,8 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
     const [step, setStep] = useState<Step>("confirm");
     const [selectedCategory, setSelectedCategory] = useState<DrinkCategory | null>(null);
     const [quantities, setQuantities] = useState<Record<string, number>>({});
+    const [reportText, setReportText] = useState<string>("");
+    const [reportLoading, setReportLoading] = useState(false);
     const createDrinkOrder = useCreateDrinkOrder();
     const { toast } = useToast();
 
@@ -37,6 +39,7 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
         setStep("confirm");
         setSelectedCategory(null);
         setQuantities({});
+        setReportText("");
         onClose();
     };
 
@@ -109,36 +112,8 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
         }
     };
 
-    const copyToClipboard = async (text: string): Promise<boolean> => {
-        // Try the modern Clipboard API first
-        if (navigator.clipboard?.writeText) {
-            try {
-                await navigator.clipboard.writeText(text);
-                return true;
-            } catch {
-                // Falls through to fallback
-            }
-        }
-        // Fallback: textarea + execCommand (works on mobile without gesture restrictions)
-        try {
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            textarea.style.position = 'fixed';
-            textarea.style.left = '-9999px';
-            textarea.style.top = '-9999px';
-            textarea.style.opacity = '0';
-            document.body.appendChild(textarea);
-            textarea.focus();
-            textarea.select();
-            const ok = document.execCommand('copy');
-            document.body.removeChild(textarea);
-            return ok;
-        } catch {
-            return false;
-        }
-    };
-
     const handleSendReport = async () => {
+        setReportLoading(true);
         const now = new Date();
         const month = now.getMonth() + 1;
         const year = now.getFullYear();
@@ -157,6 +132,7 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
             if (error) throw new Error(error.message);
             orders = data;
         } catch {
+            setReportLoading(false);
             toast({
                 title: "Kļūda",
                 description: "Neizdevās iegūt datus no servera.",
@@ -164,6 +140,8 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
             });
             return;
         }
+
+        setReportLoading(false);
 
         if (!orders || orders.length === 0) {
             toast({
@@ -201,19 +179,30 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
             report += `  ${item.name}: ${item.quantity}\n`;
         }
 
-        const copied = await copyToClipboard(report);
-        if (copied) {
-            toast({
-                title: "Atskaite nokopēta! 📋",
-                description: `${sortedItems.length} pozīcijas par ${month}/${year} nokopētas starpliktuvē.`,
-            });
-        } else {
-            toast({
-                title: "Nevar nokopēt",
-                description: "Pārlūks neļauj kopēt. Mēģini vēlreiz.",
-                variant: "destructive",
-            });
+        setReportText(report);
+        setStep("report");
+    };
+
+    // Called directly from a button tap = fresh user gesture = clipboard works on mobile
+    const handleCopyReport = async () => {
+        try {
+            await navigator.clipboard.writeText(reportText);
+        } catch {
+            // fallback for older browsers
+            const textarea = document.createElement('textarea');
+            textarea.value = reportText;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
         }
+        toast({
+            title: "Nokopēts! 📋",
+            description: "Atskaite nokopēta starpliktuvē.",
+        });
     };
 
     // Count items per category for badge display
@@ -273,8 +262,13 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
                                 size="sm"
                                 className="w-full mt-3 h-8 text-[10px] uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground gap-1.5 font-mono font-bold rounded-none"
                                 onClick={handleSendReport}
+                                disabled={reportLoading}
                             >
-                                <FileText className="w-3 h-3" />
+                                {reportLoading ? (
+                                    <Loader2 className="w-3 h-3 animate-spin" />
+                                ) : (
+                                    <FileText className="w-3 h-3" />
+                                )}
                                 Mēneša atskaite
                             </Button>
                         </motion.div>
@@ -428,6 +422,47 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
                                     })}
                                 </div>
                             </ScrollArea>
+                        </motion.div>
+                    )}
+
+                    {/* Step 4: Report */}
+                    {step === "report" && (
+                        <motion.div
+                            key="report"
+                            initial={{ opacity: 0, x: 50 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -50 }}
+                            transition={{ duration: 0.2 }}
+                            className="flex flex-col max-h-[85vh]"
+                        >
+                            <div className="px-4 pt-3 pb-2.5 border-b-3 border-foreground">
+                                <div className="flex items-center gap-2.5">
+                                    <button
+                                        onClick={() => { setReportText(""); setStep("confirm"); }}
+                                        className="w-7 h-7 border-3 border-foreground bg-card flex items-center justify-center hover:bg-muted transition-colors active:translate-x-[1px] active:translate-y-[1px] shrink-0"
+                                    >
+                                        <ArrowLeft className="w-3.5 h-3.5" />
+                                    </button>
+                                    <DialogTitle className="text-xs font-black uppercase tracking-wider">
+                                        Atskaite
+                                    </DialogTitle>
+                                    <DialogDescription className="sr-only">Mēneša atskaite</DialogDescription>
+                                </div>
+                            </div>
+                            <ScrollArea className="flex-1 max-h-[calc(85vh-120px)]">
+                                <pre className="p-4 text-[11px] font-mono text-foreground whitespace-pre-wrap break-words leading-relaxed">
+                                    {reportText}
+                                </pre>
+                            </ScrollArea>
+                            <div className="p-3 border-t-3 border-foreground">
+                                <Button
+                                    className="w-full h-10 text-sm font-black uppercase tracking-wider border-3 border-foreground bg-primary text-primary-foreground rounded-none brutal-shadow-sm brutal-hover gap-2"
+                                    onClick={handleCopyReport}
+                                >
+                                    <Copy className="w-4 h-4" />
+                                    Kopēt
+                                </Button>
+                            </div>
                         </motion.div>
                     )}
                 </AnimatePresence>
