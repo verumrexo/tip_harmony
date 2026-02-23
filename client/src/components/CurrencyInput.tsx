@@ -90,8 +90,8 @@ export function CurrencyInput({ label, value, onValueChange, className, ...props
 
         {/* Visual Layer (Ghost) */}
         <div className={cn(
-          "absolute inset-0 w-full pl-10 pr-4 py-2.5 border-3 border-foreground bg-card flex items-center text-2xl font-bold font-mono pointer-events-none z-0 transition-all brutal-shadow",
-          isFocused && "brutal-shadow-sm translate-x-[2px] translate-y-[2px]",
+          "absolute inset-0 w-full pl-10 pr-4 py-2.5 border-3 bg-card flex items-center text-2xl font-bold font-mono pointer-events-none z-0 transition-all",
+          isFocused ? "border-hotpink-500 shadow-[2px_2px_0px_0px_#ec4899] translate-x-[2px] translate-y-[2px]" : "border-foreground brutal-shadow",
           className
         )}>
           <span className="text-muted-foreground/20 select-none">{gray}</span>

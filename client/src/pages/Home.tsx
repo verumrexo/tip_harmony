@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { motion } from "framer-motion";
 import { ChefHat, Utensils, Waves, Save, History, Coins, ChevronDown, Wine, FileText } from "lucide-react";
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { PersonSelector } from "@/components/PersonSelector";
@@ -213,10 +214,10 @@ export default function Home() {
 
   return (
     <div className="min-h-[100dvh] pb-20 md:pb-0 relative overflow-hidden text-foreground bg-background pb-safe">
-      {/* Subtle grid background */}
-      <div className="fixed inset-0 opacity-[0.02] pointer-events-none" style={{
-        backgroundImage: `repeating-linear-gradient(0deg, hsl(var(--foreground)) 0px, hsl(var(--foreground)) 1px, transparent 1px, transparent 48px),
-                          repeating-linear-gradient(90deg, hsl(var(--foreground)) 0px, hsl(var(--foreground)) 1px, transparent 1px, transparent 48px)`
+      {/* Aggressive halftone dotted background */}
+      <div className="fixed inset-0 opacity-[0.15] dark:opacity-[0.1] pointer-events-none" style={{
+        backgroundImage: `radial-gradient(hsl(var(--foreground)) 2px, transparent 2px)`,
+        backgroundSize: `16px 16px`
       }} />
 
       <div className="max-w-md mx-auto min-h-screen bg-background relative z-10 border-x-3 border-foreground">
@@ -395,61 +396,75 @@ export default function Home() {
                       sortedDates,
                       monthData
                     }, index) => (
-                      <Collapsible key={month} defaultOpen={false}>
-                        <CollapsibleTrigger className="w-full" data-testid={`button-month-toggle-${index}`}>
-                          <div className="flex items-center justify-between px-3 py-2.5 border-3 border-foreground bg-card brutal-shadow-sm cursor-pointer hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none">
-                            {/* Left: Date */}
-                            <div className="flex items-center gap-2 justify-start">
-                              <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform duration-200 [[data-state=closed]_&]:-rotate-90" />
-                              <h3 className="text-xs font-black text-foreground truncate uppercase tracking-wider">{month}</h3>
-                            </div>
-
-                            {/* Center: Averages */}
-                            {showAverages && (
-                              <div className="flex items-center justify-center gap-3 text-[10px] font-mono font-black text-muted-foreground">
-                                <div className="flex items-center gap-1">
-                                  <span>W:</span>
-                                  <span className="text-orange-500" data-testid="avg-waiter">€{avgWaiter.toFixed(0)}</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <span>C:</span>
-                                  <span className="text-emerald-500" data-testid="avg-cook">€{avgCook.toFixed(0)}</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <span>D:</span>
-                                  <span className="text-blue-500" data-testid="avg-dishwasher">€{avgDishwasher.toFixed(0)}</span>
-                                </div>
+                      <motion.div
+                        key={month}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.3, delay: index * 0.1 }}
+                      >
+                        <Collapsible defaultOpen={false}>
+                          <CollapsibleTrigger className="w-full" data-testid={`button-month-toggle-${index}`}>
+                            <div className="flex items-center justify-between px-3 py-2.5 border-3 border-foreground bg-card brutal-shadow-sm cursor-pointer hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none">
+                              {/* Left: Date */}
+                              <div className="flex items-center gap-2 justify-start">
+                                <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform duration-200 [[data-state=closed]_&]:-rotate-90" />
+                                <h3 className="text-xs font-black text-foreground truncate uppercase tracking-wider">{month}</h3>
                               </div>
-                            )}
 
-                            {/* Right: Total */}
-                            <div className="flex justify-end">
-                              <span className="text-sm font-black text-primary font-mono">€{monthTotal.toFixed(2)}</span>
-                            </div>
-                          </div>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent>
-                          <div className="space-y-4 pt-3 pl-2">
-                            {sortedDates.map((date) => {
-                              const dayCalculations = monthData[date];
-                              const dayTotal = dayCalculations.reduce((sum, calc) => sum + Number(calc.totalAmount), 0);
-                              return (
-                                <div key={date} className="space-y-2">
-                                  <div className="flex items-center justify-between px-1">
-                                    <div className="text-[11px] font-black text-muted-foreground font-mono uppercase tracking-wider">{date}</div>
-                                    <div className="text-[11px] font-black text-primary/70 font-mono">Day: €{dayTotal.toFixed(2)}</div>
+                              {/* Center: Averages */}
+                              {showAverages && (
+                                <div className="flex items-center justify-center gap-3 text-[10px] font-mono font-black text-muted-foreground">
+                                  <div className="flex items-center gap-1">
+                                    <span>W:</span>
+                                    <span className="text-orange-500" data-testid="avg-waiter">€{avgWaiter.toFixed(0)}</span>
                                   </div>
-                                  <div className="space-y-2">
-                                    {dayCalculations.map((calc) => (
-                                      <HistoryItem key={calc.id} calculation={calc} />
-                                    ))}
+                                  <div className="flex items-center gap-1">
+                                    <span>C:</span>
+                                    <span className="text-emerald-500" data-testid="avg-cook">€{avgCook.toFixed(0)}</span>
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <span>D:</span>
+                                    <span className="text-blue-500" data-testid="avg-dishwasher">€{avgDishwasher.toFixed(0)}</span>
                                   </div>
                                 </div>
-                              );
-                            })}
-                          </div>
-                        </CollapsibleContent>
-                      </Collapsible>
+                              )}
+
+                              {/* Right: Total */}
+                              <div className="flex justify-end">
+                                <span className="text-sm font-black text-primary font-mono">€{monthTotal.toFixed(2)}</span>
+                              </div>
+                            </div>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent>
+                            <div className="space-y-4 pt-3 pl-2">
+                              {sortedDates.map((date) => {
+                                const dayCalculations = monthData[date];
+                                const dayTotal = dayCalculations.reduce((sum, calc) => sum + Number(calc.totalAmount), 0);
+                                return (
+                                  <div key={date} className="space-y-2">
+                                    <div className="flex items-center justify-between px-1">
+                                      <div className="text-[11px] font-black text-muted-foreground font-mono uppercase tracking-wider">{date}</div>
+                                      <div className="text-[11px] font-black text-primary/70 font-mono">Day: €{dayTotal.toFixed(2)}</div>
+                                    </div>
+                                    <div className="space-y-2">
+                                      {dayCalculations.map((calc, idx) => (
+                                        <motion.div
+                                          key={calc.id}
+                                          initial={{ opacity: 0, y: 10 }}
+                                          animate={{ opacity: 1, y: 0 }}
+                                          transition={{ duration: 0.2, delay: idx * 0.05 }}
+                                        >
+                                          <HistoryItem calculation={calc} />
+                                        </motion.div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </CollapsibleContent>
+                        </Collapsible>
+                      </motion.div>
                     ))}
                   </div>
                 ) : (
