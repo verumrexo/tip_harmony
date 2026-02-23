@@ -25,7 +25,7 @@ export function PersonSelector({ label, value, options, onChange, icon }: Person
 
   return (
     <div
-      className="flex flex-col gap-2"
+      className="flex flex-col gap-1"
       role="group"
       aria-labelledby={labelId}
     >
@@ -46,7 +46,7 @@ export function PersonSelector({ label, value, options, onChange, icon }: Person
             onClick={() => handleSelect(option)}
             aria-pressed={value === option}
             className={cn(
-              "flex-1 min-w-[3rem] py-3 font-bold text-lg font-mono transition-all duration-100 tap-highlight-transparent select-none",
+              "flex-1 min-w-[3rem] py-2 font-bold text-base font-mono transition-all duration-100 tap-highlight-transparent select-none",
               idx < options.length - 1 && "border-r-3 border-foreground",
               value === option
                 ? "bg-primary text-primary-foreground scale-100"

@@ -23,6 +23,11 @@ export default function Home() {
 
   const [showAverages, setShowAverages] = useState(false);
   const [showDrinkFlow, setShowDrinkFlow] = useState(false);
+  const [lastSaved, setLastSaved] = useState<{
+    waiterTotal: number; cookTotal: number; dishwasherTotal: number;
+    waiterSharePct: number; cookSharePct: number; dishwasherSharePct: number;
+    waiterCount: number; cookCount: number; dishwasherCount: number;
+  } | null>(null);
 
   // Queries & Mutations
   const { data: history, isLoading: isLoadingHistory } = useCalculations();
@@ -188,6 +193,11 @@ export default function Home() {
         title: "Saved!",
         description: "Calculation added to history.",
       });
+      setLastSaved({
+        waiterTotal, cookTotal, dishwasherTotal,
+        waiterSharePct, cookSharePct, dishwasherSharePct,
+        waiterCount, cookCount, dishwasherCount,
+      });
       setTotalAmount("");
       setShowDrinkFlow(true);
     } catch (error) {
@@ -241,7 +251,7 @@ export default function Home() {
           <div className="p-5 space-y-6">
 
             {/* Input Section */}
-            <section className="space-y-5">
+            <section className="space-y-3">
               <CurrencyInput
                 label="Total Tip Amount"
                 placeholder="0.00"
@@ -249,7 +259,7 @@ export default function Home() {
                 onValueChange={setTotalAmount}
               />
 
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <PersonSelector
                   label="Waiters"
                   icon={<Utensils className="w-4 h-4 text-orange-500" />}
@@ -303,37 +313,48 @@ export default function Home() {
                 <h2 className="text-base font-black text-foreground uppercase tracking-wider">Distribution</h2>
               </div>
 
-              <div className="grid gap-3">
-                <ResultCard
-                  title="Waiters"
-                  percentage={waiterSharePct * 100}
-                  amount={waiterTotal}
-                  count={waiterCount}
-                  icon={Utensils}
-                  colorClass="text-orange-500"
-                  bgClass=""
-                />
-
-                <ResultCard
-                  title="Cooks"
-                  percentage={cookSharePct * 100}
-                  amount={cookTotal}
-                  count={cookCount}
-                  icon={ChefHat}
-                  colorClass="text-emerald-500"
-                  bgClass=""
-                />
-
-                <ResultCard
-                  title="Dishwashers"
-                  percentage={dishwasherSharePct * 100}
-                  amount={dishwasherTotal}
-                  count={dishwasherCount}
-                  icon={Waves}
-                  colorClass="text-blue-500"
-                  bgClass={dishwasherCount > 0 ? "" : "opacity-40 grayscale"}
-                />
-              </div>
+              {(() => {
+                const dw = amount > 0 ? waiterTotal : (lastSaved?.waiterTotal ?? 0);
+                const dc = amount > 0 ? cookTotal : (lastSaved?.cookTotal ?? 0);
+                const dd = amount > 0 ? dishwasherTotal : (lastSaved?.dishwasherTotal ?? 0);
+                const dpw = amount > 0 ? waiterSharePct : (lastSaved?.waiterSharePct ?? waiterSharePct);
+                const dpc = amount > 0 ? cookSharePct : (lastSaved?.cookSharePct ?? cookSharePct);
+                const dpd = amount > 0 ? dishwasherSharePct : (lastSaved?.dishwasherSharePct ?? dishwasherSharePct);
+                const dcw = amount > 0 ? waiterCount : (lastSaved?.waiterCount ?? waiterCount);
+                const dcc = amount > 0 ? cookCount : (lastSaved?.cookCount ?? cookCount);
+                const dcd = amount > 0 ? dishwasherCount : (lastSaved?.dishwasherCount ?? dishwasherCount);
+                return (
+                  <div className="grid gap-3">
+                    <ResultCard
+                      title="Waiters"
+                      percentage={dpw * 100}
+                      amount={dw}
+                      count={dcw}
+                      icon={Utensils}
+                      colorClass="text-orange-500"
+                      bgClass=""
+                    />
+                    <ResultCard
+                      title="Cooks"
+                      percentage={dpc * 100}
+                      amount={dc}
+                      count={dcc}
+                      icon={ChefHat}
+                      colorClass="text-emerald-500"
+                      bgClass=""
+                    />
+                    <ResultCard
+                      title="Dishwashers"
+                      percentage={dpd * 100}
+                      amount={dd}
+                      count={dcd}
+                      icon={Waves}
+                      colorClass="text-blue-500"
+                      bgClass={dcd > 0 ? "" : "opacity-40 grayscale"}
+                    />
+                  </div>
+                );
+              })()}
             </section>
 
             {/* Analytics Section */}

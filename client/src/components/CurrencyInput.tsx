@@ -83,14 +83,14 @@ export function CurrencyInput({ label, value, onValueChange, className, ...props
   const { gray, white } = getStyledParts(displayValue);
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-1.5">
       <label className="text-xs font-bold text-muted-foreground uppercase tracking-[0.2em] font-mono">{label}</label>
       <div className="relative group">
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground font-mono font-bold text-2xl z-20">€</span>
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground font-mono font-bold text-xl z-20">€</span>
 
         {/* Visual Layer (Ghost) */}
         <div className={cn(
-          "absolute inset-0 w-full pl-12 pr-4 py-4 border-3 border-foreground bg-card flex items-center text-3xl font-bold font-mono pointer-events-none z-0 transition-all brutal-shadow",
+          "absolute inset-0 w-full pl-10 pr-4 py-2.5 border-3 border-foreground bg-card flex items-center text-2xl font-bold font-mono pointer-events-none z-0 transition-all brutal-shadow",
           isFocused && "brutal-shadow-sm translate-x-[2px] translate-y-[2px]",
           className
         )}>
@@ -111,7 +111,7 @@ export function CurrencyInput({ label, value, onValueChange, className, ...props
             setTimeout(() => setIsFocused(false), 150);
           }}
           className={cn(
-            "w-full pl-12 pr-4 py-4 border-3 border-transparent bg-transparent text-3xl font-bold font-mono text-transparent caret-primary focus:outline-none z-10 rounded-none",
+            "w-full pl-10 pr-4 py-2.5 border-3 border-transparent bg-transparent text-2xl font-bold font-mono text-transparent caret-primary focus:outline-none z-10 rounded-none",
             "placeholder:text-transparent selection:bg-transparent"
           )}
           style={{ textShadow: 'none' }}
