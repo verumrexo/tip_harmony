@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { ChefHat, Utensils, Waves, Save, History, Coins, ChevronDown, Wine } from "lucide-react";
+import { ChefHat, Utensils, Waves, Save, History, Coins, ChevronDown, Wine, FileText } from "lucide-react";
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { PersonSelector } from "@/components/PersonSelector";
 import { ResultCard } from "@/components/ResultCard";
@@ -13,6 +13,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Analytics } from "@/components/Analytics";
 import { TIP_PERCENTAGES } from "@/lib/constants";
 import { DrinkOrderFlow } from "@/components/DrinkOrderFlow";
+import { OrderModal } from "@/components/OrderModal";
 
 export default function Home() {
   // State
@@ -23,6 +24,7 @@ export default function Home() {
 
   const [showAverages, setShowAverages] = useState(false);
   const [showDrinkFlow, setShowDrinkFlow] = useState(false);
+  const [showOrderModal, setShowOrderModal] = useState(false);
   const [lastSaved, setLastSaved] = useState<{
     waiterTotal: number; cookTotal: number; dishwasherTotal: number;
     waiterSharePct: number; cookSharePct: number; dishwasherSharePct: number;
@@ -459,13 +461,24 @@ export default function Home() {
             </section>
 
             {/* Drink Order Button */}
-            <section className="pb-4">
+            <section className="pb-2">
               <Button
                 className="w-full h-12 text-base gap-3 font-black uppercase tracking-[0.15em] border-3 border-foreground rounded-none bg-purple-600 text-white brutal-shadow brutal-hover hover:bg-purple-700 transition-all duration-300"
                 onClick={() => setShowDrinkFlow(true)}
               >
                 <Wine className="w-5 h-5" />
                 Write Off
+              </Button>
+            </section>
+
+            {/* Supplier Order Button */}
+            <section className="pb-4">
+              <Button
+                className="w-full h-12 text-base gap-3 font-black uppercase tracking-[0.15em] border-3 border-foreground rounded-none bg-blue-600 text-white brutal-shadow brutal-hover hover:bg-blue-700 transition-all duration-300"
+                onClick={() => setShowOrderModal(true)}
+              >
+                <FileText className="w-5 h-5" />
+                Supplier Order
               </Button>
             </section>
           </div>
@@ -475,6 +488,11 @@ export default function Home() {
       <DrinkOrderFlow
         open={showDrinkFlow}
         onClose={() => setShowDrinkFlow(false)}
+      />
+
+      <OrderModal
+        open={showOrderModal}
+        onOpenChange={setShowOrderModal}
       />
     </div>
   );
