@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { ChefHat, Utensils, Waves, Save, History, Coins, ChevronDown } from "lucide-react";
+import { ChefHat, Utensils, Waves, Save, History, Coins, ChevronDown, Wine } from "lucide-react";
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { PersonSelector } from "@/components/PersonSelector";
 import { ResultCard } from "@/components/ResultCard";
@@ -456,6 +456,17 @@ export default function Home() {
                   </div>
                 )}
               </div>
+            </section>
+
+            {/* Drink Order Button */}
+            <section className="pb-4">
+              <Button
+                className="w-full h-12 text-base gap-3 font-black uppercase tracking-[0.15em] border-3 border-foreground rounded-none bg-purple-600 text-white brutal-shadow brutal-hover hover:bg-purple-700 transition-all duration-300"
+                onClick={() => setShowDrinkFlow(true)}
+              >
+                <Wine className="w-5 h-5" />
+                Drink Order
+              </Button>
             </section>
           </div>
         </ScrollArea>
