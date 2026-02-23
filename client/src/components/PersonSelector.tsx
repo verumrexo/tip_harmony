@@ -25,7 +25,7 @@ export function PersonSelector({ label, value, options, onChange, icon }: Person
 
   return (
     <div
-      className="flex flex-col gap-3"
+      className="flex flex-col gap-2"
       role="group"
       aria-labelledby={labelId}
     >
@@ -33,30 +33,29 @@ export function PersonSelector({ label, value, options, onChange, icon }: Person
         {icon || <Users className="w-4 h-4 text-primary" />}
         <label
           id={labelId}
-          className="text-sm font-semibold text-muted-foreground uppercase tracking-wider"
+          className="text-xs font-bold text-muted-foreground uppercase tracking-[0.2em] font-mono"
         >
           {label}
         </label>
       </div>
-      <div className="flex gap-2 p-1 bg-muted/50 rounded-[21px] overflow-x-auto no-scrollbar">
-        {options.map((option) => (
+      <div className="flex gap-0 border-3 border-foreground brutal-shadow-sm">
+        {options.map((option, idx) => (
           <button
             key={option}
             type="button"
             onClick={() => handleSelect(option)}
             aria-pressed={value === option}
             className={cn(
-              "flex-1 min-w-[3rem] py-3 rounded-[18px] font-bold text-lg transition-all duration-200 tap-highlight-transparent select-none",
-              // Active State: Scale up slightly, shadow, colored
+              "flex-1 min-w-[3rem] py-3 font-bold text-lg font-mono transition-all duration-100 tap-highlight-transparent select-none",
+              idx < options.length - 1 && "border-r-3 border-foreground",
               value === option
-                ? "bg-card text-primary shadow-md shadow-black/5 dark:shadow-black/20 scale-105"
-                // Inactive State: Scale down slightly on press
-                : "text-muted-foreground hover:bg-muted/80 active:scale-95"
+                ? "bg-primary text-primary-foreground scale-100"
+                : "bg-card text-muted-foreground hover:bg-muted active:bg-primary/20"
             )}
           >
             <span className={cn(
-              "block transition-transform duration-300",
-              value === option ? "scale-110" : "scale-100"
+              "block transition-transform duration-150",
+              value === option ? "scale-110 font-black" : "scale-100"
             )}>
               {option}
             </span>

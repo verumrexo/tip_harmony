@@ -34,7 +34,7 @@ export function CurrencyInput({ label, value, onValueChange, className, ...props
 
     // Optional: limit decimal places to 2
     if (parts.length === 2 && parts[1].length > 2) {
-       return;
+      return;
     }
 
     onValueChange(newValue);
@@ -51,7 +51,7 @@ export function CurrencyInput({ label, value, onValueChange, className, ...props
 
     // Always refocus input
     if (inputRef.current) {
-        inputRef.current.focus();
+      inputRef.current.focus();
     }
   };
 
@@ -84,16 +84,17 @@ export function CurrencyInput({ label, value, onValueChange, className, ...props
 
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">{label}</label>
+      <label className="text-xs font-bold text-muted-foreground uppercase tracking-[0.2em] font-mono">{label}</label>
       <div className="relative group">
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-medium text-lg z-20">€</span>
+        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground font-mono font-bold text-2xl z-20">€</span>
 
         {/* Visual Layer (Ghost) */}
         <div className={cn(
-          "absolute inset-0 w-full pl-10 pr-4 py-4 rounded-2xl bg-card border-none shadow-sm flex items-center text-2xl font-bold pointer-events-none z-0 transition-all group-hover:shadow-md",
+          "absolute inset-0 w-full pl-12 pr-4 py-4 border-3 border-foreground bg-card flex items-center text-3xl font-bold font-mono pointer-events-none z-0 transition-all brutal-shadow",
+          isFocused && "brutal-shadow-sm translate-x-[2px] translate-y-[2px]",
           className
         )}>
-          <span className="text-muted-foreground/30 select-none">{gray}</span>
+          <span className="text-muted-foreground/20 select-none">{gray}</span>
           <span className="text-foreground select-none">{white}</span>
         </div>
 
@@ -110,8 +111,7 @@ export function CurrencyInput({ label, value, onValueChange, className, ...props
             setTimeout(() => setIsFocused(false), 150);
           }}
           className={cn(
-            "w-full pl-10 pr-4 py-4 rounded-2xl bg-transparent border-none text-2xl font-bold text-transparent caret-primary focus:outline-none z-10",
-            // Remove text shadow or other artifacts
+            "w-full pl-12 pr-4 py-4 border-3 border-transparent bg-transparent text-3xl font-bold font-mono text-transparent caret-primary focus:outline-none z-10 rounded-none",
             "placeholder:text-transparent selection:bg-transparent"
           )}
           style={{ textShadow: 'none' }}
@@ -120,18 +120,18 @@ export function CurrencyInput({ label, value, onValueChange, className, ...props
 
         {/* Floating Comma Button - Only visible when focused */}
         {isFocused && createPortal(
-            <div className="fixed bottom-0 left-0 right-0 p-4 z-50 flex justify-end pointer-events-none pb-[env(safe-area-inset-bottom)] animate-in fade-in slide-in-from-bottom-4 duration-200">
-                <button
-                    type="button"
-                    onMouseDown={handleCommaClick}
-                    onTouchStart={handleCommaClick}
-                    className="pointer-events-auto bg-foreground text-background font-bold text-3xl w-14 h-14 rounded-full shadow-lg flex items-center justify-center mb-2 mr-2 active:scale-95 transition-transform cursor-pointer"
-                    aria-label="Add decimal comma"
-                >
-                    ,
-                </button>
-            </div>,
-            document.body
+          <div className="fixed bottom-0 left-0 right-0 p-4 z-50 flex justify-end pointer-events-none pb-[env(safe-area-inset-bottom)] animate-in fade-in slide-in-from-bottom-4 duration-200">
+            <button
+              type="button"
+              onMouseDown={handleCommaClick}
+              onTouchStart={handleCommaClick}
+              className="pointer-events-auto bg-foreground text-background font-mono font-bold text-3xl w-14 h-14 border-3 border-foreground flex items-center justify-center mb-2 mr-2 active:translate-x-[2px] active:translate-y-[2px] transition-transform cursor-pointer brutal-shadow"
+              aria-label="Add decimal comma"
+            >
+              ,
+            </button>
+          </div>,
+          document.body
         )}
       </div>
     </div>

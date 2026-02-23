@@ -187,7 +187,7 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
 
     return (
         <Dialog open={open} onOpenChange={(isOpen) => !isOpen && handleClose()}>
-            <DialogContent className="w-[85vw] max-w-[320px] p-0 gap-0 overflow-hidden rounded-2xl border-primary/20 max-h-[85vh]">
+            <DialogContent className="w-[85vw] max-w-[340px] p-0 gap-0 overflow-hidden rounded-none border-3 border-foreground brutal-shadow max-h-[85vh] bg-card">
                 <AnimatePresence mode="wait">
                     {/* Step 1: Confirm */}
                     {step === "confirm" && (
@@ -201,27 +201,27 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
                         >
                             <DialogHeader className="mb-5">
                                 <div className="flex items-center justify-center mb-3">
-                                    <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
-                                        <Wine className="w-5 h-5 text-white" />
+                                    <div className="w-12 h-12 border-3 border-foreground bg-amber-400 flex items-center justify-center brutal-shadow-sm">
+                                        <Wine className="w-5 h-5 text-foreground" />
                                     </div>
                                 </div>
-                                <DialogTitle className="text-lg text-center font-bold">
+                                <DialogTitle className="text-xl text-center font-black uppercase tracking-wider">
                                     Noraksti
                                 </DialogTitle>
-                                <DialogDescription className="text-center text-muted-foreground text-sm">
+                                <DialogDescription className="text-center text-muted-foreground text-sm font-mono">
                                     Vai vēlies norakstīt dzērienus?
                                 </DialogDescription>
                             </DialogHeader>
                             <div className="flex gap-2.5">
                                 <Button
                                     variant="outline"
-                                    className="flex-1 h-11 text-sm rounded-xl border-muted-foreground/20 hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-all"
+                                    className="flex-1 h-11 text-sm font-bold uppercase tracking-wider border-3 border-foreground bg-card hover:bg-destructive hover:text-destructive-foreground transition-all rounded-none brutal-shadow-sm brutal-hover"
                                     onClick={handleNo}
                                 >
                                     Nē
                                 </Button>
                                 <Button
-                                    className="flex-1 h-11 text-sm rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white shadow-lg shadow-amber-500/20 transition-all"
+                                    className="flex-1 h-11 text-sm font-bold uppercase tracking-wider border-3 border-foreground bg-primary text-primary-foreground hover:bg-primary/90 rounded-none brutal-shadow-sm brutal-hover"
                                     onClick={handleYes}
                                 >
                                     Jā
@@ -230,7 +230,7 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="w-full mt-3 h-8 text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground gap-1.5"
+                                className="w-full mt-3 h-8 text-[10px] uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground gap-1.5 font-mono font-bold rounded-none"
                                 onClick={handleSendReport}
                             >
                                 <FileText className="w-3 h-3" />
@@ -249,17 +249,17 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
                             transition={{ duration: 0.2 }}
                             className="flex flex-col max-h-[85vh]"
                         >
-                            <div className="px-4 pt-4 pb-2.5 border-b border-border/50">
+                            <div className="px-4 pt-4 pb-2.5 border-b-3 border-foreground">
                                 <div className="flex items-center justify-between">
-                                    <DialogTitle className="text-base font-bold">Kategorijas</DialogTitle>
+                                    <DialogTitle className="text-base font-black uppercase tracking-wider">Kategorijas</DialogTitle>
                                     {totalItems > 0 && (
                                         <div className="flex items-center gap-2">
-                                            <span className="text-[10px] text-muted-foreground font-medium">
+                                            <span className="text-[10px] text-muted-foreground font-mono font-bold">
                                                 {totalItems}
                                             </span>
                                             <Button
                                                 size="sm"
-                                                className="h-7 px-3 rounded-lg text-[10px] font-bold bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white shadow-md shadow-emerald-500/20"
+                                                className="h-7 px-3 text-[10px] font-black uppercase tracking-wider border-3 border-foreground bg-primary text-primary-foreground rounded-none brutal-shadow-sm brutal-hover"
                                                 onClick={handleSend}
                                                 disabled={createDrinkOrder.isPending}
                                             >
@@ -272,23 +272,23 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
                                 <DialogDescription className="sr-only">Izvēlies dzērienu kategoriju</DialogDescription>
                             </div>
                             <ScrollArea className="flex-1 max-h-[calc(85vh-64px)]">
-                                <div className="p-2.5 grid grid-cols-2 gap-1.5">
+                                <div className="p-2.5 grid grid-cols-2 gap-2">
                                     {drinkCategories.map((category) => {
                                         const count = categoryCounts[category.name] || 0;
                                         return (
                                             <button
                                                 key={category.name}
                                                 onClick={() => handleCategorySelect(category)}
-                                                className="relative group text-left p-2.5 rounded-xl border border-border/50 bg-card hover:bg-accent hover:border-primary/30 transition-all duration-200 active:scale-[0.97]"
+                                                className="relative group text-left p-3 border-3 border-foreground bg-card hover:bg-muted transition-all duration-100 active:translate-x-[2px] active:translate-y-[2px] brutal-shadow-sm"
                                             >
-                                                <span className="text-[11px] font-semibold text-foreground leading-tight line-clamp-2">
+                                                <span className="text-[11px] font-black text-foreground leading-tight line-clamp-2 uppercase tracking-wider">
                                                     {category.name}
                                                 </span>
-                                                <span className="text-[9px] text-muted-foreground mt-0.5 block">
+                                                <span className="text-[9px] text-muted-foreground mt-0.5 block font-mono font-bold">
                                                     {category.items.length}
                                                 </span>
                                                 {count > 0 && (
-                                                    <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[9px] font-bold flex items-center justify-center shadow-sm">
+                                                    <div className="absolute -top-2 -right-2 w-5 h-5 border-2 border-foreground bg-amber-400 text-foreground text-[9px] font-black flex items-center justify-center">
                                                         {count}
                                                     </div>
                                                 )}
@@ -310,26 +310,26 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
                             transition={{ duration: 0.2 }}
                             className="flex flex-col max-h-[85vh]"
                         >
-                            <div className="px-4 pt-3 pb-2.5 border-b border-border/50">
+                            <div className="px-4 pt-3 pb-2.5 border-b-3 border-foreground">
                                 <div className="flex items-center gap-2.5">
                                     <button
                                         onClick={handleBack}
-                                        className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center hover:bg-accent transition-colors active:scale-95 shrink-0"
+                                        className="w-7 h-7 border-3 border-foreground bg-card flex items-center justify-center hover:bg-muted transition-colors active:translate-x-[1px] active:translate-y-[1px] shrink-0"
                                     >
                                         <ArrowLeft className="w-3.5 h-3.5" />
                                     </button>
                                     <div className="flex-1 min-w-0">
-                                        <DialogTitle className="text-xs font-bold truncate">
+                                        <DialogTitle className="text-xs font-black truncate uppercase tracking-wider">
                                             {selectedCategory.name}
                                         </DialogTitle>
-                                        <DialogDescription className="text-[9px] text-muted-foreground">
+                                        <DialogDescription className="text-[9px] text-muted-foreground font-mono">
                                             +/− daudzumu
                                         </DialogDescription>
                                     </div>
                                     {totalItems > 0 && (
                                         <Button
                                             size="sm"
-                                            className="h-7 px-3 rounded-lg text-[10px] font-bold bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white shadow-md shadow-emerald-500/20 shrink-0"
+                                            className="h-7 px-3 text-[10px] font-black uppercase tracking-wider border-3 border-foreground bg-primary text-primary-foreground rounded-none brutal-shadow-sm brutal-hover shrink-0"
                                             onClick={handleSend}
                                             disabled={createDrinkOrder.isPending}
                                         >
@@ -340,20 +340,20 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
                                 </div>
                             </div>
                             <ScrollArea className="flex-1 max-h-[calc(85vh-64px)]">
-                                <div className="p-2.5 space-y-0.5">
+                                <div className="p-2.5 space-y-1">
                                     {selectedCategory.items.map((item) => {
                                         const key = getKey(selectedCategory.name, item.name);
                                         const qty = quantities[key] || 0;
                                         return (
                                             <div
                                                 key={item.name}
-                                                className={`flex items-center gap-2 p-2.5 rounded-xl transition-all duration-200 ${qty > 0
-                                                    ? "bg-amber-500/10 border border-amber-500/20"
-                                                    : "bg-card border border-transparent hover:bg-muted/50"
+                                                className={`flex items-center gap-2 p-2.5 transition-all duration-100 ${qty > 0
+                                                    ? "bg-primary/10 border-3 border-primary"
+                                                    : "bg-card border-3 border-transparent hover:border-foreground/20"
                                                     }`}
                                             >
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="text-xs font-medium text-foreground leading-tight">
+                                                    <p className="text-xs font-bold text-foreground leading-tight uppercase">
                                                         {item.name}
                                                     </p>
                                                 </div>
@@ -363,12 +363,12 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
                                                             handleDecrement(selectedCategory.name, item.name)
                                                         }
                                                         disabled={qty === 0}
-                                                        className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center hover:bg-destructive/20 hover:text-destructive transition-all active:scale-90 disabled:opacity-30 disabled:pointer-events-none"
+                                                        className="w-7 h-7 border-2 border-foreground bg-card flex items-center justify-center hover:bg-destructive/20 hover:text-destructive transition-all active:translate-x-[1px] active:translate-y-[1px] disabled:opacity-20 disabled:pointer-events-none"
                                                     >
                                                         <Minus className="w-3 h-3" />
                                                     </button>
                                                     <span
-                                                        className={`w-6 text-center text-xs font-bold tabular-nums ${qty > 0 ? "text-amber-500" : "text-muted-foreground/40"
+                                                        className={`w-6 text-center text-xs font-black font-mono tabular-nums ${qty > 0 ? "text-primary" : "text-muted-foreground/30"
                                                             }`}
                                                     >
                                                         {qty}
@@ -377,7 +377,7 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
                                                         onClick={() =>
                                                             handleIncrement(selectedCategory.name, item.name)
                                                         }
-                                                        className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center hover:bg-emerald-500/20 hover:text-emerald-500 transition-all active:scale-90"
+                                                        className="w-7 h-7 border-2 border-foreground bg-card flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all active:translate-x-[1px] active:translate-y-[1px]"
                                                     >
                                                         <Plus className="w-3 h-3" />
                                                     </button>

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500;600;700&family=Roboto+Condensed:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,73 +6,84 @@
 
 @layer base {
   :root {
-    --font-display: 'Roboto Condensed', Arial, sans-serif;
-    --font-body: 'Roboto Slab', serif;
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-body: 'Space Grotesk', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
 
-    /* Gril Restorans warm earthy palette - Light mode */
-    --background: 0 0% 99%;
-    --foreground: 20 13% 24%;
+    /* Neo-brutalist light palette */
+    --background: 50 20% 97%;
+    --foreground: 0 0% 5%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 20 13% 24%;
+    --card: 50 20% 99%;
+    --card-foreground: 0 0% 5%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 20 13% 24%;
+    --popover: 50 20% 99%;
+    --popover-foreground: 0 0% 5%;
 
-    --primary: 10 35% 67%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 80 80% 55%;
+    --primary-foreground: 0 0% 5%;
 
-    --secondary: 20 13% 24%;
-    --secondary-foreground: 0 0% 99%;
+    --secondary: 0 0% 92%;
+    --secondary-foreground: 0 0% 5%;
 
-    --muted: 0 0% 92%;
-    --muted-foreground: 20 8% 50%;
+    --muted: 50 10% 92%;
+    --muted-foreground: 0 0% 40%;
 
-    --accent: 20 13% 24%;
-    --accent-foreground: 0 0% 99%;
+    --accent: 330 80% 65%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 88%;
-    --input: 0 0% 94%;
-    --ring: 10 35% 67%;
+    --border: 0 0% 5%;
+    --input: 0 0% 5%;
+    --ring: 80 80% 55%;
 
-    --radius: 0.75rem;
+    --radius: 0rem;
+
+    /* Brutalist tokens */
+    --brutal-border: 3px solid hsl(0 0% 5%);
+    --brutal-shadow: 4px 4px 0px 0px hsl(0 0% 5%);
+    --brutal-shadow-sm: 2px 2px 0px 0px hsl(0 0% 5%);
+    --brutal-shadow-hover: 6px 6px 0px 0px hsl(0 0% 5%);
   }
 
-  /* Dark mode - default */
   .dark {
-    --background: 0 0% 7%;
+    --background: 0 0% 4%;
     --foreground: 0 0% 95%;
 
-    --card: 0 0% 10%;
+    --card: 0 0% 7%;
     --card-foreground: 0 0% 95%;
 
-    --popover: 0 0% 10%;
+    --popover: 0 0% 7%;
     --popover-foreground: 0 0% 95%;
 
-    --primary: 10 35% 67%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 80 80% 55%;
+    --primary-foreground: 0 0% 5%;
 
-    --secondary: 0 0% 18%;
+    --secondary: 0 0% 14%;
     --secondary-foreground: 0 0% 95%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 60%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 55%;
 
-    --accent: 0 0% 18%;
-    --accent-foreground: 0 0% 95%;
+    --accent: 330 80% 65%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 20%;
-    --input: 0 0% 15%;
-    --ring: 10 35% 67%;
+    --border: 0 0% 95%;
+    --input: 0 0% 95%;
+    --ring: 80 80% 55%;
+
+    /* Dark brutalist tokens */
+    --brutal-border: 3px solid hsl(0 0% 95%);
+    --brutal-shadow: 4px 4px 0px 0px hsl(0 0% 95%);
+    --brutal-shadow-sm: 2px 2px 0px 0px hsl(0 0% 95%);
+    --brutal-shadow-hover: 6px 6px 0px 0px hsl(0 0% 95%);
   }
 }
-
 
 @layer base {
   * {
@@ -80,7 +91,7 @@
   }
 
   body {
-    @apply bg-background text-foreground antialiased selection:bg-primary/20;
+    @apply bg-background text-foreground antialiased selection:bg-primary/30;
     font-family: var(--font-body);
   }
 
@@ -91,21 +102,18 @@
   h5,
   h6 {
     font-family: var(--font-display);
-    @apply tracking-tight;
+    @apply tracking-tight font-bold uppercase;
   }
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
+/* Hide scrollbar */
 ::-webkit-scrollbar {
   display: none;
 }
 
-/* Hide scrollbar for IE, Edge and Firefox */
 html {
   -ms-overflow-style: none;
-  /* IE and Edge */
   scrollbar-width: none;
-  /* Firefox */
 }
 
 /* Hide number input spinners */
@@ -119,17 +127,51 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
-/* Custom Utilities for Polish */
+/* Neo-Brutalist Utilities */
 @layer utilities {
-  .glass-card {
-    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-xl shadow-black/5;
+  .brutal-card {
+    border: var(--brutal-border);
+    box-shadow: var(--brutal-shadow);
+    @apply bg-card transition-all duration-150;
   }
 
-  .input-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200;
+  .brutal-card:hover {
+    box-shadow: var(--brutal-shadow-hover);
+    transform: translate(-2px, -2px);
+  }
+
+  .brutal-shadow {
+    box-shadow: var(--brutal-shadow);
+  }
+
+  .brutal-shadow-sm {
+    box-shadow: var(--brutal-shadow-sm);
+  }
+
+  .brutal-hover {
+    @apply transition-all duration-150;
+  }
+
+  .brutal-hover:hover {
+    box-shadow: var(--brutal-shadow-hover);
+    transform: translate(-2px, -2px);
+  }
+
+  .brutal-hover:active {
+    box-shadow: none;
+    transform: translate(2px, 2px);
+  }
+
+  .brutal-border {
+    border: var(--brutal-border);
   }
 
   .tap-highlight-transparent {
     -webkit-tap-highlight-color: transparent;
+  }
+
+  .font-mono-num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
   }
 }

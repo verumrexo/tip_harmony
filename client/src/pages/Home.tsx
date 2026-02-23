@@ -200,24 +200,29 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen pb-20 md:pb-0 relative overflow-hidden text-foreground">
+    <div className="min-h-screen pb-20 md:pb-0 relative overflow-hidden text-foreground bg-background">
+      {/* Subtle grid background */}
+      <div className="fixed inset-0 opacity-[0.02] pointer-events-none" style={{
+        backgroundImage: `repeating-linear-gradient(0deg, hsl(var(--foreground)) 0px, hsl(var(--foreground)) 1px, transparent 1px, transparent 48px),
+                          repeating-linear-gradient(90deg, hsl(var(--foreground)) 0px, hsl(var(--foreground)) 1px, transparent 1px, transparent 48px)`
+      }} />
 
-      <div className="max-w-md mx-auto min-h-screen bg-background/30 backdrop-blur-xl shadow-2xl overflow-hidden flex flex-col border-x border-white/5 relative z-10">
+      <div className="max-w-md mx-auto min-h-screen bg-background relative z-10 border-x-3 border-foreground">
 
         {/* Header */}
-        <header className="px-4 py-3 bg-card border-b sticky top-0 z-20">
+        <header className="px-4 py-3 bg-card border-b-3 border-foreground sticky top-0 z-20">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+              <div className="w-9 h-9 border-3 border-foreground bg-primary flex items-center justify-center brutal-shadow-sm">
                 <Coins className="w-4 h-4 text-primary-foreground" />
               </div>
-              <h1 className="text-lg font-bold text-foreground">Tip Harmony</h1>
+              <h1 className="text-lg font-black text-foreground uppercase tracking-wider">Tip Harmony</h1>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               {history && history.length > 0 && (
-                <div className="text-right mr-1">
-                  <p className="text-[10px] font-bold text-primary uppercase tracking-wider leading-none mb-1">Month</p>
-                  <p className="text-sm font-bold text-foreground leading-none">
+                <div className="text-right border-3 border-foreground px-2 py-1 bg-background">
+                  <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em] font-mono leading-none mb-0.5">Month</p>
+                  <p className="text-sm font-black text-foreground leading-none font-mono">
                     €{history.filter(calc => {
                       if (!calc.createdAt) return false;
                       const date = new Date(calc.createdAt);
@@ -233,11 +238,10 @@ export default function Home() {
         </header>
 
         <ScrollArea className="flex-1">
-          <div className="p-6 space-y-8">
-
+          <div className="p-5 space-y-6">
 
             {/* Input Section */}
-            <section className="space-y-6">
+            <section className="space-y-5">
               <CurrencyInput
                 label="Total Tip Amount"
                 placeholder="0.00"
@@ -245,7 +249,7 @@ export default function Home() {
                 onValueChange={setTotalAmount}
               />
 
-              <div className="space-y-5">
+              <div className="space-y-4">
                 <PersonSelector
                   label="Waiters"
                   icon={<Utensils className="w-4 h-4 text-orange-500" />}
@@ -275,11 +279,10 @@ export default function Home() {
             {/* Results Section */}
             <section className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold text-foreground">Distribution</h2>
+                <h2 className="text-base font-black text-foreground uppercase tracking-wider">Distribution</h2>
                 <Button
                   size="sm"
-                  variant="outline"
-                  className="h-8 text-xs gap-2 rounded-lg hover:bg-primary hover:text-primary-foreground border-primary/20 transition-all"
+                  className="h-9 text-xs gap-2 font-black uppercase tracking-wider border-3 border-foreground bg-primary text-primary-foreground hover:bg-primary/90 rounded-none brutal-shadow-sm brutal-hover"
                   onClick={handleSave}
                   disabled={createCalculation.isPending || !amount}
                 >
@@ -322,7 +325,7 @@ export default function Home() {
             </section>
 
             {/* Analytics Section */}
-            <section className="space-y-4">
+            <section>
               <Analytics />
             </section>
 
@@ -331,21 +334,21 @@ export default function Home() {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <History className="w-4 h-4 text-muted-foreground" />
-                  <h2 className="text-lg font-bold text-foreground">History</h2>
+                  <h2 className="text-base font-black text-foreground uppercase tracking-wider">History</h2>
                 </div>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowAverages(!showAverages)}
-                  className="h-8 text-[10px] uppercase font-bold tracking-wider text-muted-foreground hover:text-foreground"
+                  className="h-8 text-[10px] uppercase font-black tracking-[0.15em] text-muted-foreground hover:text-foreground font-mono border-2 border-foreground bg-card rounded-none"
                 >
-                  {showAverages ? "Hide Averages" : "Show Averages"}
+                  {showAverages ? "Hide Avg" : "Show Avg"}
                 </Button>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {isLoadingHistory ? (
-                  <div className="text-center py-8 text-muted-foreground text-sm animate-pulse">Loading history...</div>
+                  <div className="text-center py-8 text-muted-foreground text-sm font-mono uppercase tracking-wider animate-pulse">Loading history...</div>
                 ) : history && history.length > 0 ? (
                   <div className="space-y-3">
                     {processedHistory.map(({
@@ -359,26 +362,26 @@ export default function Home() {
                     }, index) => (
                       <Collapsible key={month} defaultOpen={false}>
                         <CollapsibleTrigger className="w-full" data-testid={`button-month-toggle-${index}`}>
-                          <div className="grid grid-cols-[1fr_auto_1fr] items-center px-3 py-2 bg-muted/50 rounded-lg hover-elevate cursor-pointer gap-2">
+                          <div className="flex items-center justify-between px-3 py-2.5 border-3 border-foreground bg-card brutal-shadow-sm cursor-pointer hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none">
                             {/* Left: Date */}
                             <div className="flex items-center gap-2 justify-start">
                               <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform duration-200 [[data-state=closed]_&]:-rotate-90" />
-                              <h3 className="text-sm font-bold text-foreground truncate">{month}</h3>
+                              <h3 className="text-xs font-black text-foreground truncate uppercase tracking-wider">{month}</h3>
                             </div>
 
                             {/* Center: Averages */}
                             {showAverages && (
-                              <div className="flex items-center justify-center gap-3 text-[10px] font-mono text-muted-foreground">
+                              <div className="flex items-center justify-center gap-3 text-[10px] font-mono font-black text-muted-foreground">
                                 <div className="flex items-center gap-1">
-                                  <span className="font-semibold">W:</span>
+                                  <span>W:</span>
                                   <span className="text-orange-500" data-testid="avg-waiter">€{avgWaiter.toFixed(0)}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                  <span className="font-semibold">C:</span>
+                                  <span>C:</span>
                                   <span className="text-emerald-500" data-testid="avg-cook">€{avgCook.toFixed(0)}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                  <span className="font-semibold">D:</span>
+                                  <span>D:</span>
                                   <span className="text-blue-500" data-testid="avg-dishwasher">€{avgDishwasher.toFixed(0)}</span>
                                 </div>
                               </div>
@@ -386,7 +389,7 @@ export default function Home() {
 
                             {/* Right: Total */}
                             <div className="flex justify-end">
-                              <span className="text-sm font-bold text-primary">€{monthTotal.toFixed(2)}</span>
+                              <span className="text-sm font-black text-primary font-mono">€{monthTotal.toFixed(2)}</span>
                             </div>
                           </div>
                         </CollapsibleTrigger>
@@ -398,8 +401,8 @@ export default function Home() {
                               return (
                                 <div key={date} className="space-y-2">
                                   <div className="flex items-center justify-between px-1">
-                                    <div className="text-[11px] font-semibold text-muted-foreground">{date}</div>
-                                    <div className="text-[11px] font-bold text-primary/70">Day: €{dayTotal.toFixed(2)}</div>
+                                    <div className="text-[11px] font-black text-muted-foreground font-mono uppercase tracking-wider">{date}</div>
+                                    <div className="text-[11px] font-black text-primary/70 font-mono">Day: €{dayTotal.toFixed(2)}</div>
                                   </div>
                                   <div className="space-y-2">
                                     {dayCalculations.map((calc) => (
@@ -415,8 +418,8 @@ export default function Home() {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-8 bg-muted/30 rounded-2xl border border-dashed border-muted-foreground/20">
-                    <p className="text-sm text-muted-foreground">No calculations saved yet.</p>
+                  <div className="text-center py-8 border-3 border-dashed border-foreground/30">
+                    <p className="text-sm text-muted-foreground font-mono uppercase tracking-wider">No calculations saved yet.</p>
                   </div>
                 )}
               </div>
