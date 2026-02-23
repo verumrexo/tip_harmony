@@ -167,16 +167,49 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
 
         const sortedItems = Object.values(aggregated).sort((a, b) => a.category.localeCompare(b.category));
 
+        // Volume stacking for Kvass, Izlejamais alus, wine 150ml
+        const WINE_CATS = new Set(["DZIRKSTOŠIE VĪNI", "ŠAMPANIETIS", "SĀRTVĪNS", "BALTVĪNI", "SARKANVĪNI"]);
+        const parseVol = (n: string) => {
+            const m = n.match(/^(.+?)\s+([\d.]+)\s*(ml|cl|l)?$/i);
+            if (!m) return null;
+            const v = parseFloat(m[2]);
+            const u = (m[3] || "l").toLowerCase();
+            return { base: m[1].trim(), L: u === "ml" ? v / 1000 : u === "cl" ? v / 100 : v };
+        };
+
+        const volGroups: Record<string, { base: string; cat: string; totalL: number }> = {};
+        const displayItems: Array<{ name: string; category: string; display: string }> = [];
+
+        for (const item of sortedItems) {
+            const stack =
+                item.name.startsWith("Kvass") ||
+                item.category === "ALUS — IZLEJAMAIS" ||
+                (WINE_CATS.has(item.category) && item.name.includes("150ml"));
+            const p = stack ? parseVol(item.name) : null;
+            if (p) {
+                const k = `${item.category}::${p.base}`;
+                if (!volGroups[k]) volGroups[k] = { base: p.base, cat: item.category, totalL: 0 };
+                volGroups[k].totalL += p.L * item.quantity;
+            } else {
+                displayItems.push({ name: item.name, category: item.category, display: String(item.quantity) });
+            }
+        }
+        for (const g of Object.values(volGroups)) {
+            const v = g.totalL % 1 === 0 ? `${g.totalL}l` : `${parseFloat(g.totalL.toFixed(2))}l`;
+            displayItems.push({ name: g.base, category: g.cat, display: v });
+        }
+        displayItems.sort((a, b) => a.category.localeCompare(b.category));
+
         // Build text summary
         let report = `Dzērienu atskaite — ${month}/${year}\n`;
         report += `Kopā ieraksti: ${orders.length}\n\n`;
         let currentCat = "";
-        for (const item of sortedItems) {
+        for (const item of displayItems) {
             if (item.category !== currentCat) {
                 currentCat = item.category;
                 report += `\n${currentCat}\n`;
             }
-            report += `  ${item.name}: ${item.quantity}\n`;
+            report += `  ${item.name}: ${item.display}\n`;
         }
 
         setReportText(report);
@@ -360,47 +393,57 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
                                 </div>
                             </div>
                             <ScrollArea className="flex-1 max-h-[calc(85vh-120px)]">
-                                <div className="p-2.5 space-y-1">
-                                    {selectedCategory.items.map((item) => {
+                                <div className="p-2 space-y-0.5">
+                                    {selectedCategory.items.map((item, index) => {
                                         const key = getKey(selectedCategory.name, item.name);
                                         const qty = quantities[key] || 0;
+                                        const prevItem = index > 0 ? selectedCategory.items[index - 1] : null;
+                                        const showSubsection = item.subsection && item.subsection !== prevItem?.subsection;
                                         return (
-                                            <div
-                                                key={item.name}
-                                                className={`flex items-center gap-2 p-2.5 transition-all duration-100 ${qty > 0
-                                                    ? "bg-primary/10 border-3 border-primary"
-                                                    : "bg-card border-3 border-transparent hover:border-foreground/20"
-                                                    }`}
-                                            >
-                                                <div className="flex-1 min-w-0">
-                                                    <p className="text-xs font-bold text-foreground leading-tight uppercase">
-                                                        {item.name}
-                                                    </p>
-                                                </div>
-                                                <div className="flex items-center gap-1 shrink-0">
-                                                    <button
-                                                        onClick={() =>
-                                                            handleDecrement(selectedCategory.name, item.name)
-                                                        }
-                                                        disabled={qty === 0}
-                                                        className="w-7 h-7 border-2 border-foreground bg-card flex items-center justify-center hover:bg-destructive/20 hover:text-destructive transition-all active:translate-x-[1px] active:translate-y-[1px] disabled:opacity-20 disabled:pointer-events-none"
-                                                    >
-                                                        <Minus className="w-3 h-3" />
-                                                    </button>
-                                                    <span
-                                                        className={`w-6 text-center text-xs font-black font-mono tabular-nums ${qty > 0 ? "text-primary" : "text-muted-foreground/30"
-                                                            }`}
-                                                    >
-                                                        {qty}
-                                                    </span>
-                                                    <button
-                                                        onClick={() =>
-                                                            handleIncrement(selectedCategory.name, item.name)
-                                                        }
-                                                        className="w-7 h-7 border-2 border-foreground bg-card flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all active:translate-x-[1px] active:translate-y-[1px]"
-                                                    >
-                                                        <Plus className="w-3 h-3" />
-                                                    </button>
+                                            <div key={item.name}>
+                                                {showSubsection && (
+                                                    <div className={`px-1.5 ${index > 0 ? "pt-1.5" : ""} pb-0.5`}>
+                                                        <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em] font-mono">
+                                                            {item.subsection}
+                                                        </p>
+                                                    </div>
+                                                )}
+                                                <div
+                                                    className={`flex items-center gap-2 px-2 py-1.5 transition-all duration-100 ${qty > 0
+                                                        ? "bg-primary/10 border-3 border-primary"
+                                                        : "bg-card border-3 border-transparent hover:border-foreground/20"
+                                                        }`}
+                                                >
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="text-xs font-bold text-foreground leading-tight uppercase">
+                                                            {item.name}
+                                                        </p>
+                                                    </div>
+                                                    <div className="flex items-center gap-1 shrink-0">
+                                                        <button
+                                                            onClick={() =>
+                                                                handleDecrement(selectedCategory.name, item.name)
+                                                            }
+                                                            disabled={qty === 0}
+                                                            className="w-7 h-7 border-2 border-foreground bg-card flex items-center justify-center hover:bg-destructive/20 hover:text-destructive transition-all active:translate-x-[1px] active:translate-y-[1px] disabled:opacity-20 disabled:pointer-events-none"
+                                                        >
+                                                            <Minus className="w-3 h-3" />
+                                                        </button>
+                                                        <span
+                                                            className={`w-6 text-center text-xs font-black font-mono tabular-nums ${qty > 0 ? "text-primary" : "text-muted-foreground/30"
+                                                                }`}
+                                                        >
+                                                            {qty}
+                                                        </span>
+                                                        <button
+                                                            onClick={() =>
+                                                                handleIncrement(selectedCategory.name, item.name)
+                                                            }
+                                                            className="w-7 h-7 border-2 border-foreground bg-card flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all active:translate-x-[1px] active:translate-y-[1px]"
+                                                        >
+                                                            <Plus className="w-3 h-3" />
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         );

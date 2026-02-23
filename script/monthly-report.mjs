@@ -65,6 +65,39 @@ async function main() {
 
     const sortedItems = Object.values(aggregated).sort((a, b) => a.category.localeCompare(b.category));
 
+    // Volume stacking for Kvass, Izlejamais alus, wine 150ml
+    const WINE_CATS = new Set(["DZIRKSTOŠIE VĪNI", "ŠAMPANIETIS", "SĀRTVĪNS", "BALTVĪNI", "SARKANVĪNI"]);
+    const parseVol = (n) => {
+        const m = n.match(/^(.+?)\s+([\d.]+)\s*(ml|cl|l)?$/i);
+        if (!m) return null;
+        const v = parseFloat(m[2]);
+        const u = (m[3] || 'l').toLowerCase();
+        return { base: m[1].trim(), L: u === 'ml' ? v / 1000 : u === 'cl' ? v / 100 : v };
+    };
+
+    const volGroups = {};
+    const displayItems = [];
+
+    for (const item of sortedItems) {
+        const stack =
+            item.name.startsWith('Kvass') ||
+            item.category === 'ALUS — IZLEJAMAIS' ||
+            (WINE_CATS.has(item.category) && item.name.includes('150ml'));
+        const p = stack ? parseVol(item.name) : null;
+        if (p) {
+            const k = `${item.category}::${p.base}`;
+            if (!volGroups[k]) volGroups[k] = { base: p.base, cat: item.category, totalL: 0 };
+            volGroups[k].totalL += p.L * item.quantity;
+        } else {
+            displayItems.push({ name: item.name, category: item.category, display: String(item.quantity) });
+        }
+    }
+    for (const g of Object.values(volGroups)) {
+        const v = g.totalL % 1 === 0 ? `${g.totalL}l` : `${parseFloat(g.totalL.toFixed(2))}l`;
+        displayItems.push({ name: g.base, category: g.cat, display: v });
+    }
+    displayItems.sort((a, b) => a.category.localeCompare(b.category));
+
     // Build HTML email
     let html = `<div style="font-family: -apple-system, sans-serif; max-width: 600px; margin: 0 auto;">`;
     html += `<h2 style="color: #f59e0b;">🍷 Dzērienu atskaite — ${monthName} ${year}</h2>`;
@@ -73,7 +106,7 @@ async function main() {
     html += `<tr style="background: #1a1a2e; color: #fff;"><th style="padding: 8px 12px; text-align: left;">Dzēriens</th><th style="padding: 8px 12px; text-align: left;">Kategorija</th><th style="padding: 8px 12px; text-align: right;">Daudzums</th></tr>`;
 
     let currentCat = '';
-    for (const item of sortedItems) {
+    for (const item of displayItems) {
         if (item.category !== currentCat) {
             currentCat = item.category;
             html += `<tr><td colspan="3" style="padding: 12px 12px 4px; font-weight: bold; color: #f59e0b; border-top: 1px solid #eee;">${currentCat}</td></tr>`;
@@ -81,7 +114,7 @@ async function main() {
         html += `<tr style="border-bottom: 1px solid #f0f0f0;">`;
         html += `<td style="padding: 6px 12px;">${item.name}</td>`;
         html += `<td style="padding: 6px 12px; color: #999; font-size: 12px;">${item.category}</td>`;
-        html += `<td style="padding: 6px 12px; text-align: right; font-weight: bold;">${item.quantity}</td>`;
+        html += `<td style="padding: 6px 12px; text-align: right; font-weight: bold;">${item.display}</td>`;
         html += `</tr>`;
     }
 
@@ -93,12 +126,12 @@ async function main() {
     let text = `Dzērienu atskaite — ${monthName} ${year}\n`;
     text += `Kopā ieraksti: ${orders.length}\n\n`;
     currentCat = '';
-    for (const item of sortedItems) {
+    for (const item of displayItems) {
         if (item.category !== currentCat) {
             currentCat = item.category;
             text += `\n${currentCat}\n`;
         }
-        text += `  ${item.name}: ${item.quantity}\n`;
+        text += `  ${item.name}: ${item.display}\n`;
     }
 
     // Send via Resend
