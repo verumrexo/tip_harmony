@@ -46,7 +46,7 @@ export function PinLock({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-background">
+        <div className="min-h-[100dvh] flex items-center justify-center p-4 pt-safe pb-safe relative overflow-hidden bg-background">
             {/* Background grid pattern */}
             <div className="absolute inset-0 opacity-[0.03]" style={{
                 backgroundImage: `repeating-linear-gradient(0deg, hsl(var(--foreground)) 0px, hsl(var(--foreground)) 1px, transparent 1px, transparent 40px),

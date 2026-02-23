@@ -2,24 +2,34 @@
     "name": "Tip Harmony+",
     "short_name": "Tip Harmony+",
     "description": "Calculate and distribute daily tips easily.",
-    "start_url": "./",
+    "start_url": "/tip_harmony/",
+    "scope": "/tip_harmony/",
+    "id": "/tip_harmony/",
     "display": "standalone",
     "background_color": "#0c0a09",
     "theme_color": "#0c0a09",
     "orientation": "portrait",
     "icons": [
         {
-            "src": "/logo.png",
+            "src": "/tip_harmony/logo.png",
             "sizes": "192x192",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any"
         },
         {
-            "src": "/logo.png",
+            "src": "/tip_harmony/logo.png",
             "sizes": "512x512",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any"
         },
         {
-            "src": "favicon.png",
+            "src": "/tip_harmony/logo.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/tip_harmony/favicon.png",
             "sizes": "64x64 32x32 24x24 16x16",
             "type": "image/png"
         }

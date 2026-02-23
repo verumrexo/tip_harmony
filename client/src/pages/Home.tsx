@@ -210,7 +210,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen pb-20 md:pb-0 relative overflow-hidden text-foreground bg-background">
+    <div className="min-h-[100dvh] pb-20 md:pb-0 relative overflow-hidden text-foreground bg-background pb-safe">
       {/* Subtle grid background */}
       <div className="fixed inset-0 opacity-[0.02] pointer-events-none" style={{
         backgroundImage: `repeating-linear-gradient(0deg, hsl(var(--foreground)) 0px, hsl(var(--foreground)) 1px, transparent 1px, transparent 48px),
@@ -220,7 +220,7 @@ export default function Home() {
       <div className="max-w-md mx-auto min-h-screen bg-background relative z-10 border-x-3 border-foreground">
 
         {/* Header */}
-        <header className="px-4 py-3 bg-card border-b-3 border-foreground sticky top-0 z-20">
+        <header className="px-4 py-3 pt-safe bg-card border-b-3 border-foreground sticky top-0 z-20">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 border-3 border-foreground bg-primary flex items-center justify-center brutal-shadow-sm">
