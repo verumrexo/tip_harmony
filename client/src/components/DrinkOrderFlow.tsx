@@ -217,7 +217,11 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
 
     return (
         <Dialog open={open} onOpenChange={(isOpen) => !isOpen && handleClose()}>
-            <DialogContent className="w-[85vw] max-w-[340px] p-0 gap-0 overflow-hidden rounded-none border-3 border-foreground brutal-shadow max-h-[85vh] bg-card">
+            <DialogContent
+                className="w-[85vw] max-w-[340px] p-0 gap-0 overflow-hidden rounded-none border-3 border-foreground brutal-shadow max-h-[85vh] bg-card"
+                onPointerDownOutside={(e) => e.preventDefault()}
+                onInteractOutside={(e) => e.preventDefault()}
+            >
                 <AnimatePresence mode="wait">
                     {/* Step 1: Confirm */}
                     {step === "confirm" && (
@@ -285,28 +289,10 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
                             className="flex flex-col max-h-[85vh]"
                         >
                             <div className="px-4 pt-4 pb-2.5 border-b-3 border-foreground">
-                                <div className="flex items-center justify-between">
-                                    <DialogTitle className="text-base font-black uppercase tracking-wider">Kategorijas</DialogTitle>
-                                    {totalItems > 0 && (
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-[10px] text-muted-foreground font-mono font-bold">
-                                                {totalItems}
-                                            </span>
-                                            <Button
-                                                size="sm"
-                                                className="h-7 px-3 text-[10px] font-black uppercase tracking-wider border-3 border-foreground bg-primary text-primary-foreground rounded-none brutal-shadow-sm brutal-hover"
-                                                onClick={handleSend}
-                                                disabled={createDrinkOrder.isPending}
-                                            >
-                                                <Send className="w-2.5 h-2.5 mr-1" />
-                                                {createDrinkOrder.isPending ? "..." : "Nosūtīt"}
-                                            </Button>
-                                        </div>
-                                    )}
-                                </div>
+                                <DialogTitle className="text-base font-black uppercase tracking-wider">Kategorijas</DialogTitle>
                                 <DialogDescription className="sr-only">Izvēlies dzērienu kategoriju</DialogDescription>
                             </div>
-                            <ScrollArea className="flex-1 max-h-[calc(85vh-64px)]">
+                            <ScrollArea className="flex-1 max-h-[calc(85vh-120px)]">
                                 <div className="p-2.5 grid grid-cols-2 gap-2">
                                     {drinkCategories.map((category) => {
                                         const count = categoryCounts[category.name] || 0;
@@ -319,9 +305,7 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
                                                 <span className="text-[11px] font-black text-foreground leading-tight line-clamp-2 uppercase tracking-wider">
                                                     {category.name}
                                                 </span>
-                                                <span className="text-[9px] text-muted-foreground mt-0.5 block font-mono font-bold">
-                                                    {category.items.length}
-                                                </span>
+
                                                 {count > 0 && (
                                                     <div className="absolute -top-2 -right-2 w-5 h-5 border-2 border-foreground bg-amber-400 text-foreground text-[9px] font-black flex items-center justify-center">
                                                         {count}
@@ -332,6 +316,18 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
                                     })}
                                 </div>
                             </ScrollArea>
+                            {totalItems > 0 && (
+                                <div className="p-3 border-t-3 border-foreground">
+                                    <Button
+                                        className="w-full h-10 text-sm font-black uppercase tracking-wider border-3 border-foreground bg-primary text-primary-foreground rounded-none brutal-shadow-sm brutal-hover gap-2"
+                                        onClick={handleSend}
+                                        disabled={createDrinkOrder.isPending}
+                                    >
+                                        <Send className="w-4 h-4" />
+                                        {createDrinkOrder.isPending ? "..." : `Nosūtīt (${totalItems})`}
+                                    </Button>
+                                </div>
+                            )}
                         </motion.div>
                     )}
 
@@ -361,20 +357,9 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
                                             +/− daudzumu
                                         </DialogDescription>
                                     </div>
-                                    {totalItems > 0 && (
-                                        <Button
-                                            size="sm"
-                                            className="h-7 px-3 text-[10px] font-black uppercase tracking-wider border-3 border-foreground bg-primary text-primary-foreground rounded-none brutal-shadow-sm brutal-hover shrink-0"
-                                            onClick={handleSend}
-                                            disabled={createDrinkOrder.isPending}
-                                        >
-                                            <Send className="w-2.5 h-2.5 mr-1" />
-                                            {createDrinkOrder.isPending ? "..." : `${totalItems}`}
-                                        </Button>
-                                    )}
                                 </div>
                             </div>
-                            <ScrollArea className="flex-1 max-h-[calc(85vh-64px)]">
+                            <ScrollArea className="flex-1 max-h-[calc(85vh-120px)]">
                                 <div className="p-2.5 space-y-1">
                                     {selectedCategory.items.map((item) => {
                                         const key = getKey(selectedCategory.name, item.name);
@@ -422,6 +407,18 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
                                     })}
                                 </div>
                             </ScrollArea>
+                            {totalItems > 0 && (
+                                <div className="p-3 border-t-3 border-foreground">
+                                    <Button
+                                        className="w-full h-10 text-sm font-black uppercase tracking-wider border-3 border-foreground bg-primary text-primary-foreground rounded-none brutal-shadow-sm brutal-hover gap-2"
+                                        onClick={handleSend}
+                                        disabled={createDrinkOrder.isPending}
+                                    >
+                                        <Send className="w-4 h-4" />
+                                        {createDrinkOrder.isPending ? "..." : `Nosūtīt (${totalItems})`}
+                                    </Button>
+                                </div>
+                            )}
                         </motion.div>
                     )}
 

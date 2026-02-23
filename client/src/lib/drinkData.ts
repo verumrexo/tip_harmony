@@ -99,11 +99,11 @@ export const drinkCategories: DrinkCategory[] = [
         name: "DZIRKSTOŠIE VĪNI",
         items: [
             { name: "Domus Picta Prosecco 150ml" },
+            { name: "Les Cocottes Chardonnay non-alc 150ml" },
             { name: "Domus Picta Prosecco 75cl" },
             { name: "Contadi Castaldi Franciacorta Brut 37.5cl" },
             { name: "Segura Viudas Rosado Brut CAVA 75cl" },
             { name: "Tissot-Maire Cremant du Jura 75cl" },
-            { name: "Les Cocottes Chardonnay non-alc 150ml" },
             { name: "Les Cocottes Chardonnay non-alc 75cl" },
             // Īpašo vīnu selekcija
             { name: "Ruggeri Cartizze Prosecco Brut 75cl" },
@@ -135,11 +135,11 @@ export const drinkCategories: DrinkCategory[] = [
     {
         name: "BALTVĪNI",
         items: [
+            { name: "Dollfly river Sauvignon Blanc 150ml" },
             { name: "Perrin La Vieille Ferme Blanc 37.5cl" },
             { name: "El Coto Blanco Rioja 37.5cl" },
             { name: "Zenato Pinot Grigio 37.5cl" },
             { name: "Louis Latour Bourgogne Chardonnay 37.5cl" },
-            { name: "Dollfly river Sauvignon Blanc 150ml" },
             { name: "Dollfly river Sauvignon Blanc 75cl" },
             { name: "Cascas Vinho Verde 75cl" },
             { name: "Aragosta Vermentino Di Sardegna 75cl" },
@@ -157,11 +157,11 @@ export const drinkCategories: DrinkCategory[] = [
     {
         name: "SARKANVĪNI",
         items: [
+            { name: "Zuccardi Serie A Malbec 150ml" },
             { name: "Perrin La Vieille Ferme Rouge 37.5cl" },
             { name: "E. Guigal Cotes-du-Rhone 37.5cl" },
             { name: "El Coto de Rioja Crianza 37.5cl" },
             { name: "San Felice Chianti Classico 37.5cl" },
-            { name: "Zuccardi Serie A Malbec 150ml" },
             { name: "Zuccardi Serie A Malbec 75cl" },
             { name: "Cascas Tinto Lisboa 75cl" },
             { name: "Arzuaga Crianza 75cl" },
