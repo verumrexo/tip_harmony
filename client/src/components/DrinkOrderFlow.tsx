@@ -109,14 +109,45 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
         }
     };
 
+    const copyToClipboard = async (text: string): Promise<boolean> => {
+        // Try the modern Clipboard API first
+        if (navigator.clipboard?.writeText) {
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch {
+                // Falls through to fallback
+            }
+        }
+        // Fallback: textarea + execCommand (works on mobile without gesture restrictions)
+        try {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.left = '-9999px';
+            textarea.style.top = '-9999px';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            const ok = document.execCommand('copy');
+            document.body.removeChild(textarea);
+            return ok;
+        } catch {
+            return false;
+        }
+    };
+
     const handleSendReport = async () => {
         const now = new Date();
         const month = now.getMonth() + 1;
         const year = now.getFullYear();
         const startDate = new Date(year, month - 1, 1).toISOString();
         const endDate = new Date(year, month, 1).toISOString();
+
+        let orders;
         try {
-            const { data: orders, error } = await supabase
+            const { data, error } = await supabase
                 .from('drink_orders')
                 .select('*')
                 .gte('created_at', startDate)
@@ -124,52 +155,62 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
                 .order('created_at', { ascending: false });
 
             if (error) throw new Error(error.message);
+            orders = data;
+        } catch {
+            toast({
+                title: "Kļūda",
+                description: "Neizdevās iegūt datus no servera.",
+                variant: "destructive",
+            });
+            return;
+        }
 
-            if (!orders || orders.length === 0) {
-                toast({
-                    title: "Tukšs atskaite",
-                    description: `Nav datu par ${month}/${year}.`,
-                });
-                return;
-            }
+        if (!orders || orders.length === 0) {
+            toast({
+                title: "Tukšs atskaite",
+                description: `Nav datu par ${month}/${year}.`,
+            });
+            return;
+        }
 
-            // Aggregate items
-            const aggregated: Record<string, { name: string; category: string; quantity: number }> = {};
-            for (const order of orders) {
-                const items = JSON.parse(order.items) as Array<{ name: string; category: string; quantity: number }>;
-                for (const item of items) {
-                    const key = `${item.category}::${item.name}`;
-                    if (aggregated[key]) {
-                        aggregated[key].quantity += item.quantity;
-                    } else {
-                        aggregated[key] = { ...item };
-                    }
+        // Aggregate items
+        const aggregated: Record<string, { name: string; category: string; quantity: number }> = {};
+        for (const order of orders) {
+            const items = JSON.parse(order.items) as Array<{ name: string; category: string; quantity: number }>;
+            for (const item of items) {
+                const key = `${item.category}::${item.name}`;
+                if (aggregated[key]) {
+                    aggregated[key].quantity += item.quantity;
+                } else {
+                    aggregated[key] = { ...item };
                 }
             }
+        }
 
-            const sortedItems = Object.values(aggregated).sort((a, b) => a.category.localeCompare(b.category));
+        const sortedItems = Object.values(aggregated).sort((a, b) => a.category.localeCompare(b.category));
 
-            // Build text summary and copy to clipboard
-            let report = `Dzērienu atskaite — ${month}/${year}\n`;
-            report += `Kopā ieraksti: ${orders.length}\n\n`;
-            let currentCat = "";
-            for (const item of sortedItems) {
-                if (item.category !== currentCat) {
-                    currentCat = item.category;
-                    report += `\n${currentCat}\n`;
-                }
-                report += `  ${item.name}: ${item.quantity}\n`;
+        // Build text summary
+        let report = `Dzērienu atskaite — ${month}/${year}\n`;
+        report += `Kopā ieraksti: ${orders.length}\n\n`;
+        let currentCat = "";
+        for (const item of sortedItems) {
+            if (item.category !== currentCat) {
+                currentCat = item.category;
+                report += `\n${currentCat}\n`;
             }
+            report += `  ${item.name}: ${item.quantity}\n`;
+        }
 
-            await navigator.clipboard.writeText(report);
+        const copied = await copyToClipboard(report);
+        if (copied) {
             toast({
                 title: "Atskaite nokopēta! 📋",
                 description: `${sortedItems.length} pozīcijas par ${month}/${year} nokopētas starpliktuvē.`,
             });
-        } catch {
+        } else {
             toast({
-                title: "Kļūda",
-                description: "Neizdevās iegūt atskaiti.",
+                title: "Nevar nokopēt",
+                description: "Pārlūks neļauj kopēt. Mēģini vēlreiz.",
                 variant: "destructive",
             });
         }
