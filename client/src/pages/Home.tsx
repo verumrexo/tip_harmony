@@ -220,7 +220,7 @@ export default function Home() {
         backgroundSize: `16px 16px`
       }} />
 
-      <div className="max-w-md mx-auto min-h-screen bg-background relative z-10 border-x-3 border-foreground">
+      <div className="max-w-md mx-auto min-h-screen bg-background relative z-10">
 
         {/* Header */}
         <header className="px-4 py-3 pt-safe bg-card border-b-3 border-foreground sticky top-0 z-20">
