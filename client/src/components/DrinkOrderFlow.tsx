@@ -169,6 +169,7 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
 
         // Volume stacking for Kvass, Izlejamais alus, wine 150ml
         const WINE_CATS = new Set(["DZIRKSTOŠIE VĪNI", "ŠAMPANIETIS", "SĀRTVĪNS", "BALTVĪNI", "SARKANVĪNI"]);
+        const SPIRIT_CATS = new Set(["DŽINS", "KONJAKI", "VODKA", "TEKILA", "VISKIJS", "VERMUTS", "RUMS", "CITI DZĒRIENI"]);
         const parseVol = (n: string) => {
             const m = n.match(/^(.+?)\s+([\d.]+)\s*(ml|cl|l)?$/i);
             if (!m) return null;
@@ -184,6 +185,7 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
             const stack =
                 item.name.startsWith("Kvass") ||
                 item.category === "ALUS — IZLEJAMAIS" ||
+                SPIRIT_CATS.has(item.category) ||
                 (WINE_CATS.has(item.category) && item.name.includes("150ml"));
             const p = stack ? parseVol(item.name) : null;
             if (p) {

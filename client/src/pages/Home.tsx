@@ -465,7 +465,7 @@ export default function Home() {
                 onClick={() => setShowDrinkFlow(true)}
               >
                 <Wine className="w-5 h-5" />
-                Drink Order
+                Write Off
               </Button>
             </section>
           </div>

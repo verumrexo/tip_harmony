@@ -67,6 +67,7 @@ async function main() {
 
     // Volume stacking for Kvass, Izlejamais alus, wine 150ml
     const WINE_CATS = new Set(["DZIRKSTOŠIE VĪNI", "ŠAMPANIETIS", "SĀRTVĪNS", "BALTVĪNI", "SARKANVĪNI"]);
+    const SPIRIT_CATS = new Set(["DŽINS", "KONJAKI", "VODKA", "TEKILA", "VISKIJS", "VERMUTS", "RUMS", "CITI DZĒRIENI"]);
     const parseVol = (n) => {
         const m = n.match(/^(.+?)\s+([\d.]+)\s*(ml|cl|l)?$/i);
         if (!m) return null;
@@ -82,6 +83,7 @@ async function main() {
         const stack =
             item.name.startsWith('Kvass') ||
             item.category === 'ALUS — IZLEJAMAIS' ||
+            SPIRIT_CATS.has(item.category) ||
             (WINE_CATS.has(item.category) && item.name.includes('150ml'));
         const p = stack ? parseVol(item.name) : null;
         if (p) {
