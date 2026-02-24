@@ -176,11 +176,13 @@ textarea {
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
+  appearance: none;
   margin: 0;
 }
 
 input[type=number] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 /* Neo-Brutalist Utilities */
@@ -263,4 +265,18 @@ input[type=number] {
   .pr-safe {
     padding-right: var(--sar);
   }
+}
+
+@keyframes rainbow {
+  0% {
+    background-position: 0%;
+  }
+
+  100% {
+    background-position: 200%;
+  }
+}
+
+.animate-rainbow-custom {
+  animation: rainbow var(--speed, 5s) infinite linear !important;
 }
