@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Copy, RefreshCcw, Plus, Minus, FileText, X } from "lucide-react";
+import { Copy, RefreshCcw, Plus, Minus, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -7,7 +7,6 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-    DialogClose,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
@@ -295,7 +294,7 @@ export function OrderModal({ open, onOpenChange }: { open: boolean; onOpenChange
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent
-                className="max-w-none w-full h-[100dvh] p-0 overflow-hidden bg-background flex flex-col pt-safe px-0 border-0 rounded-none top-0 left-0 translate-x-0 translate-y-0 [&>button]:hidden"
+                className="max-w-md p-0 overflow-hidden bg-background h-[80vh] flex flex-col pt-safe px-0"
                 onOpenAutoFocus={(e) => e.preventDefault()}
             >
                 <DialogHeader className="px-4 py-3 border-b-3 border-foreground bg-card">
@@ -304,10 +303,6 @@ export function OrderModal({ open, onOpenChange }: { open: boolean; onOpenChange
                             <FileText className="w-5 h-5" />
                             Supplier Order
                         </DialogTitle>
-                        <DialogClose className="h-8 w-8 flex items-center justify-center border-2 border-foreground bg-background transition-all hover:bg-foreground hover:text-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-                            <X className="h-5 w-5 stroke-[2.5]" />
-                            <span className="sr-only">Close</span>
-                        </DialogClose>
                     </div>
                     <select
                         className="w-full p-2 mt-2 border-3 border-foreground bg-background font-mono text-sm uppercase font-black"
