@@ -13,7 +13,7 @@ export function RainbowButton({
         <button
             style={
                 {
-                    "--speed": "5s",
+                    "--speed": "3s",
                 } as React.CSSProperties
             }
             className={cn(
