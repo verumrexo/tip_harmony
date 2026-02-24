@@ -2,6 +2,8 @@
 // Queries Supabase for drink orders and sends a summary email via Resend
 // Runs standalone with zero npm install — uses built-in fetch (Node 18+)
 
+import { processDrinkOrders, formatDrinkReport, type Order } from "../shared/drink-utils";
+
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -42,63 +44,15 @@ async function main() {
         process.exit(1);
     }
 
-    const orders = await res.json();
+    const orders = await res.json() as Order[];
 
     if (orders.length === 0) {
         console.log('No orders found for this period. Skipping email.');
         return;
     }
 
-    // Aggregate items
-    const aggregated = {};
-    for (const order of orders) {
-        const items = JSON.parse(order.items);
-        for (const item of items) {
-            const key = `${item.category}::${item.name}`;
-            if (aggregated[key]) {
-                aggregated[key].quantity += item.quantity;
-            } else {
-                aggregated[key] = { name: item.name, category: item.category, quantity: item.quantity };
-            }
-        }
-    }
-
-    const sortedItems = Object.values(aggregated).sort((a, b) => a.category.localeCompare(b.category));
-
-    // Volume stacking for Kvass, Izlejamais alus, wine 150ml
-    const WINE_CATS = new Set(["DZIRKSTOŠIE VĪNI", "ŠAMPANIETIS", "SĀRTVĪNS", "BALTVĪNI", "SARKANVĪNI"]);
-    const SPIRIT_CATS = new Set(["DŽINS", "KONJAKI", "VODKA", "TEKILA", "VISKIJS", "VERMUTS", "RUMS", "CITI DZĒRIENI"]);
-    const parseVol = (n) => {
-        const m = n.match(/^(.+?)\s+([\d.]+)\s*(ml|cl|l)?$/i);
-        if (!m) return null;
-        const v = parseFloat(m[2]);
-        const u = (m[3] || 'l').toLowerCase();
-        return { base: m[1].trim(), L: u === 'ml' ? v / 1000 : u === 'cl' ? v / 100 : v };
-    };
-
-    const volGroups = {};
-    const displayItems = [];
-
-    for (const item of sortedItems) {
-        const stack =
-            item.name.startsWith('Kvass') ||
-            item.category === 'ALUS — IZLEJAMAIS' ||
-            SPIRIT_CATS.has(item.category) ||
-            (WINE_CATS.has(item.category) && item.name.includes('150ml'));
-        const p = stack ? parseVol(item.name) : null;
-        if (p) {
-            const k = `${item.category}::${p.base}`;
-            if (!volGroups[k]) volGroups[k] = { base: p.base, cat: item.category, totalL: 0 };
-            volGroups[k].totalL += p.L * item.quantity;
-        } else {
-            displayItems.push({ name: item.name, category: item.category, display: String(item.quantity) });
-        }
-    }
-    for (const g of Object.values(volGroups)) {
-        const v = g.totalL % 1 === 0 ? `${g.totalL}l` : `${parseFloat(g.totalL.toFixed(2))}l`;
-        displayItems.push({ name: g.base, category: g.cat, display: v });
-    }
-    displayItems.sort((a, b) => a.category.localeCompare(b.category));
+    const processedItems = processDrinkOrders(orders);
+    const textReport = formatDrinkReport(processedItems, orders.length, month, year);
 
     // Build HTML email
     let html = `<div style="font-family: -apple-system, sans-serif; max-width: 600px; margin: 0 auto;">`;
@@ -108,7 +62,7 @@ async function main() {
     html += `<tr style="background: #1a1a2e; color: #fff;"><th style="padding: 8px 12px; text-align: left;">Dzēriens</th><th style="padding: 8px 12px; text-align: left;">Kategorija</th><th style="padding: 8px 12px; text-align: right;">Daudzums</th></tr>`;
 
     let currentCat = '';
-    for (const item of displayItems) {
+    for (const item of processedItems) {
         if (item.category !== currentCat) {
             currentCat = item.category;
             html += `<tr><td colspan="3" style="padding: 12px 12px 4px; font-weight: bold; color: #f59e0b; border-top: 1px solid #eee;">${currentCat}</td></tr>`;
@@ -124,20 +78,8 @@ async function main() {
     html += `<p style="color: #999; font-size: 12px; margin-top: 24px;">Automātiski ģenerēts ar Tip Harmony</p>`;
     html += `</div>`;
 
-    // Also build plain text
-    let text = `Dzērienu atskaite — ${monthName} ${year}\n`;
-    text += `Kopā ieraksti: ${orders.length}\n\n`;
-    currentCat = '';
-    for (const item of displayItems) {
-        if (item.category !== currentCat) {
-            currentCat = item.category;
-            text += `\n${currentCat}\n`;
-        }
-        text += `  ${item.name}: ${item.display}\n`;
-    }
-
     // Send via Resend
-    console.log(`Sending report with ${sortedItems.length} items to ${REPORT_EMAIL}...`);
+    console.log(`Sending report with ${processedItems.length} items to ${REPORT_EMAIL}...`);
     const emailRes = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
@@ -149,7 +91,7 @@ async function main() {
             to: [REPORT_EMAIL],
             subject: `🍷 Dzērienu atskaite — ${monthName} ${year}`,
             html,
-            text,
+            text: textReport,
         }),
     });
 
@@ -159,7 +101,7 @@ async function main() {
     }
 
     const result = await emailRes.json();
-    console.log('Email sent successfully:', result.id);
+    console.log('Email sent successfully:', result); // result usually has 'id'
 }
 
 main().catch((err) => {

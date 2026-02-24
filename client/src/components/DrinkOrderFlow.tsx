@@ -14,6 +14,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { drinkCategories, type DrinkCategory } from "@/lib/drinkData";
 import { useCreateDrinkOrder, type DrinkOrderItem } from "@/hooks/use-drink-orders";
 import { useToast } from "@/hooks/use-toast";
+import { processDrinkOrders, formatDrinkReport } from "@shared/drink-utils";
 
 type Step = "confirm" | "categories" | "items" | "report";
 
@@ -151,68 +152,8 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
             return;
         }
 
-        // Aggregate items
-        const aggregated: Record<string, { name: string; category: string; quantity: number }> = {};
-        for (const order of orders) {
-            const items = JSON.parse(order.items) as Array<{ name: string; category: string; quantity: number }>;
-            for (const item of items) {
-                const key = `${item.category}::${item.name}`;
-                if (aggregated[key]) {
-                    aggregated[key].quantity += item.quantity;
-                } else {
-                    aggregated[key] = { ...item };
-                }
-            }
-        }
-
-        const sortedItems = Object.values(aggregated).sort((a, b) => a.category.localeCompare(b.category));
-
-        // Volume stacking for Kvass, Izlejamais alus, wine 150ml
-        const WINE_CATS = new Set(["DZIRKSTOŠIE VĪNI", "ŠAMPANIETIS", "SĀRTVĪNS", "BALTVĪNI", "SARKANVĪNI"]);
-        const SPIRIT_CATS = new Set(["DŽINS", "KONJAKI", "VODKA", "TEKILA", "VISKIJS", "VERMUTS", "RUMS", "CITI DZĒRIENI"]);
-        const parseVol = (n: string) => {
-            const m = n.match(/^(.+?)\s+([\d.]+)\s*(ml|cl|l)?$/i);
-            if (!m) return null;
-            const v = parseFloat(m[2]);
-            const u = (m[3] || "l").toLowerCase();
-            return { base: m[1].trim(), L: u === "ml" ? v / 1000 : u === "cl" ? v / 100 : v };
-        };
-
-        const volGroups: Record<string, { base: string; cat: string; totalL: number }> = {};
-        const displayItems: Array<{ name: string; category: string; display: string }> = [];
-
-        for (const item of sortedItems) {
-            const stack =
-                item.name.startsWith("Kvass") ||
-                item.category === "ALUS — IZLEJAMAIS" ||
-                SPIRIT_CATS.has(item.category) ||
-                (WINE_CATS.has(item.category) && item.name.includes("150ml"));
-            const p = stack ? parseVol(item.name) : null;
-            if (p) {
-                const k = `${item.category}::${p.base}`;
-                if (!volGroups[k]) volGroups[k] = { base: p.base, cat: item.category, totalL: 0 };
-                volGroups[k].totalL += p.L * item.quantity;
-            } else {
-                displayItems.push({ name: item.name, category: item.category, display: String(item.quantity) });
-            }
-        }
-        for (const g of Object.values(volGroups)) {
-            const v = g.totalL % 1 === 0 ? `${g.totalL}l` : `${parseFloat(g.totalL.toFixed(2))}l`;
-            displayItems.push({ name: g.base, category: g.cat, display: v });
-        }
-        displayItems.sort((a, b) => a.category.localeCompare(b.category));
-
-        // Build text summary
-        let report = `Dzērienu atskaite — ${month}/${year}\n`;
-        report += `Kopā ieraksti: ${orders.length}\n\n`;
-        let currentCat = "";
-        for (const item of displayItems) {
-            if (item.category !== currentCat) {
-                currentCat = item.category;
-                report += `\n${currentCat}\n`;
-            }
-            report += `  ${item.name}: ${item.display}\n`;
-        }
+        const displayItems = processDrinkOrders(orders);
+        const report = formatDrinkReport(displayItems, orders.length, month, year);
 
         setReportText(report);
         setStep("report");

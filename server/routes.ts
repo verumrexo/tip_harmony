@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
 import { type InsertCalculation } from "@shared/schema";
+import { processDrinkOrders, formatDrinkReport } from "@shared/drink-utils";
 
 const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) =>
   (req: Request, res: Response, next: NextFunction) => {
@@ -57,25 +58,15 @@ export async function registerRoutes(
     const year = parseInt(req.query.year as string) || new Date().getFullYear();
     const orders = await storage.getDrinkOrderReport(month, year);
 
-    // Aggregate items across all orders for the month
-    const aggregated: Record<string, { name: string; category: string; quantity: number }> = {};
-    for (const order of orders) {
-      const items = JSON.parse(order.items) as Array<{ name: string; category: string; quantity: number }>;
-      for (const item of items) {
-        const key = `${item.category}::${item.name}`;
-        if (aggregated[key]) {
-          aggregated[key].quantity += item.quantity;
-        } else {
-          aggregated[key] = { name: item.name, category: item.category, quantity: item.quantity };
-        }
-      }
-    }
+    const items = processDrinkOrders(orders);
+    const reportText = formatDrinkReport(items, orders.length, month, year);
 
     res.json({
       month,
       year,
       totalOrders: orders.length,
-      items: Object.values(aggregated).sort((a, b) => a.category.localeCompare(b.category)),
+      items,
+      reportText,
       orders,
     });
   });
