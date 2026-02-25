@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <title>Tip Harmony+</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <link rel="icon" type="image/png" href="/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,6 +20,11 @@
   <meta name="apple-mobile-web-app-title" content="Tip Harmony+">
   <meta name="description" content="Calculate and distribute daily tips easily.">
   <link rel="apple-touch-icon" href="/logo.png">
+  <script>
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
 </head>
 
 <body>
