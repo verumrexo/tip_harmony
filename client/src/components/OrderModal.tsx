@@ -293,7 +293,10 @@ export function OrderModal({ open, onOpenChange }: { open: boolean; onOpenChange
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-md p-0 overflow-hidden bg-background h-[90vh] flex flex-col pt-safe px-0">
+            <DialogContent
+                className="max-w-md p-0 overflow-hidden bg-background h-[80vh] flex flex-col pt-safe px-0"
+                onOpenAutoFocus={(e) => e.preventDefault()}
+            >
                 <DialogHeader className="px-4 py-3 border-b-3 border-foreground bg-card">
                     <div className="flex items-center justify-between">
                         <DialogTitle className="text-xl font-black uppercase tracking-wider flex items-center gap-2">
