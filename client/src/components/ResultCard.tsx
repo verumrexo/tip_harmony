@@ -1,5 +1,23 @@
 import { cn } from "@/lib/utils";
 import { type LucideIcon } from "lucide-react";
+import { motion, useSpring, useTransform } from "framer-motion";
+import { useEffect } from "react";
+
+function AnimatedNumber({ value, className }: { value: number; className?: string }) {
+  const spring = useSpring(value, {
+    mass: 0.8,
+    stiffness: 75,
+    damping: 15
+  });
+
+  const display = useTransform(spring, (current) => `€${current.toFixed(2)}`);
+
+  useEffect(() => {
+    spring.set(value);
+  }, [spring, value]);
+
+  return <motion.span className={className}>{display}</motion.span>;
+}
 
 interface ResultCardProps {
   title: string;
@@ -26,7 +44,10 @@ export function ResultCard({ title, amount, count, percentage, icon: Icon, color
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground font-mono">{title}</p>
-          <p className="text-base font-bold text-foreground font-mono">€{amount.toFixed(2)} <span className="text-[10px] text-muted-foreground font-normal">total</span></p>
+          <p className="text-base font-bold text-foreground font-mono flex items-center gap-1">
+            <AnimatedNumber value={amount} />
+            <span className="text-[10px] text-muted-foreground font-normal">total</span>
+          </p>
         </div>
       </div>
 
@@ -34,9 +55,10 @@ export function ResultCard({ title, amount, count, percentage, icon: Icon, color
       {count > 0 && (
         <div className={cn("border-t-3 border-foreground p-3 flex items-center justify-between", colorClass.replace("text-", "bg-") + "/15")}>
           <span className="text-[10px] font-black uppercase tracking-[0.25em] text-foreground/60 font-mono">/ person</span>
-          <p className={cn("text-4xl font-black font-mono tracking-tight leading-none", colorClass)}>
-            €{perPerson.toFixed(2)}
-          </p>
+          <AnimatedNumber
+            value={perPerson}
+            className={cn("text-4xl font-black font-mono tracking-tight leading-none", colorClass)}
+          />
         </div>
       )}
     </div>

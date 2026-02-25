@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { ChefHat, Utensils, Waves, Save, History, Coins, ChevronDown, Wine, FileText } from "lucide-react";
+import { ChefHat, Utensils, Waves, Save, History, Coins, ChevronDown, ChevronUp, Wine, FileText } from "lucide-react";
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { PersonSelector } from "@/components/PersonSelector";
 import { ResultCard } from "@/components/ResultCard";
@@ -12,6 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Analytics } from "@/components/Analytics";
+import { Leaderboard } from "@/components/Leaderboard";
 import { TIP_PERCENTAGES } from "@/lib/constants";
 import { DrinkOrderFlow } from "@/components/DrinkOrderFlow";
 import { OrderModal } from "@/components/OrderModal";
@@ -27,6 +28,7 @@ export default function Home() {
   const [showAverages, setShowAverages] = useState(false);
   const [showDrinkFlow, setShowDrinkFlow] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [lastSaved, setLastSaved] = useState<{
     waiterTotal: number; cookTotal: number; dishwasherTotal: number;
     waiterSharePct: number; cookSharePct: number; dishwasherSharePct: number;
@@ -392,116 +394,134 @@ export default function Home() {
               <Analytics />
             </section>
 
-            {/* History Section */}
-            <section className="pb-10">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <History className="w-4 h-4 text-muted-foreground" />
-                  <h2 className="text-base font-black text-foreground uppercase tracking-wider">History</h2>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowAverages(!showAverages)}
-                  className="h-8 text-[10px] uppercase font-black tracking-[0.15em] text-muted-foreground hover:text-foreground font-mono border-2 border-foreground bg-card rounded-none"
-                >
-                  {showAverages ? "Hide Avg" : "Show Avg"}
-                </Button>
-              </div>
-
-              <div className="space-y-4">
-                {isLoadingHistory ? (
-                  <div className="text-center py-8 text-muted-foreground text-sm font-mono uppercase tracking-wider animate-pulse">Loading history...</div>
-                ) : history && history.length > 0 ? (
-                  <div className="space-y-3">
-                    {processedHistory.map(({
-                      month,
-                      monthTotal,
-                      avgWaiter,
-                      avgCook,
-                      avgDishwasher,
-                      sortedDates,
-                      monthData
-                    }, index) => (
-                      <motion.div
-                        key={month}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
-                      >
-                        <Collapsible defaultOpen={false}>
-                          <CollapsibleTrigger className="w-full" data-testid={`button-month-toggle-${index}`}>
-                            <div className="flex items-center justify-between px-3 py-2.5 border-3 border-foreground bg-card brutal-shadow-sm cursor-pointer hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none">
-                              {/* Left: Date */}
-                              <div className="flex items-center gap-2 justify-start">
-                                <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform duration-200 [[data-state=closed]_&]:-rotate-90" />
-                                <h3 className="text-xs font-black text-foreground truncate uppercase tracking-wider">{month}</h3>
-                              </div>
-
-                              {/* Center: Averages */}
-                              {showAverages && (
-                                <div className="flex items-center justify-center gap-3 text-[10px] font-mono font-black text-muted-foreground">
-                                  <div className="flex items-center gap-1">
-                                    <span>W:</span>
-                                    <span className="text-orange-500" data-testid="avg-waiter">€{avgWaiter.toFixed(0)}</span>
-                                  </div>
-                                  <div className="flex items-center gap-1">
-                                    <span>C:</span>
-                                    <span className="text-emerald-500" data-testid="avg-cook">€{avgCook.toFixed(0)}</span>
-                                  </div>
-                                  <div className="flex items-center gap-1">
-                                    <span>D:</span>
-                                    <span className="text-blue-500" data-testid="avg-dishwasher">€{avgDishwasher.toFixed(0)}</span>
-                                  </div>
-                                </div>
-                              )}
-
-                              {/* Right: Total */}
-                              <div className="flex justify-end">
-                                <span className="text-sm font-black text-primary font-mono">€{monthTotal.toFixed(2)}</span>
-                              </div>
-                            </div>
-                          </CollapsibleTrigger>
-                          <CollapsibleContent>
-                            <div className="space-y-4 pt-3 pl-2">
-                              {sortedDates.map((date) => {
-                                const dayCalculations = monthData[date];
-                                const dayTotal = dayCalculations.reduce((sum, calc) => sum + Number(calc.totalAmount), 0);
-                                return (
-                                  <div key={date} className="space-y-2">
-                                    <div className="flex items-center justify-between px-1">
-                                      <div className="text-[11px] font-black text-muted-foreground font-mono uppercase tracking-wider">{date}</div>
-                                      <div className="text-[11px] font-black text-primary/70 font-mono">Day: €{dayTotal.toFixed(2)}</div>
-                                    </div>
-                                    <div className="space-y-2">
-                                      {dayCalculations.map((calc, idx) => (
-                                        <motion.div
-                                          key={calc.id}
-                                          initial={{ opacity: 0, y: 10 }}
-                                          animate={{ opacity: 1, y: 0 }}
-                                          transition={{ duration: 0.2, delay: idx * 0.05 }}
-                                        >
-                                          <HistoryItem calculation={calc} />
-                                        </motion.div>
-                                      ))}
-                                    </div>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </CollapsibleContent>
-                        </Collapsible>
-                      </motion.div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8 border-3 border-dashed border-foreground/30">
-                    <p className="text-sm text-muted-foreground font-mono uppercase tracking-wider">No calculations saved yet.</p>
-                  </div>
-                )}
-              </div>
+            {/* Leaderboard Section */}
+            <section>
+              <Leaderboard />
             </section>
 
+            {/* History Section */}
+            <section className="pb-10">
+              <div className="border-3 border-foreground bg-card brutal-shadow mt-4">
+                <Collapsible open={isHistoryOpen} onOpenChange={setIsHistoryOpen} className="w-full">
+                  <div className="flex items-center justify-between p-3 border-b-3 border-foreground">
+                    <div className="flex items-center gap-2">
+                      <History className="w-4 h-4 text-muted-foreground" />
+                      <h2 className="text-sm font-black text-foreground uppercase tracking-wider">History</h2>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => { e.stopPropagation(); setShowAverages(!showAverages); }}
+                        className="h-8 text-[10px] uppercase font-black tracking-[0.15em] text-muted-foreground hover:text-foreground font-mono border-2 border-foreground bg-card rounded-none"
+                      >
+                        {showAverages ? "Hide Avg" : "Show Avg"}
+                      </Button>
+                      <CollapsibleTrigger asChild>
+                        <Button variant="ghost" size="sm" className="w-8 h-8 p-0 border-2 border-foreground bg-card hover:bg-muted rounded-none">
+                          {isHistoryOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                          <span className="sr-only">Toggle History</span>
+                        </Button>
+                      </CollapsibleTrigger>
+                    </div>
+                  </div>
+
+                  <CollapsibleContent>
+                    <div className="p-4 space-y-4">
+                      {isLoadingHistory ? (
+                        <div className="text-center py-8 text-muted-foreground text-sm font-mono uppercase tracking-wider animate-pulse">Loading history...</div>
+                      ) : history && history.length > 0 ? (
+                        <div className="space-y-3">
+                          {processedHistory.map(({
+                            month,
+                            monthTotal,
+                            avgWaiter,
+                            avgCook,
+                            avgDishwasher,
+                            sortedDates,
+                            monthData
+                          }, index) => (
+                            <motion.div
+                              key={month}
+                              initial={{ opacity: 0, x: -20 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ duration: 0.3, delay: index * 0.1 }}
+                            >
+                              <Collapsible defaultOpen={false}>
+                                <CollapsibleTrigger className="w-full" data-testid={`button-month-toggle-${index}`}>
+                                  <div className="flex items-center justify-between px-3 py-2.5 border-3 border-foreground bg-card brutal-shadow-sm cursor-pointer hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none">
+                                    {/* Left: Date */}
+                                    <div className="flex items-center gap-2 justify-start">
+                                      <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform duration-200 [[data-state=closed]_&]:-rotate-90" />
+                                      <h3 className="text-xs font-black text-foreground truncate uppercase tracking-wider">{month}</h3>
+                                    </div>
+
+                                    {/* Center: Averages */}
+                                    {showAverages && (
+                                      <div className="flex items-center justify-center gap-3 text-[10px] font-mono font-black text-muted-foreground">
+                                        <div className="flex items-center gap-1">
+                                          <span>W:</span>
+                                          <span className="text-orange-500" data-testid="avg-waiter">€{avgWaiter.toFixed(0)}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                          <span>C:</span>
+                                          <span className="text-emerald-500" data-testid="avg-cook">€{avgCook.toFixed(0)}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                          <span>D:</span>
+                                          <span className="text-blue-500" data-testid="avg-dishwasher">€{avgDishwasher.toFixed(0)}</span>
+                                        </div>
+                                      </div>
+                                    )}
+
+                                    {/* Right: Total */}
+                                    <div className="flex justify-end">
+                                      <span className="text-sm font-black text-primary font-mono">€{monthTotal.toFixed(2)}</span>
+                                    </div>
+                                  </div>
+                                </CollapsibleTrigger>
+                                <CollapsibleContent>
+                                  <div className="space-y-4 pt-3 pl-2">
+                                    {sortedDates.map((date) => {
+                                      const dayCalculations = monthData[date];
+                                      const dayTotal = dayCalculations.reduce((sum, calc) => sum + Number(calc.totalAmount), 0);
+                                      return (
+                                        <div key={date} className="space-y-2">
+                                          <div className="flex items-center justify-between px-1">
+                                            <div className="text-[11px] font-black text-muted-foreground font-mono uppercase tracking-wider">{date}</div>
+                                            <div className="text-[11px] font-black text-primary/70 font-mono">Day: €{dayTotal.toFixed(2)}</div>
+                                          </div>
+                                          <div className="space-y-2">
+                                            {dayCalculations.map((calc, idx) => (
+                                              <motion.div
+                                                key={calc.id}
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ duration: 0.2, delay: idx * 0.05 }}
+                                              >
+                                                <HistoryItem calculation={calc} />
+                                              </motion.div>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </CollapsibleContent>
+                              </Collapsible>
+                            </motion.div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-8 border-3 border-dashed border-foreground/30">
+                          <p className="text-sm text-muted-foreground font-mono uppercase tracking-wider">No calculations saved yet.</p>
+                        </div>
+                      )}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              </div>
+            </section>
             {/* (Action Buttons moved up) */}
           </div>
         </ScrollArea>
