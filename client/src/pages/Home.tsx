@@ -40,6 +40,19 @@ export default function Home() {
   const createCalculation = useCreateCalculation();
   const { toast } = useToast();
 
+  const todaysSplits = useMemo(() => {
+    if (!history) return [];
+    const todayStr = new Date().toLocaleDateString();
+    return history.filter((calc) => {
+      if (!calc.createdAt) return false;
+      return new Date(calc.createdAt).toLocaleDateString() === todayStr;
+    }).sort((a, b) => {
+       const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+       const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+       return dateB - dateA; // Newest first
+    });
+  }, [history]);
+
   const processedHistory = useMemo(() => {
     if (!history || history.length === 0) return [];
 
@@ -388,6 +401,27 @@ export default function Home() {
                 );
               })()}
             </section>
+
+            {/* Today's Splits Section */}
+            {todaysSplits.length >= 2 && (
+              <section className="space-y-3">
+                <div className="flex items-center">
+                  <h2 className="text-xs font-black text-muted-foreground uppercase tracking-wider">Today's Splits</h2>
+                </div>
+                <div className="space-y-2">
+                  {todaysSplits.map((calc, idx) => (
+                    <motion.div
+                      key={calc.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.2, delay: idx * 0.05 }}
+                    >
+                      <HistoryItem calculation={calc} />
+                    </motion.div>
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* Analytics Section */}
             <section>
