@@ -79,11 +79,11 @@ export const drinkCategories: DrinkCategory[] = [
     {
         name: "SULAS",
         items: [
-            { name: "Sula apelsīnu" },
-            { name: "Sula ābolu" },
-            { name: "Sula tomātu" },
-            { name: "Sula persiku" },
-            { name: "Sula plūmju" },
+            { name: "Sula apelsīnu 250ml" },
+            { name: "Sula ābolu 250ml" },
+            { name: "Sula tomātu 250ml" },
+            { name: "Sula persiku 250ml" },
+            { name: "Sula plūmju 250ml" },
             { name: "Svaigā sula apelsīnu 250ml" },
             { name: "Svaigā sula greipfrūtu 250ml" },
             { name: "Svaigā sula burkānu 250ml" },
@@ -278,6 +278,16 @@ export const drinkCategories: DrinkCategory[] = [
             { name: "Portvīns Kopke L.B.V. 2018 7cl" },
             { name: "Portvīns Tawny Porto 7cl" },
             { name: "Calvados Busnel Hors d'Age 4cl" },
+        ],
+    },
+    {
+        name: "AUGĻI",
+        items: [
+            { name: "Laimi 20g" },
+            { name: "Citroni 20g" },
+            { name: "Apelsīni 20g" },
+            { name: "Greipfrūti 20g" },
+            { name: "Piparmētra 5g" },
         ],
     },
 ];

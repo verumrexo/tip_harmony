@@ -2,7 +2,7 @@
 // Queries Supabase for drink orders and sends a summary email via Resend
 // Runs standalone with zero npm install — uses built-in fetch (Node 18+)
 
-import { processDrinkOrders, formatDrinkReport, type Order } from "../shared/drink-utils";
+import { processDrinkOrders, formatDrinkReport, formatDrinkReportHtml, type Order } from "../shared/drink-utils";
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
@@ -34,8 +34,8 @@ async function main() {
     const url = `${SUPABASE_URL}/rest/v1/drink_orders?select=*&created_at=gte.${startDate}&created_at=lt.${endDate}&order=created_at.desc`;
     const res = await fetch(url, {
         headers: {
-            'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'apikey': SUPABASE_ANON_KEY!,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY!}`,
         },
     });
 
@@ -53,30 +53,7 @@ async function main() {
 
     const processedItems = processDrinkOrders(orders);
     const textReport = formatDrinkReport(processedItems, orders.length, month, year);
-
-    // Build HTML email
-    let html = `<div style="font-family: -apple-system, sans-serif; max-width: 600px; margin: 0 auto;">`;
-    html += `<h2 style="color: #f59e0b;">🍷 Dzērienu atskaite — ${monthName} ${year}</h2>`;
-    html += `<p style="color: #666;">Kopā ieraksti: <strong>${orders.length}</strong></p>`;
-    html += `<table style="width: 100%; border-collapse: collapse; margin-top: 16px;">`;
-    html += `<tr style="background: #1a1a2e; color: #fff;"><th style="padding: 8px 12px; text-align: left;">Dzēriens</th><th style="padding: 8px 12px; text-align: left;">Kategorija</th><th style="padding: 8px 12px; text-align: right;">Daudzums</th></tr>`;
-
-    let currentCat = '';
-    for (const item of processedItems) {
-        if (item.category !== currentCat) {
-            currentCat = item.category;
-            html += `<tr><td colspan="3" style="padding: 12px 12px 4px; font-weight: bold; color: #f59e0b; border-top: 1px solid #eee;">${currentCat}</td></tr>`;
-        }
-        html += `<tr style="border-bottom: 1px solid #f0f0f0;">`;
-        html += `<td style="padding: 6px 12px;">${item.name}</td>`;
-        html += `<td style="padding: 6px 12px; color: #999; font-size: 12px;">${item.category}</td>`;
-        html += `<td style="padding: 6px 12px; text-align: right; font-weight: bold;">${item.display}</td>`;
-        html += `</tr>`;
-    }
-
-    html += `</table>`;
-    html += `<p style="color: #999; font-size: 12px; margin-top: 24px;">Automātiski ģenerēts ar Tip Harmony</p>`;
-    html += `</div>`;
+    const html = formatDrinkReportHtml(processedItems, orders.length, month, year);
 
     // Send via Resend
     console.log(`Sending report with ${processedItems.length} items to ${REPORT_EMAIL}...`);

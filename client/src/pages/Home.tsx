@@ -1,6 +1,7 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
-import { ChefHat, Utensils, Waves, Save, History, Coins, ChevronDown, ChevronUp, Wine, FileText } from "lucide-react";
+import confetti from "canvas-confetti";
+import { ChefHat, Utensils, Waves, Save, History, Coins, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Wine, FileText } from "lucide-react";
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { PersonSelector } from "@/components/PersonSelector";
 import { ResultCard } from "@/components/ResultCard";
@@ -26,6 +27,9 @@ export default function Home() {
   const [dishwasherCount, setDishwasherCount] = useState<number>(1);
 
   const [showAverages, setShowAverages] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(true);
+  const [calendarMonth, setCalendarMonth] = useState(() => new Date());
+  const [selectedCalendarDay, setSelectedCalendarDay] = useState<string | null>(null);
   const [showDrinkFlow, setShowDrinkFlow] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
@@ -47,10 +51,53 @@ export default function Home() {
       if (!calc.createdAt) return false;
       return new Date(calc.createdAt).toLocaleDateString() === todayStr;
     }).sort((a, b) => {
-       const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-       const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-       return dateB - dateA; // Newest first
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return dateB - dateA; // Newest first
     });
+  }, [history]);
+
+  const streak = useMemo(() => {
+    if (!history || history.length === 0) return 0;
+
+    // collect unique calendar date strings that have saves
+    const daysWithSaves = new Set<string>();
+    history.forEach((calc) => {
+      if (!calc.createdAt) return;
+      const d = new Date(calc.createdAt);
+      // yyyy-mm-dd key so locale doesn't mess things up
+      daysWithSaves.add(`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`);
+    });
+
+    const today = new Date();
+    const toKey = (d: Date) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    const todayKey = toKey(today);
+
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayKey = toKey(yesterday);
+
+    const hasToday = daysWithSaves.has(todayKey);
+    const hasYesterday = daysWithSaves.has(yesterdayKey);
+
+    // if neither today nor yesterday have saves, streak is 0
+    if (!hasToday && !hasYesterday) return 0;
+
+    // start counting from the most recent active day
+    let count = 0;
+    const cursor = new Date(today);
+
+    // if no saves today, start from yesterday (grace period)
+    if (!hasToday) {
+      cursor.setDate(cursor.getDate() - 1);
+    }
+
+    while (daysWithSaves.has(toKey(cursor))) {
+      count++;
+      cursor.setDate(cursor.getDate() - 1);
+    }
+
+    return count;
   }, [history]);
 
   const processedHistory = useMemo(() => {
@@ -188,6 +235,59 @@ export default function Home() {
   const cookPerPerson = cookCount > 0 ? cookTotal / cookCount : 0;
   const dishwasherPerPerson = dishwasherCount > 0 ? dishwasherTotal / dishwasherCount : 0;
 
+  const fireConfetti = useCallback(() => {
+    const duration = 3000;
+    const end = Date.now() + duration;
+
+    const frame = () => {
+      confetti({
+        particleCount: 3,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0, y: 0.7 },
+        colors: ['#ff0000', '#ff9900', '#ffff00', '#33cc33', '#3399ff', '#9933ff'],
+      });
+      confetti({
+        particleCount: 3,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1, y: 0.7 },
+        colors: ['#ff0000', '#ff9900', '#ffff00', '#33cc33', '#3399ff', '#9933ff'],
+      });
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    };
+    frame();
+  }, []);
+
+  const checkIfNewRecord = useCallback((savedAmount: number) => {
+    if (!history) return false;
+
+    // build daily totals from existing history (same logic as Leaderboard)
+    const dailyTotals: Record<string, number> = {};
+    history.forEach(calc => {
+      if (!calc.createdAt) return;
+      const date = new Date(calc.createdAt).toLocaleDateString();
+      dailyTotals[date] = (dailyTotals[date] || 0) + Number(calc.totalAmount);
+    });
+
+    // add the newly saved amount to today
+    const todayStr = new Date().toLocaleDateString();
+    const newTodayTotal = (dailyTotals[todayStr] || 0) + savedAmount;
+
+    // get sorted daily totals (excluding today since we recalculate it)
+    const otherDays = Object.entries(dailyTotals)
+      .filter(([date]) => date !== todayStr)
+      .map(([, total]) => total)
+      .sort((a, b) => b - a);
+
+    // check if newTodayTotal would land in top 3
+    const top3Threshold = otherDays.length >= 3 ? otherDays[2] : -1;
+    return newTodayTotal > top3Threshold;
+  }, [history]);
+
   const handleSave = async () => {
     if (!amount || amount <= 0) {
       toast({
@@ -199,6 +299,8 @@ export default function Home() {
     }
 
     try {
+      const isRecord = checkIfNewRecord(amount);
+
       await createCalculation.mutateAsync({
         totalAmount: amount.toString(),
         waiterCount,
@@ -208,10 +310,20 @@ export default function Home() {
         cookPerPerson: cookPerPerson.toString(),
         dishwasherPerPerson: dishwasherPerPerson.toString(),
       });
-      toast({
-        title: "Saved!",
-        description: "Calculation added to history.",
-      });
+
+      if (isRecord) {
+        fireConfetti();
+        toast({
+          title: "🏆 NEW RECORD!",
+          description: "Today just hit the Hall of Fame top 3!",
+        });
+      } else {
+        toast({
+          title: "Saved!",
+          description: "Calculation added to history.",
+        });
+      }
+
       setLastSaved({
         waiterTotal, cookTotal, dishwasherTotal,
         waiterSharePct, cookSharePct, dishwasherSharePct,
@@ -240,27 +352,40 @@ export default function Home() {
 
         {/* Header */}
         <header className="px-4 py-3 pt-safe bg-card border-b-3 border-foreground sticky top-0 z-20">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 border-3 border-foreground bg-primary flex items-center justify-center brutal-shadow-sm">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 border-3 border-foreground bg-primary flex items-center justify-center brutal-shadow-sm shrink-0">
                 <Coins className="w-4 h-4 text-primary-foreground" />
               </div>
-              <h1 className="text-lg font-black text-foreground uppercase tracking-wider">Tip Harmony+</h1>
+              <h1 className="text-base sm:text-lg font-black text-foreground uppercase tracking-wider whitespace-nowrap">Tip Harmony+</h1>
             </div>
-            <div className="flex items-center gap-3">
-              {history && history.length > 0 && (
-                <div className="text-right border-3 border-foreground px-2 py-1 bg-background">
-                  <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em] font-mono leading-none mb-0.5">Month</p>
-                  <p className="text-sm font-black text-foreground leading-none font-mono">
-                    €{history.filter(calc => {
-                      if (!calc.createdAt) return false;
-                      const date = new Date(calc.createdAt);
-                      const now = new Date();
-                      return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
-                    }).reduce((sum, calc) => sum + Number(calc.totalAmount), 0).toFixed(2)}
-                  </p>
+            <div className="flex items-center gap-2">
+              {(history && history.length > 0) || streak >= 2 ? (
+                <div className="flex items-center border-3 border-foreground bg-background">
+                  {history && history.length > 0 && (
+                    <div className="text-right px-2 py-1">
+                      <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em] font-mono leading-none mb-0.5">Month</p>
+                      <p className="text-sm font-black text-foreground leading-none font-mono">
+                        €{history.filter(calc => {
+                          if (!calc.createdAt) return false;
+                          const date = new Date(calc.createdAt);
+                          const now = new Date();
+                          return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+                        }).reduce((sum, calc) => sum + Number(calc.totalAmount), 0).toFixed(2)}
+                      </p>
+                    </div>
+                  )}
+                  {history && history.length > 0 && streak >= 2 && (
+                    <div className="w-[3px] self-stretch bg-foreground"></div>
+                  )}
+                  {streak >= 2 && (
+                    <div className="text-right px-2 py-1">
+                      <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em] font-mono leading-none mb-0.5">Streak</p>
+                      <p className="text-sm font-black text-foreground leading-none font-mono">🔥 {streak}</p>
+                    </div>
+                  )}
                 </div>
-              )}
+              ) : null}
               <ThemeToggle />
             </div>
           </div>
@@ -423,18 +548,10 @@ export default function Home() {
               </section>
             )}
 
-            {/* Analytics Section */}
-            <section>
-              <Analytics />
-            </section>
 
-            {/* Leaderboard Section */}
-            <section>
-              <Leaderboard />
-            </section>
 
             {/* History Section */}
-            <section className="pb-10">
+            <section>
               <div className="border-3 border-foreground bg-card brutal-shadow mt-4">
                 <Collapsible open={isHistoryOpen} onOpenChange={setIsHistoryOpen} className="w-full">
                   <div className="flex items-center justify-between p-3 border-b-3 border-foreground">
@@ -451,6 +568,14 @@ export default function Home() {
                       >
                         {showAverages ? "Hide Avg" : "Show Avg"}
                       </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => { e.stopPropagation(); setShowCalendar(!showCalendar); setSelectedCalendarDay(null); }}
+                        className={`h-8 text-[10px] uppercase font-black tracking-[0.15em] font-mono border-2 border-foreground rounded-none ${showCalendar ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground bg-card'}`}
+                      >
+                        Cal
+                      </Button>
                       <CollapsibleTrigger asChild>
                         <Button variant="ghost" size="sm" className="w-8 h-8 p-0 border-2 border-foreground bg-card hover:bg-muted rounded-none">
                           {isHistoryOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
@@ -465,87 +590,229 @@ export default function Home() {
                       {isLoadingHistory ? (
                         <div className="text-center py-8 text-muted-foreground text-sm font-mono uppercase tracking-wider animate-pulse">Loading history...</div>
                       ) : history && history.length > 0 ? (
-                        <div className="space-y-3">
-                          {processedHistory.map(({
-                            month,
-                            monthTotal,
-                            avgWaiter,
-                            avgCook,
-                            avgDishwasher,
-                            sortedDates,
-                            monthData
-                          }, index) => (
-                            <motion.div
-                              key={month}
-                              initial={{ opacity: 0, x: -20 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ duration: 0.3, delay: index * 0.1 }}
-                            >
-                              <Collapsible defaultOpen={false}>
-                                <CollapsibleTrigger className="w-full" data-testid={`button-month-toggle-${index}`}>
-                                  <div className="flex items-center justify-between px-3 py-2.5 border-3 border-foreground bg-card brutal-shadow-sm cursor-pointer hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none">
-                                    {/* Left: Date */}
-                                    <div className="flex items-center gap-2 justify-start">
-                                      <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform duration-200 [[data-state=closed]_&]:-rotate-90" />
-                                      <h3 className="text-xs font-black text-foreground truncate uppercase tracking-wider">{month}</h3>
-                                    </div>
+                        showCalendar ? (
+                          /* ===== CALENDAR VIEW ===== */
+                          (() => {
+                            const year = calendarMonth.getFullYear();
+                            const month = calendarMonth.getMonth();
+                            const firstDay = new Date(year, month, 1);
+                            const lastDay = new Date(year, month + 1, 0);
+                            const daysInMonth = lastDay.getDate();
 
-                                    {/* Center: Averages */}
-                                    {showAverages && (
-                                      <div className="flex items-center justify-center gap-3 text-[10px] font-mono font-black text-muted-foreground">
-                                        <div className="flex items-center gap-1">
-                                          <span>W:</span>
-                                          <span className="text-orange-500" data-testid="avg-waiter">€{avgWaiter.toFixed(0)}</span>
-                                        </div>
-                                        <div className="flex items-center gap-1">
-                                          <span>C:</span>
-                                          <span className="text-emerald-500" data-testid="avg-cook">€{avgCook.toFixed(0)}</span>
-                                        </div>
-                                        <div className="flex items-center gap-1">
-                                          <span>D:</span>
-                                          <span className="text-blue-500" data-testid="avg-dishwasher">€{avgDishwasher.toFixed(0)}</span>
-                                        </div>
+                            // Monday = 0, Sunday = 6 (European style)
+                            const startDow = (firstDay.getDay() + 6) % 7;
+
+                            // Build daily totals map for this month
+                            const dailyTotals: Record<number, number> = {};
+                            const dailyCalcs: Record<number, typeof history> = {};
+                            let monthMax = 0;
+                            history.forEach(calc => {
+                              if (!calc.createdAt) return;
+                              const d = new Date(calc.createdAt);
+                              if (d.getMonth() !== month || d.getFullYear() !== year) return;
+                              const day = d.getDate();
+                              dailyTotals[day] = (dailyTotals[day] || 0) + Number(calc.totalAmount);
+                              if (!dailyCalcs[day]) dailyCalcs[day] = [];
+                              dailyCalcs[day].push(calc);
+                              if (dailyTotals[day] > monthMax) monthMax = dailyTotals[day];
+                            });
+
+                            const today = new Date();
+                            const isCurrentMonth = today.getMonth() === month && today.getFullYear() === year;
+                            const todayDate = today.getDate();
+
+                            const getHeatClass = (total: number) => {
+                              if (!total || total === 0) return 'bg-muted/30';
+                              const ratio = monthMax > 0 ? total / monthMax : 0;
+                              if (ratio >= 1) return 'bg-primary text-primary-foreground';
+                              if (ratio >= 0.6) return 'bg-primary/60';
+                              if (ratio >= 0.3) return 'bg-primary/40';
+                              return 'bg-primary/20';
+                            };
+
+                            const cells = [];
+                            // Empty cells before first day
+                            for (let i = 0; i < startDow; i++) {
+                              cells.push(<div key={`empty-${i}`} className="aspect-square" />);
+                            }
+                            // Day cells
+                            for (let day = 1; day <= daysInMonth; day++) {
+                              const total = dailyTotals[day] || 0;
+                              const heatClass = getHeatClass(total);
+                              const isToday = isCurrentMonth && day === todayDate;
+                              const dayKey = `${year}-${month}-${day}`;
+                              const isSelected = selectedCalendarDay === dayKey;
+                              cells.push(
+                                <button
+                                  key={day}
+                                  onClick={() => setSelectedCalendarDay(isSelected ? null : (dailyCalcs[day] ? dayKey : null))}
+                                  className={`aspect-square relative flex flex-col items-center justify-center border-2 border-foreground/20 transition-all ${heatClass} ${isToday ? 'border-primary border-dashed !border-2' : ''} ${isSelected ? 'ring-2 ring-primary ring-offset-1' : ''} ${total > 0 ? 'cursor-pointer hover:scale-105' : 'cursor-default opacity-60'}`}
+                                >
+                                  <span className="absolute top-0.5 left-1 text-[9px] font-mono font-bold leading-none">{day}</span>
+                                  {total > 0 && (
+                                    <span className="text-xs font-black font-mono leading-none mt-1">€{total.toFixed(0)}</span>
+                                  )}
+                                </button>
+                              );
+                            }
+
+                            const monthLabel = calendarMonth.toLocaleString('default', { month: 'long', year: 'numeric' });
+                            const calMonthTotal = Object.values(dailyTotals).reduce((s, v) => s + v, 0);
+
+                            // Get selected day's calculations
+                            const selectedDayCalcs = selectedCalendarDay
+                              ? (() => {
+                                const parts = selectedCalendarDay.split('-').map(Number);
+                                return dailyCalcs[parts[2]] || [];
+                              })()
+                              : [];
+
+                            return (
+                              <div className="space-y-3">
+                                {/* Month navigation */}
+                                <div className="flex items-center justify-between">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setCalendarMonth(prev => { const d = new Date(prev); d.setMonth(d.getMonth() - 1); return d; })}
+                                    className="w-8 h-8 p-0 border-2 border-foreground bg-card hover:bg-muted rounded-none"
+                                  >
+                                    <ChevronLeft className="w-4 h-4" />
+                                  </Button>
+                                  <div className="text-center">
+                                    <h3 className="text-xs font-black text-foreground uppercase tracking-wider">{monthLabel}</h3>
+                                    <p className="text-[10px] font-mono font-black text-primary">€{calMonthTotal.toFixed(2)}</p>
+                                  </div>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setCalendarMonth(prev => { const d = new Date(prev); d.setMonth(d.getMonth() + 1); return d; })}
+                                    className="w-8 h-8 p-0 border-2 border-foreground bg-card hover:bg-muted rounded-none"
+                                  >
+                                    <ChevronRight className="w-4 h-4" />
+                                  </Button>
+                                </div>
+
+                                {/* Day headers */}
+                                <div className="grid grid-cols-7 gap-1">
+                                  {['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map(d => (
+                                    <div key={d} className="text-center text-[8px] font-black uppercase tracking-wider text-muted-foreground py-1">{d}</div>
+                                  ))}
+                                </div>
+
+                                {/* Calendar grid */}
+                                <div className="grid grid-cols-7 gap-1">
+                                  {cells}
+                                </div>
+
+                                {/* Selected day expansion */}
+                                {selectedCalendarDay && selectedDayCalcs.length > 0 && (
+                                  <div className="space-y-2 pt-2 border-t-3 border-foreground/20">
+                                    <div className="text-[11px] font-black text-muted-foreground font-mono uppercase tracking-wider">
+                                      {(() => {
+                                        const parts = selectedCalendarDay.split('-').map(Number);
+                                        return new Date(parts[0], parts[1], parts[2]).toLocaleDateString();
+                                      })()}
+                                    </div>
+                                    {selectedDayCalcs.map((calc, idx) => (
+                                      <motion.div
+                                        key={calc.id}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.2, delay: idx * 0.05 }}
+                                      >
+                                        <HistoryItem calculation={calc} />
+                                      </motion.div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })()
+                        ) : (
+                          /* ===== LIST VIEW (original) ===== */
+                          <div className="space-y-3">
+                            {processedHistory.map(({
+                              month,
+                              monthTotal,
+                              avgWaiter,
+                              avgCook,
+                              avgDishwasher,
+                              sortedDates,
+                              monthData
+                            }, index) => (
+                              <motion.div
+                                key={month}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.3, delay: index * 0.1 }}
+                              >
+                                <Collapsible defaultOpen={false}>
+                                  <CollapsibleTrigger className="w-full" data-testid={`button-month-toggle-${index}`}>
+                                    <div className="flex items-center justify-between px-3 py-2.5 border-3 border-foreground bg-card brutal-shadow-sm cursor-pointer hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none">
+                                      {/* Left: Date */}
+                                      <div className="flex items-center gap-2 justify-start">
+                                        <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform duration-200 [[data-state=closed]_&]:-rotate-90" />
+                                        <h3 className="text-xs font-black text-foreground truncate uppercase tracking-wider">{month}</h3>
                                       </div>
-                                    )}
 
-                                    {/* Right: Total */}
-                                    <div className="flex justify-end">
-                                      <span className="text-sm font-black text-primary font-mono">€{monthTotal.toFixed(2)}</span>
-                                    </div>
-                                  </div>
-                                </CollapsibleTrigger>
-                                <CollapsibleContent>
-                                  <div className="space-y-4 pt-3 pl-2">
-                                    {sortedDates.map((date) => {
-                                      const dayCalculations = monthData[date];
-                                      const dayTotal = dayCalculations.reduce((sum, calc) => sum + Number(calc.totalAmount), 0);
-                                      return (
-                                        <div key={date} className="space-y-2">
-                                          <div className="flex items-center justify-between px-1">
-                                            <div className="text-[11px] font-black text-muted-foreground font-mono uppercase tracking-wider">{date}</div>
-                                            <div className="text-[11px] font-black text-primary/70 font-mono">Day: €{dayTotal.toFixed(2)}</div>
+                                      {/* Center: Averages */}
+                                      {showAverages && (
+                                        <div className="flex items-center justify-center gap-3 text-[10px] font-mono font-black text-muted-foreground">
+                                          <div className="flex items-center gap-1">
+                                            <span>W:</span>
+                                            <span className="text-orange-500" data-testid="avg-waiter">€{avgWaiter.toFixed(0)}</span>
                                           </div>
-                                          <div className="space-y-2">
-                                            {dayCalculations.map((calc, idx) => (
-                                              <motion.div
-                                                key={calc.id}
-                                                initial={{ opacity: 0, y: 10 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                transition={{ duration: 0.2, delay: idx * 0.05 }}
-                                              >
-                                                <HistoryItem calculation={calc} />
-                                              </motion.div>
-                                            ))}
+                                          <div className="flex items-center gap-1">
+                                            <span>C:</span>
+                                            <span className="text-emerald-500" data-testid="avg-cook">€{avgCook.toFixed(0)}</span>
+                                          </div>
+                                          <div className="flex items-center gap-1">
+                                            <span>D:</span>
+                                            <span className="text-blue-500" data-testid="avg-dishwasher">€{avgDishwasher.toFixed(0)}</span>
                                           </div>
                                         </div>
-                                      );
-                                    })}
-                                  </div>
-                                </CollapsibleContent>
-                              </Collapsible>
-                            </motion.div>
-                          ))}
-                        </div>
+                                      )}
+
+                                      {/* Right: Total */}
+                                      <div className="flex justify-end">
+                                        <span className="text-sm font-black text-primary font-mono">€{monthTotal.toFixed(2)}</span>
+                                      </div>
+                                    </div>
+                                  </CollapsibleTrigger>
+                                  <CollapsibleContent>
+                                    <div className="space-y-4 pt-3 pl-2">
+                                      {sortedDates.map((date) => {
+                                        const dayCalculations = monthData[date];
+                                        const dayTotal = dayCalculations.reduce((sum, calc) => sum + Number(calc.totalAmount), 0);
+                                        return (
+                                          <div key={date} className="space-y-2">
+                                            <div className="flex items-center justify-between px-1">
+                                              <div className="text-[11px] font-black text-muted-foreground font-mono uppercase tracking-wider">{date}</div>
+                                              <div className="text-[11px] font-black text-primary/70 font-mono">Day: €{dayTotal.toFixed(2)}</div>
+                                            </div>
+                                            <div className="space-y-2">
+                                              {dayCalculations.map((calc, idx) => (
+                                                <motion.div
+                                                  key={calc.id}
+                                                  initial={{ opacity: 0, y: 10 }}
+                                                  animate={{ opacity: 1, y: 0 }}
+                                                  transition={{ duration: 0.2, delay: idx * 0.05 }}
+                                                >
+                                                  <HistoryItem calculation={calc} />
+                                                </motion.div>
+                                              ))}
+                                            </div>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  </CollapsibleContent>
+                                </Collapsible>
+                              </motion.div>
+                            ))}
+                          </div>
+                        )
                       ) : (
                         <div className="text-center py-8 border-3 border-dashed border-foreground/30">
                           <p className="text-sm text-muted-foreground font-mono uppercase tracking-wider">No calculations saved yet.</p>
@@ -555,6 +822,16 @@ export default function Home() {
                   </CollapsibleContent>
                 </Collapsible>
               </div>
+            </section>
+
+            {/* Leaderboard Section */}
+            <section>
+              <Leaderboard />
+            </section>
+
+            {/* Analytics Section */}
+            <section className="pb-10">
+              <Analytics />
             </section>
             {/* (Action Buttons moved up) */}
           </div>

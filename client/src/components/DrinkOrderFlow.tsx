@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Plus, Minus, Send, Wine, FileText, Copy, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,13 @@ interface DrinkOrderFlowProps {
 }
 
 export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
+    // Lock body scroll when dialog is open (modal={false} doesn't do this automatically)
+    useEffect(() => {
+        if (open) {
+            document.body.style.overflow = 'hidden';
+            return () => { document.body.style.overflow = ''; };
+        }
+    }, [open]);
     const [step, setStep] = useState<Step>("confirm");
     const [selectedCategory, setSelectedCategory] = useState<DrinkCategory | null>(null);
     const [quantities, setQuantities] = useState<Record<string, number>>({});
@@ -99,6 +106,7 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
 
         try {
             await createDrinkOrder.mutateAsync(items);
+
             toast({
                 title: "Norakstīts! ✓",
                 description: `${items.length} pozīcija(s) nosūtīta(s).`,
@@ -192,9 +200,9 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
     }, [quantities]);
 
     return (
-        <Dialog open={open} onOpenChange={(isOpen) => !isOpen && handleClose()}>
+        <Dialog open={open} onOpenChange={(isOpen) => !isOpen && handleClose()} modal={false}>
             <DialogContent
-                className="w-[85vw] max-w-[340px] p-0 gap-0 overflow-hidden rounded-none border-3 border-foreground brutal-shadow max-h-[85vh] bg-card"
+                className="w-[95vw] max-w-[440px] p-0 gap-0 overflow-hidden rounded-none border-3 border-foreground brutal-shadow max-h-[90vh] bg-card"
                 onPointerDownOutside={(e) => e.preventDefault()}
                 onInteractOutside={(e) => e.preventDefault()}
             >
@@ -268,7 +276,7 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
                                 <DialogTitle className="text-base font-black uppercase tracking-wider">Kategorijas</DialogTitle>
                                 <DialogDescription className="sr-only">Izvēlies dzērienu kategoriju</DialogDescription>
                             </div>
-                            <ScrollArea className="flex-1 max-h-[calc(85vh-120px)]">
+                            <ScrollArea className="flex-1 max-h-[calc(90vh-120px)]">
                                 <div className="p-2.5 grid grid-cols-2 gap-2">
                                     {drinkCategories.map((category) => {
                                         const count = categoryCounts[category.name] || 0;
@@ -335,7 +343,7 @@ export function DrinkOrderFlow({ open, onClose }: DrinkOrderFlowProps) {
                                     </div>
                                 </div>
                             </div>
-                            <ScrollArea className="flex-1 max-h-[calc(85vh-120px)]">
+                            <ScrollArea className="flex-1 max-h-[calc(90vh-120px)]">
                                 <div className="p-2 space-y-0.5">
                                     {selectedCategory.items.map((item, index) => {
                                         const key = getKey(selectedCategory.name, item.name);

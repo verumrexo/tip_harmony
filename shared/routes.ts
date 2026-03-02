@@ -44,6 +44,7 @@ export const api = {
         200: z.any(),
       },
     },
+
   },
 };
 
