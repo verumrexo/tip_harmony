@@ -24,7 +24,7 @@ const mapToCamel = (data: CalculationDB): Calculation => ({
   waiterPerPerson: String(data.waiter_per_person),
   cookPerPerson: String(data.cook_per_person),
   dishwasherPerPerson: String(data.dishwasher_per_person),
-  createdAt: new Date(data.created_at),
+  createdAt: new Date(data.created_at.endsWith('Z') ? data.created_at : data.created_at + 'Z'),
 });
 
 export function useCalculations() {

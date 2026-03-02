@@ -20,7 +20,7 @@ import { calculateAnalytics } from "@/lib/analytics-logic";
 
 export function Analytics() {
     const { data: history } = useCalculations();
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(true);
     const [days, setDays] = useState("14");
     const [view, setView] = useState("daily");
 

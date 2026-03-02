@@ -1,0 +1,20 @@
+﻿09e2c1c UI updates: reordered sections and refined header layout
+cdc486c Merge pull request #27 from verumrexo/feature/todays-splits-15005247934641204228
+0cfc098 feat: Add "Today's Splits" section to Home page
+f14e792 feat: add toxic leaderboard and make history collapsible
+946a1e3 feat: match system theme dynamically
+3bd62d7 Merge pull request #26 from verumrexo/fix-supplier-order-modal-4922819630091696942
+fce9fb5 fix: reduce supplier order modal height and prevent auto-focus
+8368dc3 feat: make supplier order modal full-screen and prevent auto-focus
+8fa5fcb Merge pull request #25 from verumrexo/monthly-report-refactor-11490805485700261465
+b39ad61 Refactor monthly report logic to shared utility for consistency
+fc7396f Merge pull request #24 from verumrexo/add-readme-2882599265341985917
+4e3e5e8 Add README.md with project documentation
+3f40a93 style: update rainbow speed to 3s
+98f3027 fix: production animation stability with custom css class and remove pink input style
+e715de3 fix: hardcode animation speed for prod and remove pink focus
+5b5f59d style: finalize rainbow button speed to 5s
+e247df8 fix: restore animate-rainbow class so tailwind doesn't drop it in prod
+860c799 style: add slow rainbow save button
+c271c07 style: remove side borders for ios
+fe6eb67 style: add neo-brutalist visual polish to app ui

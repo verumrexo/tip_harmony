@@ -10,7 +10,7 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 
 export function Leaderboard() {
     const { data: history, isLoading } = useCalculations();
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(true);
 
     const leaderboardStats = useMemo(() => {
         if (!history || history.length === 0) return null;

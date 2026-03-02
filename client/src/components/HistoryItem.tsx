@@ -20,7 +20,7 @@ export function HistoryItem({ calculation }: HistoryItemProps) {
             <Calculator className="w-4 h-4 text-primary-foreground" />
           </div>
           <div>
-            <p className="font-black text-foreground text-lg font-mono">€{total.toFixed(2)}</p>
+            <p className="font-bold text-muted-foreground text-sm font-mono">€{total.toFixed(2)}</p>
             <div className="flex gap-2 text-[10px] text-muted-foreground font-mono uppercase tracking-wider">
               <span>{calculation.waiterCount}W • {calculation.cookCount}C • {calculation.dishwasherCount}D</span>
             </div>
@@ -34,15 +34,15 @@ export function HistoryItem({ calculation }: HistoryItemProps) {
       <div className="grid grid-cols-3 border-t-3 border-foreground">
         <div className="text-center p-2 border-r-3 border-foreground">
           <p className="text-[9px] font-black text-orange-500 uppercase tracking-widest font-mono mb-0.5">W</p>
-          <p className="text-sm font-bold text-foreground font-mono">€{waiterPP.toFixed(2)}</p>
+          <p className="text-xl font-black text-orange-500 font-mono">€{waiterPP.toFixed(2)}</p>
         </div>
         <div className="text-center p-2 border-r-3 border-foreground">
           <p className="text-[9px] font-black text-emerald-500 uppercase tracking-widest font-mono mb-0.5">C</p>
-          <p className="text-sm font-bold text-foreground font-mono">€{cookPP.toFixed(2)}</p>
+          <p className="text-xl font-black text-emerald-500 font-mono">€{cookPP.toFixed(2)}</p>
         </div>
         <div className="text-center p-2">
           <p className="text-[9px] font-black text-blue-500 uppercase tracking-widest font-mono mb-0.5">D</p>
-          <p className="text-sm font-bold text-foreground font-mono">€{dishwasherPP.toFixed(2)}</p>
+          <p className="text-xl font-black text-blue-500 font-mono">€{dishwasherPP.toFixed(2)}</p>
         </div>
       </div>
     </div>

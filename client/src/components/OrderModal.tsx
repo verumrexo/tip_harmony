@@ -156,7 +156,7 @@ const CIDO_DATA: MenuItem[] = [
     { type: "item", name: "Tukšas Pepsi kastes", price: "", labels: { singular: "Tukša Pepsi kaste", plural: "Tukšas Pepsi kastes" }, isReturn: true }
 ];
 
-export function OrderModal({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+export function OrderModal({ open, onOpenChange, inline }: { open: boolean; onOpenChange: (open: boolean) => void; inline?: boolean }) {
     const { toast } = useToast();
     const [activeMenu, setActiveMenu] = useState<"interbaltija" | "baltic_xl" | "cido">("interbaltija");
     const [orderState, setOrderState] = useState<Record<string, number>>({});
@@ -291,6 +291,101 @@ export function OrderModal({ open, onOpenChange }: { open: boolean; onOpenChange
 
     const cards = organizeIntoCards(currentMenuData);
 
+    const headerContent = (
+        <div className={`px-4 py-3 border-b-3 border-foreground bg-card ${inline ? "" : ""}`}>
+            <div className="flex items-center justify-between">
+                <h2 className="text-xl font-black uppercase tracking-wider flex items-center gap-2">
+                    <FileText className="w-5 h-5" />
+                    Supplier Order
+                </h2>
+            </div>
+            <select
+                className="w-full p-2 mt-2 border-3 border-foreground bg-background font-mono text-sm uppercase font-black"
+                value={activeMenu}
+                onChange={(e) => setActiveMenu(e.target.value as any)}
+            >
+                <option value="interbaltija">Interbaltija</option>
+                <option value="baltic_xl">Baltic XL</option>
+                <option value="cido">Cido</option>
+            </select>
+        </div>
+    );
+
+    const bodyContent = (
+        <ScrollArea className="flex-1 p-4 bg-muted/30">
+            <div className={`space-y-6 ${inline ? "pb-6" : "pb-24"}`}>
+                {cards.map((card, idx) => (
+                    <div key={idx} className="space-y-2">
+                        {card.header && (
+                            <h2 className="text-base font-black uppercase tracking-wider text-foreground mb-1 mt-4">{card.header}</h2>
+                        )}
+                        {card.desc && (
+                            <p className="text-xs text-muted-foreground font-mono leading-relaxed">{card.desc}</p>
+                        )}
+                        <div className="border-3 border-foreground bg-card brutal-shadow-sm divide-y-3 divide-foreground">
+                            {card.items.map((item, i) => {
+                                const count = orderState[item.name!] || 0;
+                                return (
+                                    <div key={i} className="flex justify-between items-center p-3 gap-3">
+                                        <div className="flex-1">
+                                            <div className="text-sm font-bold leading-tight">{item.name}</div>
+                                            {item.price && <div className="text-xs font-mono text-muted-foreground mt-1">{item.price}</div>}
+                                        </div>
+                                        <div className="flex items-center gap-3 shrink-0">
+                                            <button
+                                                onClick={() => updateItem(item.name!, -1)}
+                                                className="w-8 h-8 flex items-center justify-center border-2 border-foreground bg-background active:bg-foreground active:text-background transition-colors"
+                                            >
+                                                <Minus className="w-4 h-4" />
+                                            </button>
+                                            <span className={`text-base font-black font-mono w-4 text-center ${count > 0 ? "text-primary" : "text-foreground"}`}>{count}</span>
+                                            <button
+                                                onClick={() => updateItem(item.name!, 1)}
+                                                className="w-8 h-8 flex items-center justify-center border-2 border-foreground bg-primary text-primary-foreground active:opacity-70 transition-opacity"
+                                            >
+                                                <Plus className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </ScrollArea>
+    );
+
+    const actionBar = (
+        <div className={`border-t-3 border-foreground bg-card p-4 flex gap-3 items-center sticky bottom-0 ${inline ? "" : "pb-safe"}`}>
+            <Button
+                variant="outline"
+                onClick={resetOrder}
+                className="flex-1 border-3 border-foreground rounded-none h-12 brutal-hover font-black uppercase tracking-wider"
+            >
+                <RefreshCcw className="w-4 h-4 mr-2" />
+                Reset
+            </Button>
+            <Button
+                onClick={copyOrder}
+                className="flex-[2] border-3 border-foreground rounded-none h-12 brutal-hover bg-primary hover:bg-primary font-black uppercase tracking-wider brutal-shadow-sm"
+            >
+                <Copy className="w-4 h-4 mr-2" />
+                Copy Order
+            </Button>
+        </div>
+    );
+
+    if (inline) {
+        return (
+            <div className="flex flex-col min-h-0">
+                {headerContent}
+                {bodyContent}
+                {actionBar}
+            </div>
+        );
+    }
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent
@@ -315,48 +410,7 @@ export function OrderModal({ open, onOpenChange }: { open: boolean; onOpenChange
                     </select>
                 </DialogHeader>
 
-                <ScrollArea className="flex-1 p-4 bg-muted/30">
-                    <div className="space-y-6 pb-24">
-                        {cards.map((card, idx) => (
-                            <div key={idx} className="space-y-2">
-                                {card.header && (
-                                    <h2 className="text-base font-black uppercase tracking-wider text-foreground mb-1 mt-4">{card.header}</h2>
-                                )}
-                                {card.desc && (
-                                    <p className="text-xs text-muted-foreground font-mono leading-relaxed">{card.desc}</p>
-                                )}
-                                <div className="border-3 border-foreground bg-card brutal-shadow-sm divide-y-3 divide-foreground">
-                                    {card.items.map((item, i) => {
-                                        const count = orderState[item.name!] || 0;
-                                        return (
-                                            <div key={i} className="flex justify-between items-center p-3 gap-3">
-                                                <div className="flex-1">
-                                                    <div className="text-sm font-bold leading-tight">{item.name}</div>
-                                                    {item.price && <div className="text-xs font-mono text-muted-foreground mt-1">{item.price}</div>}
-                                                </div>
-                                                <div className="flex items-center gap-3 shrink-0">
-                                                    <button
-                                                        onClick={() => updateItem(item.name!, -1)}
-                                                        className="w-8 h-8 flex items-center justify-center border-2 border-foreground bg-background active:bg-foreground active:text-background transition-colors"
-                                                    >
-                                                        <Minus className="w-4 h-4" />
-                                                    </button>
-                                                    <span className={`text-base font-black font-mono w-4 text-center ${count > 0 ? "text-primary" : "text-foreground"}`}>{count}</span>
-                                                    <button
-                                                        onClick={() => updateItem(item.name!, 1)}
-                                                        className="w-8 h-8 flex items-center justify-center border-2 border-foreground bg-primary text-primary-foreground active:opacity-70 transition-opacity"
-                                                    >
-                                                        <Plus className="w-4 h-4" />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </ScrollArea>
+                {bodyContent}
 
                 {/* Action Bar */}
                 <div className="border-t-3 border-foreground bg-card p-4 flex gap-3 pb-safe items-center sticky bottom-0">
