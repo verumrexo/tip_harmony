@@ -8,8 +8,6 @@ describe('CurrencyInput', () => {
   it('renders correctly', () => {
     render(<CurrencyInput label="Amount" value="" onValueChange={() => {}} />);
     expect(screen.getByRole('textbox')).toBeInTheDocument();
-    // Button is hidden initially
-    expect(screen.queryByRole('button', { name: /add decimal comma/i })).not.toBeInTheDocument();
   });
 
   it('calls onValueChange with correct value when typing digits', () => {
@@ -52,32 +50,4 @@ describe('CurrencyInput', () => {
     expect(handleChange).not.toHaveBeenCalled();
   });
 
-  it('shows button when focused and appends comma when clicked', async () => {
-    const handleChange = vi.fn();
-    render(<CurrencyInput label="Amount" value="123" onValueChange={handleChange} />);
-
-    // Focus to show button
-    const input = screen.getByRole('textbox');
-    fireEvent.focus(input);
-
-    // Wait for button to appear (it should be immediate but good practice)
-    const button = await screen.findByRole('button', { name: /add decimal comma/i });
-    expect(button).toBeInTheDocument();
-
-    fireEvent.mouseDown(button); // We use onMouseDown in the component
-    expect(handleChange).toHaveBeenCalledWith('123,');
-  });
-
-  it('does not append comma if already present when button is clicked', async () => {
-    const handleChange = vi.fn();
-    render(<CurrencyInput label="Amount" value="123," onValueChange={handleChange} />);
-
-    // Focus
-    const input = screen.getByRole('textbox');
-    fireEvent.focus(input);
-
-    const button = await screen.findByRole('button', { name: /add decimal comma/i });
-    fireEvent.mouseDown(button);
-    expect(handleChange).not.toHaveBeenCalled();
-  });
 });

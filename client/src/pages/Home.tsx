@@ -774,10 +774,10 @@ export default function Home() {
         backgroundSize: `16px 16px`
       }} />
 
-      <div className="min-h-screen bg-background relative z-10 pb-24">
+      <div className="min-h-screen bg-background relative z-10 pb-24 pt-20">
 
         {/* Header */}
-        <header className="px-4 py-3 pt-safe bg-card border-b-3 border-foreground sticky top-0 z-20">
+        <header className="fixed top-0 left-0 right-0 z-50 px-4 py-3 pt-safe bg-card border-b-3 border-foreground">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 sm:w-9 sm:h-9 border-3 border-foreground bg-primary flex items-center justify-center brutal-shadow-sm shrink-0">
