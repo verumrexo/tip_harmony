@@ -767,18 +767,16 @@ export default function Home() {
   );
 
   return (
-    <div className="min-h-[100dvh] relative overflow-hidden text-foreground bg-background">
+    <div className="h-[100dvh] w-full flex flex-col relative overflow-hidden text-foreground bg-background">
       {/* Aggressive halftone dotted background */}
-      <div className="fixed inset-0 opacity-[0.15] dark:opacity-[0.1] pointer-events-none" style={{
+      <div className="absolute inset-0 opacity-[0.15] dark:opacity-[0.1] pointer-events-none" style={{
         backgroundImage: `radial-gradient(hsl(var(--foreground)) 2px, transparent 2px)`,
         backgroundSize: `16px 16px`
       }} />
 
-      <div className="min-h-screen bg-background relative z-10 pb-24 pt-20">
-
-        {/* Header */}
-        <header className="fixed top-0 left-0 right-0 z-50 px-4 py-3 pt-safe bg-card border-b-3 border-foreground">
-          <div className="flex items-center justify-between gap-2">
+      {/* Header */}
+      <header className="shrink-0 relative z-50 px-4 py-3 pt-safe bg-card border-b-3 border-foreground">
+        <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 sm:w-9 sm:h-9 border-3 border-foreground bg-primary flex items-center justify-center brutal-shadow-sm shrink-0">
                 <Coins className="w-4 h-4 text-primary-foreground" />
@@ -817,24 +815,25 @@ export default function Home() {
           </div>
         </header>
 
-        <ScrollArea className="flex-1">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.15 }}
-            >
-              {activeTab === "tips" && renderTipsTab()}
-              {activeTab === "history" && renderHistoryTab()}
-              {activeTab === "writeoff" && renderWriteOffTab()}
-              {activeTab === "supplier" && renderSupplierTab()}
-              {activeTab === "stats" && renderStatsTab()}
-            </motion.div>
-          </AnimatePresence>
+        <ScrollArea className="flex-1 relative z-10 bg-background">
+          <div className="pb-24">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.15 }}
+              >
+                {activeTab === "tips" && renderTipsTab()}
+                {activeTab === "history" && renderHistoryTab()}
+                {activeTab === "writeoff" && renderWriteOffTab()}
+                {activeTab === "supplier" && renderSupplierTab()}
+                {activeTab === "stats" && renderStatsTab()}
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </ScrollArea>
-      </div>
 
       {/* Bottom Navigation */}
       <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
