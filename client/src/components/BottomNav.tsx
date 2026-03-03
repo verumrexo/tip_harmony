@@ -19,7 +19,7 @@ interface BottomNavProps {
 export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
     return (
         <nav className="fixed bottom-0 left-0 right-0 z-50 border-t-3 border-foreground bg-card pb-safe">
-            <div className="max-w-md mx-auto flex items-end justify-around px-1 h-16">
+            <div className="flex items-end justify-around px-1 h-16">
                 {TABS.map((tab) => {
                     const isActive = activeTab === tab.id;
                     const isCenter = tab.id === "tips";
@@ -42,18 +42,18 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
                                 className={`
                   flex items-center justify-center transition-colors duration-150
                   ${isCenter
-                                        ? `w-12 h-12 border-3 border-foreground ${isActive
+                                        ? `w-16 h-16 border-3 border-foreground ${isActive
                                             ? "bg-primary text-primary-foreground brutal-shadow-sm"
                                             : "bg-card text-muted-foreground"
                                         }`
-                                        : `w-9 h-9 ${isActive
+                                        : `w-12 h-12 ${isActive
                                             ? "bg-primary text-primary-foreground border-3 border-foreground"
                                             : "text-muted-foreground"
                                         }`
                                     }
                 `}
                             >
-                                <Icon className={isCenter ? "w-6 h-6" : "w-4 h-4"} />
+                                <Icon className={isCenter ? "w-8 h-8" : "w-5 h-5"} />
                             </motion.div>
 
                             {/* Label */}
