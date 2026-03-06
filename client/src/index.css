@@ -129,6 +129,7 @@ html {
   /* Use dynamic viewport height for proper iOS behavior */
   height: 100dvh;
   height: -webkit-fill-available;
+  overflow: hidden;
 }
 
 body {
@@ -136,6 +137,7 @@ body {
   min-height: -webkit-fill-available;
   /* Prevent iOS rubber-band overscroll showing white gaps */
   overscroll-behavior-y: none;
+  overflow: hidden;
   /* Prevent text selection on long-press for native feel */
   -webkit-user-select: none;
   user-select: none;

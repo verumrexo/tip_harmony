@@ -775,7 +775,7 @@ export default function Home() {
       }} />
 
       {/* Header */}
-      <header className="shrink-0 relative z-50 px-4 py-3 pt-safe bg-card border-b-3 border-foreground">
+      <header className="shrink-0 relative z-50 px-4 py-3 pt-safe bg-card border-b-3 border-foreground touch-none select-none">
         <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 sm:w-9 sm:h-9 border-3 border-foreground bg-primary flex items-center justify-center brutal-shadow-sm shrink-0">
