@@ -6,7 +6,7 @@ import { z } from "zod";
 import { type InsertCalculation } from "@shared/schema";
 import { processDrinkOrders, formatDrinkReport } from "@shared/drink-utils";
 
-const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) =>
+const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<void>) =>
   (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };
@@ -37,7 +37,7 @@ export async function registerRoutes(
   }));
 
   // Drink order routes
-  app.post(api.drinkOrders.create.path, async (req, res) => {
+  app.post(api.drinkOrders.create.path, asyncHandler(async (req, res) => {
     try {
       const input = api.drinkOrders.create.input.parse(req.body);
       const order = await storage.createDrinkOrder(input);
@@ -51,9 +51,9 @@ export async function registerRoutes(
       }
       throw err;
     }
-  });
+  }));
 
-  app.get(api.drinkOrders.report.path, async (req, res) => {
+  app.get(api.drinkOrders.report.path, asyncHandler(async (req, res) => {
     const month = parseInt(req.query.month as string) || new Date().getMonth() + 1;
     const year = parseInt(req.query.year as string) || new Date().getFullYear();
     const orders = await storage.getDrinkOrderReport(month, year);
@@ -69,7 +69,7 @@ export async function registerRoutes(
       reportText,
       orders,
     });
-  });
+  }));
 
   // Seed data
   const existing = await storage.getCalculations();
