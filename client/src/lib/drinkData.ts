@@ -33,6 +33,7 @@ export const drinkCategories: DrinkCategory[] = [
             { name: "Aveņu 0.4l", subsection: "Limonādes" },
             { name: "Rabarberu 0.4l", subsection: "Limonādes" },
             { name: "Smiltsērkšķu 0.4l", subsection: "Limonādes" },
+            { name: "Kombucha", subsection: "Kombucha" },
         ],
     },
     {
