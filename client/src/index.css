@@ -126,16 +126,15 @@
 html {
   -ms-overflow-style: none;
   scrollbar-width: none;
-  height: 100%;
-  height: -webkit-fill-available;
+  height: 100dvh;
   overflow: hidden;
 }
 
 body {
-  height: 100%;
-  height: -webkit-fill-available;
+  height: 100dvh;
   width: 100%;
   position: fixed;
+  inset: 0;
   overflow: hidden;
   /* Prevent iOS rubber-band overscroll showing white gaps */
   overscroll-behavior: none;
