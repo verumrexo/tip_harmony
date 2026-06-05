@@ -3,10 +3,14 @@
 > vite
 
 
-  VITE v7.3.0  ready in 298 ms
+  VITE v7.3.0  ready in 244 ms
 
   ➜  Local:   http://localhost:5173/tip_harmony/
   ➜  Network: use --host to expose
-4:10:25 PM [vite] (client) hmr update /src/index.css, /src/pages/Home.tsx, /src/components/Analytics.tsx
-4:10:30 PM [vite] .env changed, restarting server...
-4:10:30 PM [vite] server restarted.
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+11:25:09 AM [vite] (client) hmr update /src/index.css, /src/components/OutOfStock.tsx
+11:25:14 AM [vite] (client) hmr update /src/index.css, /src/components/DrinkOrderFlow.tsx
+11:28:31 AM [vite] (client) hmr update /src/index.css, /src/components/OutOfStock.tsx
+11:28:33 AM [vite] (client) hmr update /src/index.css, /src/components/BottomNav.tsx

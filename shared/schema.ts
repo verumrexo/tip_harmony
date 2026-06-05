@@ -20,6 +20,12 @@ export const drinkOrders = pgTable("drink_orders", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const outOfStock = pgTable("out_of_stock", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertCalculationSchema = createInsertSchema(calculations, {
   totalAmount: z.string().regex(/^\d*\.?\d+$/, "Must be a valid positive number"),
   waiterPerPerson: z.string().regex(/^\d*\.?\d+$/, "Must be a valid positive number"),
@@ -27,8 +33,11 @@ export const insertCalculationSchema = createInsertSchema(calculations, {
   dishwasherPerPerson: z.string().regex(/^\d*\.?\d+$/, "Must be a valid positive number"),
 }).omit({ id: true, createdAt: true });
 export const insertDrinkOrderSchema = createInsertSchema(drinkOrders).omit({ id: true, createdAt: true });
+export const insertOutOfStockSchema = createInsertSchema(outOfStock).omit({ id: true, createdAt: true });
 
 export type Calculation = typeof calculations.$inferSelect;
 export type InsertCalculation = z.infer<typeof insertCalculationSchema>;
 export type DrinkOrder = typeof drinkOrders.$inferSelect;
 export type InsertDrinkOrder = z.infer<typeof insertDrinkOrderSchema>;
+export type OutOfStock = typeof outOfStock.$inferSelect;
+export type InsertOutOfStock = z.infer<typeof insertOutOfStockSchema>;

@@ -15,8 +15,9 @@ import { drinkCategories, type DrinkCategory } from "@/lib/drinkData";
 import { useCreateDrinkOrder, type DrinkOrderItem } from "@/hooks/use-drink-orders";
 import { useToast } from "@/hooks/use-toast";
 import { processDrinkOrders, formatDrinkReport } from "@shared/drink-utils";
+import { OutOfStock } from "./OutOfStock";
 
-type Step = "confirm" | "categories" | "items" | "report";
+type Step = "confirm" | "categories" | "items" | "report" | "beidzas";
 
 interface DrinkOrderFlowProps {
     open: boolean;
@@ -58,6 +59,10 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
 
     const handleYes = () => {
         setStep("categories");
+    };
+
+    const handleBeidzas = () => {
+        setStep("beidzas");
     };
 
     const handleCategorySelect = (category: DrinkCategory) => {
@@ -225,19 +230,27 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
                             Vai vēlies norakstīt dzērienus?
                         </DialogDescription>
                     </DialogHeader>
-                    <div className="flex gap-2.5">
+                    <div className="grid grid-cols-1 gap-2.5">
+                        <div className="flex gap-2.5">
+                            <Button
+                                variant="outline"
+                                className="flex-1 h-11 text-sm font-bold uppercase tracking-wider border-3 border-foreground bg-card hover:bg-destructive hover:text-destructive-foreground transition-all rounded-none brutal-shadow-sm brutal-hover"
+                                onClick={handleNo}
+                            >
+                                Nē
+                            </Button>
+                            <Button
+                                className="flex-1 h-11 text-sm font-bold uppercase tracking-wider border-3 border-foreground bg-primary text-primary-foreground hover:bg-primary/90 rounded-none brutal-shadow-sm brutal-hover"
+                                onClick={handleYes}
+                            >
+                                Norakstīt
+                            </Button>
+                        </div>
                         <Button
-                            variant="outline"
-                            className="flex-1 h-11 text-sm font-bold uppercase tracking-wider border-3 border-foreground bg-card hover:bg-destructive hover:text-destructive-foreground transition-all rounded-none brutal-shadow-sm brutal-hover"
-                            onClick={handleNo}
+                            className="w-full h-11 text-sm font-bold uppercase tracking-wider border-3 border-foreground bg-amber-400 text-foreground hover:bg-amber-300 rounded-none brutal-shadow-sm brutal-hover"
+                            onClick={handleBeidzas}
                         >
-                            Nē
-                        </Button>
-                        <Button
-                            className="flex-1 h-11 text-sm font-bold uppercase tracking-wider border-3 border-foreground bg-primary text-primary-foreground hover:bg-primary/90 rounded-none brutal-shadow-sm brutal-hover"
-                            onClick={handleYes}
-                        >
-                            Jā
+                            Beidzās
                         </Button>
                     </div>
                     <Button
@@ -464,6 +477,31 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
                             <Copy className="w-4 h-4" />
                             Kopēt
                         </Button>
+                    </div>
+                </motion.div>
+            )}
+
+            {/* Step 5: Beidzās */}
+            {step === "beidzas" && (
+                <motion.div
+                    key="beidzas"
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -50 }}
+                    transition={{ duration: 0.2 }}
+                    className={`flex flex-col ${inline ? "" : "max-h-[85vh]"}`}
+                >
+                    <div className="px-4 pt-3 pb-2.5 border-b-3 border-foreground flex items-center gap-2.5">
+                        <button
+                            onClick={() => setStep("confirm")}
+                            className="w-7 h-7 border-3 border-foreground bg-card flex items-center justify-center hover:bg-muted transition-colors active:translate-x-[1px] active:translate-y-[1px] shrink-0"
+                        >
+                            <ArrowLeft className="w-3.5 h-3.5" />
+                        </button>
+                        <h2 className="text-base font-black uppercase tracking-wider">Beidzās</h2>
+                    </div>
+                    <div className="flex-1">
+                        <OutOfStock inline allowDelete={false} showHeader={false} />
                     </div>
                 </motion.div>
             )}

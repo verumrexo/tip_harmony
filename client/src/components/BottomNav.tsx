@@ -1,11 +1,13 @@
-import { History, Wine, Coins, FileText, Trophy } from "lucide-react";
+import { History, Coins, FileText, Trophy, UtensilsCrossed } from "lucide-react";
 import { motion } from "framer-motion";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useState } from "react";
 
-export type TabId = "history" | "writeoff" | "tips" | "supplier" | "stats";
+export type TabId = "history" | "writeoff" | "beidzas" | "tips" | "supplier" | "stats";
 
 const TABS: { id: TabId; label: string; icon: typeof Coins }[] = [
     { id: "history", label: "History", icon: History },
-    { id: "writeoff", label: "Write Off", icon: Wine },
+    { id: "writeoff", label: "Write Off/Beidzās", icon: UtensilsCrossed },
     { id: "tips", label: "Tips", icon: Coins },
     { id: "supplier", label: "Supplier", icon: FileText },
     { id: "stats", label: "Stats", icon: Trophy },
@@ -17,31 +19,32 @@ interface BottomNavProps {
 }
 
 export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
+    const [popoverOpen, setPopoverOpen] = useState(false);
+
     return (
         <nav className="fixed bottom-0 left-0 right-0 z-50 border-t-3 border-foreground bg-card pb-safe">
             <div className="flex items-end justify-around px-1 h-16">
                 {TABS.map((tab) => {
-                    const isActive = activeTab === tab.id;
+                    const isWriteOff = tab.id === "writeoff";
+                    const isActive = activeTab === tab.id || (isWriteOff && activeTab === "beidzas");
                     const isCenter = tab.id === "tips";
                     const Icon = tab.icon;
 
-                    return (
-                        <button
-                            key={tab.id}
-                            onClick={() => onTabChange(tab.id)}
+                    const content = (
+                        <div
                             className={`
-                relative flex flex-col items-center justify-center gap-0.5 flex-1 pt-1.5 pb-1
-                transition-all duration-150 tap-highlight-transparent
-                ${isCenter ? "-mt-3" : ""}
-              `}
+                                relative flex flex-col items-center justify-center gap-0.5 flex-1 pt-1.5 pb-1
+                                transition-all duration-150 tap-highlight-transparent
+                                ${isCenter ? "-mt-3" : ""}
+                            `}
                         >
                             {/* Icon container */}
                             <motion.div
                                 animate={isActive ? { scale: 1 } : { scale: 0.9 }}
                                 transition={{ type: "spring", stiffness: 500, damping: 30 }}
                                 className={`
-                  flex items-center justify-center transition-colors duration-150
-                  ${isCenter
+                                    flex items-center justify-center transition-colors duration-150
+                                    ${isCenter
                                         ? `w-16 h-16 border-3 border-foreground ${isActive
                                             ? "bg-primary text-primary-foreground brutal-shadow-sm"
                                             : "bg-card text-muted-foreground"
@@ -51,7 +54,7 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
                                             : "text-muted-foreground"
                                         }`
                                     }
-                `}
+                                `}
                             >
                                 <Icon className={isCenter ? "w-8 h-8" : "w-5 h-5"} />
                             </motion.div>
@@ -59,10 +62,10 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
                             {/* Label */}
                             <span
                                 className={`
-                  text-[8px] font-black uppercase tracking-[0.1em] font-mono leading-none
-                  transition-colors duration-150
-                  ${isActive ? "text-foreground" : "text-muted-foreground"}
-                `}
+                                    text-[8px] font-black uppercase tracking-[0.1em] font-mono leading-none
+                                    transition-colors duration-150
+                                    ${isActive ? "text-foreground" : "text-muted-foreground"}
+                                `}
                             >
                                 {tab.label}
                             </span>
@@ -75,6 +78,46 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
                                     transition={{ type: "spring", stiffness: 500, damping: 30 }}
                                 />
                             )}
+                        </div>
+                    );
+
+                    if (isWriteOff) {
+                        return (
+                            <Popover key={tab.id} open={popoverOpen} onOpenChange={setPopoverOpen}>
+                                <PopoverTrigger asChild>
+                                    <button className="flex-1 focus:outline-none">{content}</button>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                    side="top"
+                                    align="center"
+                                    className="w-40 p-1 mb-2 border-3 border-foreground bg-card rounded-none brutal-shadow-sm"
+                                >
+                                    <div className="flex flex-col gap-1">
+                                        <button
+                                            onClick={() => { onTabChange("writeoff"); setPopoverOpen(false); }}
+                                            className={`p-2 text-[10px] font-black uppercase tracking-wider text-left hover:bg-primary hover:text-primary-foreground transition-colors ${activeTab === "writeoff" ? "bg-primary/20" : ""}`}
+                                        >
+                                            Norakstīt
+                                        </button>
+                                        <button
+                                            onClick={() => { onTabChange("beidzas"); setPopoverOpen(false); }}
+                                            className={`p-2 text-[10px] font-black uppercase tracking-wider text-left hover:bg-primary hover:text-primary-foreground transition-colors ${activeTab === "beidzas" ? "bg-primary/20" : ""}`}
+                                        >
+                                            Beidzās
+                                        </button>
+                                    </div>
+                                </PopoverContent>
+                            </Popover>
+                        );
+                    }
+
+                    return (
+                        <button
+                            key={tab.id}
+                            onClick={() => onTabChange(tab.id)}
+                            className="flex-1"
+                        >
+                            {content}
                         </button>
                     );
                 })}
