@@ -126,16 +126,17 @@
 html {
   -ms-overflow-style: none;
   scrollbar-width: none;
-  /* Use dynamic viewport height for proper iOS behavior */
-  height: 100dvh;
-  height: -webkit-fill-available;
+  height: 100%;
+  overflow: hidden;
 }
 
 body {
-  min-height: 100dvh;
-  min-height: -webkit-fill-available;
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  overflow: hidden;
   /* Prevent iOS rubber-band overscroll showing white gaps */
-  overscroll-behavior-y: none;
+  overscroll-behavior: none;
   /* Prevent text selection on long-press for native feel */
   -webkit-user-select: none;
   user-select: none;

@@ -752,7 +752,7 @@ export default function Home() {
     <DrinkOrderFlow open={true} onClose={() => { }} inline />
   );
 
-  const renderBeidzasTab = () => (
+  const renderJapasutaTab = () => (
     <OutOfStock inline />
   );
 
@@ -772,7 +772,7 @@ export default function Home() {
   );
 
   return (
-    <div className="h-[100dvh] w-full flex flex-col relative overflow-hidden text-foreground bg-background">
+    <div className="fixed inset-0 w-full flex flex-col overflow-hidden text-foreground bg-background select-none">
       {/* Aggressive halftone dotted background */}
       <div className="absolute inset-0 opacity-[0.15] dark:opacity-[0.1] pointer-events-none" style={{
         backgroundImage: `radial-gradient(hsl(var(--foreground)) 2px, transparent 2px)`,
@@ -780,7 +780,7 @@ export default function Home() {
       }} />
 
       {/* Header */}
-      <header className="shrink-0 relative z-50 px-4 py-3 pt-safe bg-card border-b-3 border-foreground">
+      <header className="shrink-0 relative z-50 px-4 py-3 pt-safe bg-card border-b-3 border-foreground touch-none">
         <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 sm:w-9 sm:h-9 border-3 border-foreground bg-primary flex items-center justify-center brutal-shadow-sm shrink-0">
@@ -833,7 +833,7 @@ export default function Home() {
                 {activeTab === "tips" && renderTipsTab()}
                 {activeTab === "history" && renderHistoryTab()}
                 {activeTab === "writeoff" && renderWriteOffTab()}
-                {activeTab === "beidzas" && renderBeidzasTab()}
+                {activeTab === "japasuta" && renderJapasutaTab()}
                 {activeTab === "supplier" && renderSupplierTab()}
                 {activeTab === "stats" && renderStatsTab()}
               </motion.div>

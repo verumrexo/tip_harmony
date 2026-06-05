@@ -60,7 +60,7 @@ export function OutOfStock({ allowDelete = true, showHeader = true, inline = fal
         <div className={`flex flex-col ${inline ? "h-full" : "max-h-[85vh]"}`}>
             {showHeader && (
                 <div className="px-4 pt-4 pb-2.5 border-b-3 border-foreground bg-card">
-                    <h2 className="text-base font-black uppercase tracking-wider">Beidzās</h2>
+                    <h2 className="text-base font-black uppercase tracking-wider">Jāpasūta</h2>
                     <p className="text-[10px] text-muted-foreground font-mono uppercase">Preces, kas beigušās</p>
                 </div>
             )}

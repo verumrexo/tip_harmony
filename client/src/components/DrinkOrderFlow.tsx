@@ -17,7 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { processDrinkOrders, formatDrinkReport } from "@shared/drink-utils";
 import { OutOfStock } from "./OutOfStock";
 
-type Step = "confirm" | "categories" | "items" | "report" | "beidzas";
+type Step = "confirm" | "categories" | "items" | "report" | "japasuta";
 
 interface DrinkOrderFlowProps {
     open: boolean;
@@ -61,8 +61,8 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
         setStep("categories");
     };
 
-    const handleBeidzas = () => {
-        setStep("beidzas");
+    const handleJapasuta = () => {
+        setStep("japasuta");
     };
 
     const handleCategorySelect = (category: DrinkCategory) => {
@@ -248,9 +248,9 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
                         </div>
                         <Button
                             className="w-full h-11 text-sm font-bold uppercase tracking-wider border-3 border-foreground bg-amber-400 text-foreground hover:bg-amber-300 rounded-none brutal-shadow-sm brutal-hover"
-                            onClick={handleBeidzas}
+                            onClick={handleJapasuta}
                         >
-                            Beidzās
+                            Jāpasūta
                         </Button>
                     </div>
                     <Button
@@ -481,10 +481,10 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
                 </motion.div>
             )}
 
-            {/* Step 5: Beidzās */}
-            {step === "beidzas" && (
+            {/* Step 5: Jāpasūta */}
+            {step === "japasuta" && (
                 <motion.div
-                    key="beidzas"
+                    key="japasuta"
                     initial={{ opacity: 0, x: 50 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -50 }}
@@ -498,7 +498,7 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
                         >
                             <ArrowLeft className="w-3.5 h-3.5" />
                         </button>
-                        <h2 className="text-base font-black uppercase tracking-wider">Beidzās</h2>
+                        <h2 className="text-base font-black uppercase tracking-wider">Jāpasūta</h2>
                     </div>
                     <div className="flex-1">
                         <OutOfStock inline allowDelete={false} showHeader={false} />
