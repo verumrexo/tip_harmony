@@ -3,11 +3,11 @@ import { motion } from "framer-motion";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useState } from "react";
 
-export type TabId = "history" | "writeoff" | "beidzas" | "tips" | "supplier" | "stats";
+export type TabId = "history" | "writeoff" | "japasuta" | "tips" | "supplier" | "stats";
 
 const TABS: { id: TabId; label: string; icon: typeof Coins }[] = [
     { id: "history", label: "History", icon: History },
-    { id: "writeoff", label: "Write Off/Beidzās", icon: UtensilsCrossed },
+    { id: "writeoff", label: "Write Off/Jāpasūta", icon: UtensilsCrossed },
     { id: "tips", label: "Tips", icon: Coins },
     { id: "supplier", label: "Supplier", icon: FileText },
     { id: "stats", label: "Stats", icon: Trophy },
@@ -22,20 +22,20 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
     const [popoverOpen, setPopoverOpen] = useState(false);
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 z-50 border-t-3 border-foreground bg-card pb-safe">
-            <div className="flex items-end justify-around px-1 h-16">
+        <nav className="fixed bottom-0 left-0 right-0 z-50 border-t-3 border-foreground bg-card pb-safe touch-none">
+            <div className="flex items-center justify-around px-1 h-16">
                 {TABS.map((tab) => {
                     const isWriteOff = tab.id === "writeoff";
-                    const isActive = activeTab === tab.id || (isWriteOff && activeTab === "beidzas");
+                    const isActive = activeTab === tab.id || (isWriteOff && activeTab === "japasuta");
                     const isCenter = tab.id === "tips";
                     const Icon = tab.icon;
 
                     const content = (
                         <div
                             className={`
-                                relative flex flex-col items-center justify-center gap-0.5 flex-1 pt-1.5 pb-1
+                                relative flex flex-col items-center justify-center gap-0.5 flex-1 pt-1
                                 transition-all duration-150 tap-highlight-transparent
-                                ${isCenter ? "-mt-3" : ""}
+                                ${isCenter ? "-mt-4" : ""}
                             `}
                         >
                             {/* Icon container */}
@@ -56,14 +56,14 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
                                     }
                                 `}
                             >
-                                <Icon className={isCenter ? "w-8 h-8" : "w-5 h-5"} />
+                                <Icon className={isCenter ? "w-8 h-8" : "w-6 h-6"} />
                             </motion.div>
 
                             {/* Label */}
                             <span
                                 className={`
                                     text-[8px] font-black uppercase tracking-[0.1em] font-mono leading-none
-                                    transition-colors duration-150
+                                    transition-colors duration-150 min-h-[16px] flex items-center justify-center text-center px-0.5
                                     ${isActive ? "text-foreground" : "text-muted-foreground"}
                                 `}
                             >
@@ -100,10 +100,10 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
                                             Norakstīt
                                         </button>
                                         <button
-                                            onClick={() => { onTabChange("beidzas"); setPopoverOpen(false); }}
-                                            className={`p-2 text-[10px] font-black uppercase tracking-wider text-left hover:bg-primary hover:text-primary-foreground transition-colors ${activeTab === "beidzas" ? "bg-primary/20" : ""}`}
+                                            onClick={() => { onTabChange("japasuta"); setPopoverOpen(false); }}
+                                            className={`p-2 text-[10px] font-black uppercase tracking-wider text-left hover:bg-primary hover:text-primary-foreground transition-colors ${activeTab === "japasuta" ? "bg-primary/20" : ""}`}
                                         >
-                                            Beidzās
+                                            Jāpasūta
                                         </button>
                                     </div>
                                 </PopoverContent>
