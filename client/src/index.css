@@ -127,11 +127,13 @@ html {
   -ms-overflow-style: none;
   scrollbar-width: none;
   height: 100%;
+  height: -webkit-fill-available;
   overflow: hidden;
 }
 
 body {
   height: 100%;
+  height: -webkit-fill-available;
   width: 100%;
   position: fixed;
   overflow: hidden;
