@@ -16,6 +16,7 @@ import { Analytics } from "@/components/Analytics";
 import { Leaderboard } from "@/components/Leaderboard";
 import { TIP_PERCENTAGES } from "@/lib/constants";
 import { DrinkOrderFlow } from "@/components/DrinkOrderFlow";
+import { OutOfStock } from "@/components/OutOfStock";
 import { OrderModal } from "@/components/OrderModal";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { BottomNav, type TabId } from "@/components/BottomNav";
@@ -751,6 +752,10 @@ export default function Home() {
     <DrinkOrderFlow open={true} onClose={() => { }} inline />
   );
 
+  const renderBeidzasTab = () => (
+    <OutOfStock inline />
+  );
+
   const renderSupplierTab = () => (
     <OrderModal open={true} onOpenChange={() => { }} inline />
   );
@@ -828,6 +833,7 @@ export default function Home() {
                 {activeTab === "tips" && renderTipsTab()}
                 {activeTab === "history" && renderHistoryTab()}
                 {activeTab === "writeoff" && renderWriteOffTab()}
+                {activeTab === "beidzas" && renderBeidzasTab()}
                 {activeTab === "supplier" && renderSupplierTab()}
                 {activeTab === "stats" && renderStatsTab()}
               </motion.div>
