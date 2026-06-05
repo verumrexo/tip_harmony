@@ -22,10 +22,7 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
     const [popoverOpen, setPopoverOpen] = useState(false);
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 z-50 border-t-3 border-foreground bg-card pb-safe touch-none">
-            {/* Background extension to cover iOS viewport gaps */}
-            <div className="absolute top-full left-0 right-0 h-[100vh] bg-card pointer-events-none" />
-
+        <nav className="shrink-0 z-50 border-t-3 border-foreground bg-card pb-safe touch-none">
             <div className="flex items-center justify-around px-1 h-16">
                 {TABS.map((tab) => {
                     const isWriteOff = tab.id === "writeoff";

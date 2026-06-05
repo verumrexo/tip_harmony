@@ -772,7 +772,7 @@ export default function Home() {
   );
 
   return (
-    <div className="fixed inset-0 w-full flex flex-col overflow-hidden text-foreground bg-background select-none">
+    <div className="h-[100dvh] w-full flex flex-col overflow-hidden text-foreground bg-background select-none">
       {/* Aggressive halftone dotted background */}
       <div className="absolute inset-0 opacity-[0.15] dark:opacity-[0.1] pointer-events-none" style={{
         backgroundImage: `radial-gradient(hsl(var(--foreground)) 2px, transparent 2px)`,
@@ -821,7 +821,7 @@ export default function Home() {
         </header>
 
         <ScrollArea className="flex-1 relative z-10 bg-background">
-          <div className="pb-24">
+          <div className="pb-8">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
