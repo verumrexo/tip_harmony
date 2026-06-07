@@ -500,8 +500,8 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
                         </button>
                         <h2 className="text-base font-black uppercase tracking-wider">Jāpasūta</h2>
                     </div>
-                    <div className="flex-1">
-                        <OutOfStock inline allowDelete={false} showHeader={false} />
+                    <div className="flex-1 min-h-0">
+                        <OutOfStock inline allowDelete={true} showHeader={false} />
                     </div>
                 </motion.div>
             )}

@@ -57,7 +57,7 @@ export function OutOfStock({ allowDelete = true, showHeader = true, inline = fal
     };
 
     return (
-        <div className={`flex flex-col ${inline ? "h-full" : "max-h-[85vh]"}`}>
+        <div className={`flex flex-col min-h-0 ${inline ? "h-full" : "max-h-[85vh]"}`}>
             {showHeader && (
                 <div className="px-4 pt-4 pb-2.5 border-b-3 border-foreground bg-card">
                     <h2 className="text-base font-black uppercase tracking-wider">Jāpasūta</h2>
@@ -108,7 +108,7 @@ export function OutOfStock({ allowDelete = true, showHeader = true, inline = fal
                                     className="flex items-center justify-between p-3 border-3 border-foreground bg-card brutal-shadow-sm"
                                 >
                                     <div className="flex-1 min-w-0 pr-4">
-                                        <p className="text-sm font-black uppercase tracking-wide truncate">
+                                        <p className="text-sm font-black uppercase tracking-wide break-words whitespace-normal">
                                             {item.name}
                                         </p>
                                         <p className="text-[9px] font-mono text-muted-foreground">
