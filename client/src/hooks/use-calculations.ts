@@ -74,3 +74,23 @@ export function useCreateCalculation() {
   });
 }
 
+export function useDeleteCalculation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => {
+      const { data, error } = await supabase
+        .from('calculations')
+        .delete()
+        .eq('id', id)
+        .select();
+
+      if (error) throw new Error(error.message);
+      // Without a delete policy, Supabase skips the row without an error, so check one was removed
+      if (!data || data.length === 0) throw new Error('Nothing was deleted');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['calculations'] });
+    },
+  });
+}
+

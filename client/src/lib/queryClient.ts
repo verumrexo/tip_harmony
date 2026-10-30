@@ -30,8 +30,9 @@ export const queryClient = new QueryClient({
     queries: {
       queryFn: getQueryFn({ on401: "throw" }),
       refetchInterval: false,
-      refetchOnWindowFocus: false,
-      staleTime: Infinity,
+      // Refetch when the app comes back to the foreground, so saves from other phones show up
+      refetchOnWindowFocus: true,
+      staleTime: 30 * 1000,
       retry: false,
     },
     mutations: {

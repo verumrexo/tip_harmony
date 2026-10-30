@@ -7,8 +7,9 @@ import { PersonSelector } from "@/components/PersonSelector";
 import { ResultCard } from "@/components/ResultCard";
 import { HistoryItem } from "@/components/HistoryItem";
 import { Button } from "@/components/ui/button";
-import { useCalculations, useCreateCalculation } from "@/hooks/use-calculations";
+import { useCalculations, useCreateCalculation, useDeleteCalculation } from "@/hooks/use-calculations";
 import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -44,6 +45,7 @@ export default function Home() {
   // Queries & Mutations
   const { data: history, isLoading: isLoadingHistory } = useCalculations();
   const createCalculation = useCreateCalculation();
+  const deleteCalculation = useDeleteCalculation();
   const { toast } = useToast();
 
   const todaysSplits = useMemo(() => {
@@ -290,6 +292,25 @@ export default function Home() {
     return newTodayTotal > top3Threshold;
   }, [history]);
 
+  const handleUndo = async (id: number, amountText: string) => {
+    try {
+      await deleteCalculation.mutateAsync(id);
+      // Put the amount back so it can be corrected, unless a new one was typed already
+      setTotalAmount((current) => (current === "" ? amountText : current));
+      setLastSaved(null);
+      toast({
+        title: "Undone",
+        description: "Calculation removed from history.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to undo. The calculation is still in history.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleSave = async () => {
     if (!amount || amount <= 0) {
       toast({
@@ -303,7 +324,7 @@ export default function Home() {
     try {
       const isRecord = checkIfNewRecord(amount);
 
-      await createCalculation.mutateAsync({
+      const saved = await createCalculation.mutateAsync({
         totalAmount: amount.toString(),
         waiterCount,
         cookCount,
@@ -313,16 +334,26 @@ export default function Home() {
         dishwasherPerPerson: dishwasherPerPerson.toString(),
       });
 
+      const undoAction = (
+        <ToastAction altText="Undo save" onClick={() => handleUndo(saved.id, totalAmount)}>
+          Undo
+        </ToastAction>
+      );
+
       if (isRecord) {
         fireConfetti();
         toast({
           title: "🏆 NEW RECORD!",
           description: "Today just hit the Hall of Fame top 3!",
+          action: undoAction,
+          duration: 8000,
         });
       } else {
         toast({
           title: "Saved!",
           description: "Calculation added to history.",
+          action: undoAction,
+          duration: 8000,
         });
       }
 
@@ -435,6 +466,8 @@ export default function Home() {
                 count={dcw}
                 icon={Utensils}
                 colorClass="text-orange-500"
+                iconBgClass="bg-orange-500"
+                stripBgClass="bg-orange-500/15"
                 bgClass=""
               />
               <ResultCard
@@ -444,6 +477,8 @@ export default function Home() {
                 count={dcc}
                 icon={ChefHat}
                 colorClass="text-emerald-500"
+                iconBgClass="bg-emerald-500"
+                stripBgClass="bg-emerald-500/15"
                 bgClass=""
               />
               <ResultCard
@@ -453,6 +488,8 @@ export default function Home() {
                 count={dcd}
                 icon={Waves}
                 colorClass="text-blue-500"
+                iconBgClass="bg-blue-500"
+                stripBgClass="bg-blue-500/15"
                 bgClass={dcd > 0 ? "" : "opacity-40 grayscale"}
               />
             </div>
@@ -461,7 +498,7 @@ export default function Home() {
       </section>
 
       {/* Today's Splits Section */}
-      {todaysSplits.length >= 2 && (
+      {todaysSplits.length > 0 && (
         <section className="space-y-3">
           <div className="flex items-center">
             <h2 className="text-xs font-black text-muted-foreground uppercase tracking-wider">Today's Splits</h2>

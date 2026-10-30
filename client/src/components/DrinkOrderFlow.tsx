@@ -46,7 +46,8 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
     }, [quantities]);
 
     const handleClose = () => {
-        setStep("confirm");
+        // The inline tab has no "confirm" step, so go back to the category list there
+        setStep(inline ? "categories" : "confirm");
         setSelectedCategory(null);
         setQuantities({});
         setReportText("");

@@ -26,10 +26,13 @@ interface ResultCardProps {
   percentage: number;
   icon: LucideIcon;
   colorClass: string;
+  // Full class names, not built from colorClass: Tailwind only generates classes it can find in the source
+  iconBgClass: string;
+  stripBgClass: string;
   bgClass: string;
 }
 
-export function ResultCard({ title, amount, count, percentage, icon: Icon, colorClass, bgClass }: ResultCardProps) {
+export function ResultCard({ title, amount, count, percentage, icon: Icon, colorClass, iconBgClass, stripBgClass, bgClass }: ResultCardProps) {
   const perPerson = count > 0 ? amount / count : 0;
 
   return (
@@ -39,7 +42,7 @@ export function ResultCard({ title, amount, count, percentage, icon: Icon, color
     )}>
       {/* Top: role label + total */}
       <div className="flex items-center gap-3 p-3 pb-2">
-        <div className={cn("w-10 h-10 border-3 border-foreground flex items-center justify-center shrink-0", colorClass.replace("text-", "bg-"))}>
+        <div className={cn("w-10 h-10 border-3 border-foreground flex items-center justify-center shrink-0", iconBgClass)}>
           <Icon className="w-5 h-5 text-foreground" />
         </div>
         <div className="flex-1 min-w-0">
@@ -53,7 +56,7 @@ export function ResultCard({ title, amount, count, percentage, icon: Icon, color
 
       {/* Bottom: per person — THE MAIN EVENT */}
       {count > 0 && (
-        <div className={cn("border-t-3 border-foreground p-3 flex items-center justify-between", colorClass.replace("text-", "bg-") + "/15")}>
+        <div className={cn("border-t-3 border-foreground p-3 flex items-center justify-between", stripBgClass)}>
           <span className="text-[10px] font-black uppercase tracking-[0.25em] text-foreground/60 font-mono">/ person</span>
           <AnimatedNumber
             value={perPerson}
