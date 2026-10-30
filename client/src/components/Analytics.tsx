@@ -34,15 +34,15 @@ export function Analytics() {
     const { trendData, average, weeklyData, monthlyData, distributionData } = analysis;
 
     return (
-        <div className="border-3 border-foreground bg-card brutal-shadow">
+        <div className="border-2 border-border bg-card brutal-shadow">
             <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
-                <div className="flex items-center justify-between p-3 border-b-3 border-foreground">
+                <div className="flex items-center justify-between p-3 border-b-2 border-border">
                     <div className="flex items-center gap-2">
                         <BarChart3 className="w-4 h-4 text-muted-foreground" />
                         <h2 className="text-sm font-black text-foreground uppercase tracking-wider">Analytics</h2>
                     </div>
                     <CollapsibleTrigger asChild>
-                        <Button variant="ghost" size="sm" className="w-8 h-8 p-0 border-2 border-foreground bg-card hover:bg-muted rounded-none">
+                        <Button variant="ghost" size="sm" className="w-8 h-8 p-0 border-2 border-border bg-card hover:bg-muted rounded-none">
                             {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                             <span className="sr-only">Toggle Analytics</span>
                         </Button>
@@ -59,10 +59,10 @@ export function Analytics() {
                             </div>
                             <div className="flex items-center gap-2">
                                 <Select value={view} onValueChange={setView}>
-                                    <SelectTrigger className="w-[130px] h-8 text-xs font-bold border-2 border-foreground bg-card rounded-none">
+                                    <SelectTrigger className="w-[130px] h-8 text-xs font-bold border-2 border-border bg-card rounded-none">
                                         <SelectValue />
                                     </SelectTrigger>
-                                    <SelectContent className="border-3 border-foreground bg-card rounded-none brutal-shadow">
+                                    <SelectContent className="border-2 border-border bg-card rounded-none brutal-shadow">
                                         <SelectItem value="daily">Daily Trend</SelectItem>
                                         <SelectItem value="weekly">Weekly Pattern</SelectItem>
                                         <SelectItem value="monthly">Monthly Trends</SelectItem>
@@ -70,10 +70,10 @@ export function Analytics() {
                                     </SelectContent>
                                 </Select>
                                 <Select value={days} onValueChange={setDays}>
-                                    <SelectTrigger className="w-[110px] h-8 text-xs font-bold border-2 border-foreground bg-card rounded-none">
+                                    <SelectTrigger className="w-[110px] h-8 text-xs font-bold border-2 border-border bg-card rounded-none">
                                         <SelectValue placeholder="Select range" />
                                     </SelectTrigger>
-                                    <SelectContent className="border-3 border-foreground bg-card rounded-none brutal-shadow">
+                                    <SelectContent className="border-2 border-border bg-card rounded-none brutal-shadow">
                                         <SelectItem value="7">Last 7 Days</SelectItem>
                                         <SelectItem value="14">Last 14 Days</SelectItem>
                                         <SelectItem value="30">Last 30 Days</SelectItem>
@@ -85,10 +85,10 @@ export function Analytics() {
                         </div>
 
                         {/* Stats */}
-                        <div className="border-3 border-foreground p-3 bg-background">
-                            <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest font-mono">Avg / Day</span>
+                        <div className="border-2 border-border p-3 bg-background">
+                            <span className="text-[11px] text-muted-foreground uppercase font-black tracking-widest font-mono">Avg / Day</span>
                             <div className="text-3xl font-black font-mono">€{average.toFixed(2)}</div>
-                            <p className="text-[10px] text-muted-foreground font-mono">Based on worked days in period</p>
+                            <p className="text-[11px] text-muted-foreground font-mono">Based on worked days in period</p>
                         </div>
 
                         {/* Chart */}
@@ -119,9 +119,9 @@ export function Analytics() {
                                                     const data = payload[0].payload;
                                                     const isWeekend = data.fullDate.getDay() === 0 || data.fullDate.getDay() === 6;
                                                     return (
-                                                        <div className="border-3 border-foreground bg-card p-2 brutal-shadow-sm">
+                                                        <div className="border-2 border-border bg-card p-2 brutal-shadow-sm">
                                                             <div className="grid gap-1">
-                                                                <span className="text-[9px] uppercase text-muted-foreground font-black tracking-widest font-mono">
+                                                                <span className="text-[11px] uppercase text-muted-foreground font-black tracking-widest font-mono">
                                                                     {data.date} {isWeekend && '(Weekend)'}
                                                                 </span>
                                                                 <span className="font-black text-lg font-mono">
@@ -166,15 +166,15 @@ export function Analytics() {
                                                 if (active && payload && payload.length) {
                                                     const data = payload[0].payload;
                                                     return (
-                                                        <div className="border-3 border-foreground bg-card p-2 brutal-shadow-sm">
+                                                        <div className="border-2 border-border bg-card p-2 brutal-shadow-sm">
                                                             <div className="grid gap-1">
-                                                                <span className="text-[9px] uppercase text-muted-foreground font-black tracking-widest font-mono">
+                                                                <span className="text-[11px] uppercase text-muted-foreground font-black tracking-widest font-mono">
                                                                     {data.name}
                                                                 </span>
                                                                 <span className="font-black text-lg font-mono">
                                                                     €{Number(payload[0].value).toFixed(2)}
                                                                 </span>
-                                                                <span className="text-[10px] text-muted-foreground font-mono">
+                                                                <span className="text-[11px] text-muted-foreground font-mono">
                                                                     Average of {data.count} shifts
                                                                 </span>
                                                             </div>
@@ -209,15 +209,15 @@ export function Analytics() {
                                                 if (active && payload && payload.length) {
                                                     const data = payload[0].payload;
                                                     return (
-                                                        <div className="border-3 border-foreground bg-card p-2 brutal-shadow-sm">
+                                                        <div className="border-2 border-border bg-card p-2 brutal-shadow-sm">
                                                             <div className="grid gap-1">
-                                                                <span className="text-[9px] uppercase text-muted-foreground font-black tracking-widest font-mono">
+                                                                <span className="text-[11px] uppercase text-muted-foreground font-black tracking-widest font-mono">
                                                                     {data.name}
                                                                 </span>
                                                                 <span className="font-black text-lg font-mono">
                                                                     €{Number(payload[0].value).toFixed(2)}
                                                                 </span>
-                                                                <span className="text-[10px] text-muted-foreground font-mono">
+                                                                <span className="text-[11px] text-muted-foreground font-mono">
                                                                     Total over {data.count} shifts
                                                                 </span>
                                                             </div>
@@ -251,15 +251,15 @@ export function Analytics() {
                                                 if (active && payload && payload.length) {
                                                     const data = payload[0].payload;
                                                     return (
-                                                        <div className="border-3 border-foreground bg-card p-2 brutal-shadow-sm">
+                                                        <div className="border-2 border-border bg-card p-2 brutal-shadow-sm">
                                                             <div className="grid gap-1">
-                                                                <span className="text-[9px] uppercase text-muted-foreground font-black tracking-widest font-mono">
+                                                                <span className="text-[11px] uppercase text-muted-foreground font-black tracking-widest font-mono">
                                                                     {data.name}
                                                                 </span>
                                                                 <span className="font-black text-lg font-mono">
                                                                     {Number(payload[0].value)}
                                                                 </span>
-                                                                <span className="text-[10px] text-muted-foreground font-mono">
+                                                                <span className="text-[11px] text-muted-foreground font-mono">
                                                                     Shifts in this range
                                                                 </span>
                                                             </div>

@@ -220,8 +220,8 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
                 >
                     <DialogHeader className="mb-5">
                         <div className="flex items-center justify-center mb-3">
-                            <div className="w-12 h-12 border-3 border-foreground bg-amber-400 flex items-center justify-center brutal-shadow-sm">
-                                <Wine className="w-5 h-5 text-foreground" />
+                            <div className="w-12 h-12 border-2 border-border bg-amber-400 flex items-center justify-center brutal-shadow-sm">
+                                <Wine className="w-5 h-5 text-ink" />
                             </div>
                         </div>
                         <DialogTitle className="text-xl text-center font-black uppercase tracking-wider">
@@ -235,20 +235,20 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
                         <div className="flex gap-2.5">
                             <Button
                                 variant="outline"
-                                className="flex-1 h-11 text-sm font-bold uppercase tracking-wider border-3 border-foreground bg-card hover:bg-destructive hover:text-destructive-foreground transition-all rounded-none brutal-shadow-sm brutal-hover"
+                                className="flex-1 h-11 text-sm font-bold uppercase tracking-wider border-2 border-border bg-card hover:bg-destructive hover:text-destructive-foreground transition-all rounded-none brutal-shadow-sm brutal-hover"
                                 onClick={handleNo}
                             >
                                 Nē
                             </Button>
                             <Button
-                                className="flex-1 h-11 text-sm font-bold uppercase tracking-wider border-3 border-foreground bg-primary text-primary-foreground hover:bg-primary/90 rounded-none brutal-shadow-sm brutal-hover"
+                                className="flex-1 h-11 text-sm font-bold uppercase tracking-wider border-2 border-border bg-primary text-primary-foreground hover:bg-primary/90 rounded-none brutal-shadow-sm brutal-hover"
                                 onClick={handleYes}
                             >
                                 Norakstīt
                             </Button>
                         </div>
                         <Button
-                            className="w-full h-11 text-sm font-bold uppercase tracking-wider border-3 border-foreground bg-amber-400 text-foreground hover:bg-amber-300 rounded-none brutal-shadow-sm brutal-hover"
+                            className="w-full h-11 text-sm font-bold uppercase tracking-wider border-2 border-border bg-amber-400 text-ink hover:bg-amber-300 rounded-none brutal-shadow-sm brutal-hover"
                             onClick={handleJapasuta}
                         >
                             Jāpasūta
@@ -257,7 +257,7 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full mt-3 h-8 text-[10px] uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground gap-1.5 font-mono font-bold rounded-none"
+                        className="w-full mt-3 h-8 text-[11px] uppercase tracking-[0.08em] text-muted-foreground hover:text-foreground gap-1.5 font-mono font-bold rounded-none"
                         onClick={handleSendReport}
                         disabled={reportLoading}
                     >
@@ -281,7 +281,7 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
                     transition={{ duration: 0.2 }}
                     className={`flex flex-col ${inline ? "" : "max-h-[85vh]"}`}
                 >
-                    <div className="px-4 pt-4 pb-2.5 border-b-3 border-foreground">
+                    <div className="px-4 pt-4 pb-2.5 border-b-2 border-border">
                         <h2 className="text-base font-black uppercase tracking-wider">Kategorijas</h2>
                     </div>
                     <ScrollArea className={`flex-1 ${inline ? "" : "max-h-[calc(90vh-120px)]"}`}>
@@ -292,14 +292,14 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
                                     <button
                                         key={category.name}
                                         onClick={() => handleCategorySelect(category)}
-                                        className="relative group text-left p-3 border-3 border-foreground bg-card hover:bg-muted transition-all duration-100 active:translate-x-[2px] active:translate-y-[2px] brutal-shadow-sm"
+                                        className="relative group text-left p-3 border-2 border-border bg-card hover:bg-muted transition-all duration-100 active:translate-x-[2px] active:translate-y-[2px] brutal-shadow-sm"
                                     >
                                         <span className="text-[11px] font-black text-foreground leading-tight line-clamp-2 uppercase tracking-wider">
                                             {category.name}
                                         </span>
 
                                         {count > 0 && (
-                                            <div className="absolute -top-2 -right-2 w-5 h-5 border-2 border-foreground bg-amber-400 text-foreground text-[9px] font-black flex items-center justify-center">
+                                            <div className="absolute -top-2 -right-2 w-5 h-5 border-2 border-border bg-amber-400 text-ink text-[11px] font-black flex items-center justify-center">
                                                 {count}
                                             </div>
                                         )}
@@ -309,9 +309,9 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
                         </div>
                     </ScrollArea>
                     {totalItems > 0 && (
-                        <div className="p-3 border-t-3 border-foreground">
+                        <div className="p-3 border-t-2 border-border">
                             <Button
-                                className="w-full h-10 text-sm font-black uppercase tracking-wider border-3 border-foreground bg-primary text-primary-foreground rounded-none brutal-shadow-sm brutal-hover gap-2"
+                                className="w-full h-10 text-sm font-black uppercase tracking-wider border-2 border-border bg-primary text-primary-foreground rounded-none brutal-shadow-sm brutal-hover gap-2"
                                 onClick={handleSend}
                                 disabled={createDrinkOrder.isPending}
                             >
@@ -325,7 +325,7 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="w-full h-8 text-[10px] uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground gap-1.5 font-mono font-bold rounded-none"
+                                className="w-full h-8 text-[11px] uppercase tracking-[0.08em] text-muted-foreground hover:text-foreground gap-1.5 font-mono font-bold rounded-none"
                                 onClick={handleSendReport}
                                 disabled={reportLoading}
                             >
@@ -351,11 +351,11 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
                     transition={{ duration: 0.2 }}
                     className={`flex flex-col ${inline ? "" : "max-h-[85vh]"}`}
                 >
-                    <div className="px-4 pt-3 pb-2.5 border-b-3 border-foreground">
+                    <div className="px-4 pt-3 pb-2.5 border-b-2 border-border">
                         <div className="flex items-center gap-2.5">
                             <button
                                 onClick={handleBack}
-                                className="w-7 h-7 border-3 border-foreground bg-card flex items-center justify-center hover:bg-muted transition-colors active:translate-x-[1px] active:translate-y-[1px] shrink-0"
+                                className="w-7 h-7 border-2 border-border bg-card flex items-center justify-center hover:bg-muted transition-colors active:translate-x-[1px] active:translate-y-[1px] shrink-0"
                             >
                                 <ArrowLeft className="w-3.5 h-3.5" />
                             </button>
@@ -363,7 +363,7 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
                                 <h2 className="text-xs font-black truncate uppercase tracking-wider">
                                     {selectedCategory.name}
                                 </h2>
-                                <p className="text-[9px] text-muted-foreground font-mono">
+                                <p className="text-[11px] text-muted-foreground font-mono">
                                     +/− daudzumu
                                 </p>
                             </div>
@@ -380,15 +380,15 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
                                     <div key={item.name}>
                                         {showSubsection && (
                                             <div className={`px-1.5 ${index > 0 ? "pt-1.5" : ""} pb-0.5`}>
-                                                <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em] font-mono">
+                                                <p className="text-[11px] font-black text-muted-foreground uppercase tracking-[0.08em] font-mono">
                                                     {item.subsection}
                                                 </p>
                                             </div>
                                         )}
                                         <div
                                             className={`flex items-center gap-2 px-2 py-1.5 transition-all duration-100 ${qty > 0
-                                                ? "bg-primary/10 border-3 border-primary"
-                                                : "bg-card border-3 border-transparent hover:border-foreground/20"
+                                                ? "bg-primary/10 border-2 border-primary"
+                                                : "bg-card border-2 border-transparent hover:border-foreground/20"
                                                 }`}
                                         >
                                             <div className="flex-1 min-w-0">
@@ -402,7 +402,7 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
                                                         handleDecrement(selectedCategory.name, item.name)
                                                     }
                                                     disabled={qty === 0}
-                                                    className="w-7 h-7 border-2 border-foreground bg-card flex items-center justify-center hover:bg-destructive/20 hover:text-destructive transition-all active:translate-x-[1px] active:translate-y-[1px] disabled:opacity-20 disabled:pointer-events-none"
+                                                    className="w-7 h-7 border-2 border-border bg-card flex items-center justify-center hover:bg-destructive/20 hover:text-destructive transition-all active:translate-x-[1px] active:translate-y-[1px] disabled:opacity-20 disabled:pointer-events-none"
                                                 >
                                                     <Minus className="w-3 h-3" />
                                                 </button>
@@ -416,7 +416,7 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
                                                     onClick={() =>
                                                         handleIncrement(selectedCategory.name, item.name)
                                                     }
-                                                    className="w-7 h-7 border-2 border-foreground bg-card flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all active:translate-x-[1px] active:translate-y-[1px]"
+                                                    className="w-7 h-7 border-2 border-border bg-card flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all active:translate-x-[1px] active:translate-y-[1px]"
                                                 >
                                                     <Plus className="w-3 h-3" />
                                                 </button>
@@ -428,9 +428,9 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
                         </div>
                     </ScrollArea>
                     {totalItems > 0 && (
-                        <div className="p-3 border-t-3 border-foreground">
+                        <div className="p-3 border-t-2 border-border">
                             <Button
-                                className="w-full h-10 text-sm font-black uppercase tracking-wider border-3 border-foreground bg-primary text-primary-foreground rounded-none brutal-shadow-sm brutal-hover gap-2"
+                                className="w-full h-10 text-sm font-black uppercase tracking-wider border-2 border-border bg-primary text-primary-foreground rounded-none brutal-shadow-sm brutal-hover gap-2"
                                 onClick={handleSend}
                                 disabled={createDrinkOrder.isPending}
                             >
@@ -452,11 +452,11 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
                     transition={{ duration: 0.2 }}
                     className={`flex flex-col ${inline ? "" : "max-h-[85vh]"}`}
                 >
-                    <div className="px-4 pt-3 pb-2.5 border-b-3 border-foreground">
+                    <div className="px-4 pt-3 pb-2.5 border-b-2 border-border">
                         <div className="flex items-center gap-2.5">
                             <button
                                 onClick={() => { setReportText(""); setStep(inline ? "categories" : "confirm"); }}
-                                className="w-7 h-7 border-3 border-foreground bg-card flex items-center justify-center hover:bg-muted transition-colors active:translate-x-[1px] active:translate-y-[1px] shrink-0"
+                                className="w-7 h-7 border-2 border-border bg-card flex items-center justify-center hover:bg-muted transition-colors active:translate-x-[1px] active:translate-y-[1px] shrink-0"
                             >
                                 <ArrowLeft className="w-3.5 h-3.5" />
                             </button>
@@ -470,9 +470,9 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
                             {reportText}
                         </pre>
                     </ScrollArea>
-                    <div className="p-3 border-t-3 border-foreground">
+                    <div className="p-3 border-t-2 border-border">
                         <Button
-                            className="w-full h-10 text-sm font-black uppercase tracking-wider border-3 border-foreground bg-primary text-primary-foreground rounded-none brutal-shadow-sm brutal-hover gap-2"
+                            className="w-full h-10 text-sm font-black uppercase tracking-wider border-2 border-border bg-primary text-primary-foreground rounded-none brutal-shadow-sm brutal-hover gap-2"
                             onClick={handleCopyReport}
                         >
                             <Copy className="w-4 h-4" />
@@ -492,10 +492,10 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
                     transition={{ duration: 0.2 }}
                     className={`flex flex-col ${inline ? "" : "max-h-[85vh]"}`}
                 >
-                    <div className="px-4 pt-3 pb-2.5 border-b-3 border-foreground flex items-center gap-2.5">
+                    <div className="px-4 pt-3 pb-2.5 border-b-2 border-border flex items-center gap-2.5">
                         <button
                             onClick={() => setStep("confirm")}
-                            className="w-7 h-7 border-3 border-foreground bg-card flex items-center justify-center hover:bg-muted transition-colors active:translate-x-[1px] active:translate-y-[1px] shrink-0"
+                            className="w-7 h-7 border-2 border-border bg-card flex items-center justify-center hover:bg-muted transition-colors active:translate-x-[1px] active:translate-y-[1px] shrink-0"
                         >
                             <ArrowLeft className="w-3.5 h-3.5" />
                         </button>
@@ -516,7 +516,7 @@ export function DrinkOrderFlow({ open, onClose, inline }: DrinkOrderFlowProps) {
     return (
         <Dialog open={open} onOpenChange={(isOpen) => !isOpen && handleClose()} modal={false}>
             <DialogContent
-                className="w-[95vw] max-w-[440px] p-0 gap-0 overflow-hidden rounded-none border-3 border-foreground brutal-shadow max-h-[90vh] bg-card"
+                className="w-[95vw] max-w-[440px] p-0 gap-0 overflow-hidden rounded-none border-2 border-border brutal-shadow max-h-[90vh] bg-card"
                 onPointerDownOutside={(e) => e.preventDefault()}
                 onInteractOutside={(e) => e.preventDefault()}
             >

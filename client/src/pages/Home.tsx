@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
-import { ChefHat, Utensils, Waves, Save, History, Coins, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChefHat, Utensils, Waves, Save, History, Coins, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Flame } from "lucide-react";
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { PersonSelector } from "@/components/PersonSelector";
 import { ResultCard } from "@/components/ResultCard";
@@ -19,7 +19,6 @@ import { TIP_PERCENTAGES } from "@/lib/constants";
 import { DrinkOrderFlow } from "@/components/DrinkOrderFlow";
 import { OutOfStock } from "@/components/OutOfStock";
 import { OrderModal } from "@/components/OrderModal";
-import { RainbowButton } from "@/components/ui/rainbow-button";
 import { BottomNav, type TabId } from "@/components/BottomNav";
 
 export default function Home() {
@@ -380,7 +379,7 @@ export default function Home() {
       {/* Input Section */}
       <section className="space-y-3">
         <CurrencyInput
-          label="Total Tip Amount"
+          label="Total tips"
           placeholder="0.00"
           value={totalAmount}
           onValueChange={setTotalAmount}
@@ -389,7 +388,7 @@ export default function Home() {
         <div className="space-y-3">
           <PersonSelector
             label="Waiters"
-            icon={<Utensils className="w-4 h-4 text-orange-500" />}
+            icon={<Utensils className="w-4 h-4 text-role-waiter" />}
             value={waiterCount}
             options={[1, 2, 3, 4]}
             onChange={setWaiterCount}
@@ -397,7 +396,7 @@ export default function Home() {
 
           <PersonSelector
             label="Cooks"
-            icon={<ChefHat className="w-4 h-4 text-emerald-500" />}
+            icon={<ChefHat className="w-4 h-4 text-role-cook" />}
             value={cookCount}
             options={[1, 2, 3]}
             onChange={setCookCount}
@@ -405,7 +404,7 @@ export default function Home() {
 
           <PersonSelector
             label="Dishwashers"
-            icon={<Waves className="w-4 h-4 text-blue-500" />}
+            icon={<Waves className="w-4 h-4 text-role-dish" />}
             value={dishwasherCount}
             options={[0, 1]}
             onChange={setDishwasherCount}
@@ -416,8 +415,8 @@ export default function Home() {
       {/* Save Section — The primary action */}
       <section className="pt-2">
         {amount > 0 ? (
-          <RainbowButton
-            className="w-full h-14 text-base gap-3 font-black uppercase tracking-[0.15em] rounded-none brutal-shadow brutal-hover shadow-[0_0_20px_hsl(var(--primary)/0.4)]"
+          <Button
+            className="w-full h-14 text-base gap-2.5 font-bold uppercase tracking-[0.1em] rounded-none border-2 border-ink bg-primary text-primary-foreground hover:bg-primary brutal-shadow brutal-hover [&_svg]:size-5"
             onClick={handleSave}
             disabled={createCalculation.isPending}
           >
@@ -425,18 +424,18 @@ export default function Home() {
               <>Saving...</>
             ) : (
               <>
-                <Save className="w-5 h-5" />
-                Save
+                <Save />
+                Save split
               </>
             )}
-          </RainbowButton>
+          </Button>
         ) : (
           <Button
-            className="w-full h-14 text-base gap-3 font-black uppercase tracking-[0.15em] border-3 border-foreground rounded-none transition-all duration-300 bg-muted text-muted-foreground cursor-not-allowed"
+            className="w-full h-14 text-base gap-2.5 font-bold uppercase tracking-[0.1em] border-2 border-border rounded-none transition-all duration-300 bg-muted text-muted-foreground cursor-not-allowed [&_svg]:size-5"
             disabled
           >
-            <Save className="w-5 h-5" />
-            Save
+            <Save />
+            Save split
           </Button>
         )}
       </section>
@@ -444,7 +443,7 @@ export default function Home() {
       {/* Distribution Section */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-base font-black text-foreground uppercase tracking-wider">Distribution</h2>
+          <h2 className="text-[15px] font-bold text-foreground uppercase tracking-[0.06em]">Distribution</h2>
         </div>
 
         {(() => {
@@ -465,9 +464,9 @@ export default function Home() {
                 amount={dw}
                 count={dcw}
                 icon={Utensils}
-                colorClass="text-orange-500"
-                iconBgClass="bg-orange-500"
-                stripBgClass="bg-orange-500/15"
+                colorClass="text-role-waiter"
+                iconBgClass="bg-role-waiter"
+                stripBgClass="bg-role-waiter/15"
                 bgClass=""
               />
               <ResultCard
@@ -476,9 +475,9 @@ export default function Home() {
                 amount={dc}
                 count={dcc}
                 icon={ChefHat}
-                colorClass="text-emerald-500"
-                iconBgClass="bg-emerald-500"
-                stripBgClass="bg-emerald-500/15"
+                colorClass="text-role-cook"
+                iconBgClass="bg-role-cook"
+                stripBgClass="bg-role-cook/15"
                 bgClass=""
               />
               <ResultCard
@@ -487,9 +486,9 @@ export default function Home() {
                 amount={dd}
                 count={dcd}
                 icon={Waves}
-                colorClass="text-blue-500"
-                iconBgClass="bg-blue-500"
-                stripBgClass="bg-blue-500/15"
+                colorClass="text-role-dish"
+                iconBgClass="bg-role-dish"
+                stripBgClass="bg-role-dish/15"
                 bgClass={dcd > 0 ? "" : "opacity-40 grayscale"}
               />
             </div>
@@ -522,8 +521,8 @@ export default function Home() {
 
   const renderHistoryTab = () => (
     <div className="p-5 space-y-4">
-      <div className="border-3 border-foreground bg-card brutal-shadow">
-        <div className="flex items-center justify-between p-3 border-b-3 border-foreground">
+      <div className="border-2 border-border bg-card brutal-shadow">
+        <div className="flex items-center justify-between p-3 border-b-2 border-border">
           <div className="flex items-center gap-2">
             <History className="w-4 h-4 text-muted-foreground" />
             <h2 className="text-sm font-black text-foreground uppercase tracking-wider">History</h2>
@@ -533,7 +532,7 @@ export default function Home() {
               variant="ghost"
               size="sm"
               onClick={() => setShowAverages(!showAverages)}
-              className="h-8 text-[10px] uppercase font-black tracking-[0.15em] text-muted-foreground hover:text-foreground font-mono border-2 border-foreground bg-card rounded-none"
+              className="h-8 text-[11px] uppercase font-black tracking-[0.08em] text-muted-foreground hover:text-foreground font-mono border-2 border-border bg-card rounded-none"
             >
               {showAverages ? "Hide Avg" : "Show Avg"}
             </Button>
@@ -541,7 +540,7 @@ export default function Home() {
               variant="ghost"
               size="sm"
               onClick={() => { setShowCalendar(!showCalendar); setSelectedCalendarDay(null); }}
-              className={`h-8 text-[10px] uppercase font-black tracking-[0.15em] font-mono border-2 border-foreground rounded-none ${showCalendar ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground bg-card'}`}
+              className={`h-8 text-[11px] uppercase font-black tracking-[0.08em] font-mono border-2 border-border rounded-none ${showCalendar ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground bg-card'}`}
             >
               Cal
             </Button>
@@ -610,7 +609,7 @@ export default function Home() {
                       onClick={() => setSelectedCalendarDay(isSelected ? null : (dailyCalcs[day] ? dayKey : null))}
                       className={`aspect-square relative flex flex-col items-center justify-center border-2 border-foreground/20 transition-all ${heatClass} ${isToday ? 'border-primary border-dashed !border-2' : ''} ${isSelected ? 'ring-2 ring-primary ring-offset-1' : ''} ${total > 0 ? 'cursor-pointer hover:scale-105' : 'cursor-default opacity-60'}`}
                     >
-                      <span className="absolute top-0.5 left-1 text-[9px] font-mono font-bold leading-none">{day}</span>
+                      <span className="absolute top-0.5 left-1 text-[11px] font-mono font-bold leading-none">{day}</span>
                       {total > 0 && (
                         <span className="text-xs font-black font-mono leading-none mt-1">€{total.toFixed(0)}</span>
                       )}
@@ -637,19 +636,19 @@ export default function Home() {
                         variant="ghost"
                         size="sm"
                         onClick={() => setCalendarMonth(prev => { const d = new Date(prev); d.setMonth(d.getMonth() - 1); return d; })}
-                        className="w-8 h-8 p-0 border-2 border-foreground bg-card hover:bg-muted rounded-none"
+                        className="w-8 h-8 p-0 border-2 border-border bg-card hover:bg-muted rounded-none"
                       >
                         <ChevronLeft className="w-4 h-4" />
                       </Button>
                       <div className="text-center">
                         <h3 className="text-xs font-black text-foreground uppercase tracking-wider">{monthLabel}</h3>
-                        <p className="text-[10px] font-mono font-black text-primary">€{calMonthTotal.toFixed(2)}</p>
+                        <p className="text-[11px] font-mono font-black text-primary">€{calMonthTotal.toFixed(2)}</p>
                       </div>
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => setCalendarMonth(prev => { const d = new Date(prev); d.setMonth(d.getMonth() + 1); return d; })}
-                        className="w-8 h-8 p-0 border-2 border-foreground bg-card hover:bg-muted rounded-none"
+                        className="w-8 h-8 p-0 border-2 border-border bg-card hover:bg-muted rounded-none"
                       >
                         <ChevronRight className="w-4 h-4" />
                       </Button>
@@ -658,7 +657,7 @@ export default function Home() {
                     {/* Day headers */}
                     <div className="grid grid-cols-7 gap-1">
                       {['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map(d => (
-                        <div key={d} className="text-center text-[8px] font-black uppercase tracking-wider text-muted-foreground py-1">{d}</div>
+                        <div key={d} className="text-center text-[11px] font-black uppercase tracking-wider text-muted-foreground py-1">{d}</div>
                       ))}
                     </div>
 
@@ -669,7 +668,7 @@ export default function Home() {
 
                     {/* Selected day expansion */}
                     {selectedCalendarDay && selectedDayCalcs.length > 0 && (
-                      <div className="space-y-2 pt-2 border-t-3 border-foreground/20">
+                      <div className="space-y-2 pt-2 border-t-2 border-foreground/20">
                         <div className="text-[11px] font-black text-muted-foreground font-mono uppercase tracking-wider">
                           {(() => {
                             const parts = selectedCalendarDay.split('-').map(Number);
@@ -711,33 +710,33 @@ export default function Home() {
                   >
                     <Collapsible defaultOpen={false}>
                       <CollapsibleTrigger className="w-full" data-testid={`button-month-toggle-${index}`}>
-                        <div className="flex items-center justify-between px-3 py-2.5 border-3 border-foreground bg-card brutal-shadow-sm cursor-pointer hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none">
+                        <div className="flex items-center justify-between px-3 py-2.5 border-2 border-border bg-card brutal-shadow-sm cursor-pointer hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none">
                           {/* Left: Date */}
-                          <div className="flex items-center gap-2 justify-start">
+                          <div className="flex items-center gap-2 justify-start min-w-0">
                             <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform duration-200 [[data-state=closed]_&]:-rotate-90" />
                             <h3 className="text-xs font-black text-foreground truncate uppercase tracking-wider">{month}</h3>
                           </div>
 
                           {/* Center: Averages */}
                           {showAverages && (
-                            <div className="flex items-center justify-center gap-3 text-[10px] font-mono font-black text-muted-foreground">
+                            <div className="flex items-center justify-center gap-3 shrink-0 text-[11px] font-mono font-black text-muted-foreground">
                               <div className="flex items-center gap-1">
                                 <span>W:</span>
-                                <span className="text-orange-500" data-testid="avg-waiter">€{avgWaiter.toFixed(0)}</span>
+                                <span className="text-role-waiter" data-testid="avg-waiter">€{avgWaiter.toFixed(0)}</span>
                               </div>
                               <div className="flex items-center gap-1">
                                 <span>C:</span>
-                                <span className="text-emerald-500" data-testid="avg-cook">€{avgCook.toFixed(0)}</span>
+                                <span className="text-role-cook" data-testid="avg-cook">€{avgCook.toFixed(0)}</span>
                               </div>
                               <div className="flex items-center gap-1">
                                 <span>D:</span>
-                                <span className="text-blue-500" data-testid="avg-dishwasher">€{avgDishwasher.toFixed(0)}</span>
+                                <span className="text-role-dish" data-testid="avg-dishwasher">€{avgDishwasher.toFixed(0)}</span>
                               </div>
                             </div>
                           )}
 
                           {/* Right: Total */}
-                          <div className="flex justify-end">
+                          <div className="flex justify-end shrink-0">
                             <span className="text-sm font-black text-primary font-mono">€{monthTotal.toFixed(2)}</span>
                           </div>
                         </div>
@@ -776,7 +775,7 @@ export default function Home() {
               </div>
             )
           ) : (
-            <div className="text-center py-8 border-3 border-dashed border-foreground/30">
+            <div className="text-center py-8 border-2 border-dashed border-foreground/30">
               <p className="text-sm text-muted-foreground font-mono uppercase tracking-wider">No calculations saved yet.</p>
             </div>
           )}
@@ -810,28 +809,22 @@ export default function Home() {
 
   return (
     <div className="h-[100dvh] w-full flex flex-col overflow-hidden text-foreground bg-background select-none">
-      {/* Aggressive halftone dotted background */}
-      <div className="absolute inset-0 opacity-[0.15] dark:opacity-[0.1] pointer-events-none" style={{
-        backgroundImage: `radial-gradient(hsl(var(--foreground)) 2px, transparent 2px)`,
-        backgroundSize: `16px 16px`
-      }} />
-
       {/* Header */}
-      <header className="shrink-0 relative z-50 px-4 py-3 pt-safe bg-card border-b-3 border-foreground touch-none">
+      <header className="shrink-0 relative z-50 px-4 py-3 pt-safe bg-card border-b-2 border-border touch-none">
         <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 sm:w-9 sm:h-9 border-3 border-foreground bg-primary flex items-center justify-center brutal-shadow-sm shrink-0">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 border-2 border-ink bg-primary flex items-center justify-center brutal-shadow-sm shrink-0">
                 <Coins className="w-4 h-4 text-primary-foreground" />
               </div>
-              <h1 className="text-base sm:text-lg font-black text-foreground uppercase tracking-wider whitespace-nowrap">Tip Harmony+</h1>
+              <h1 className="text-[15px] sm:text-lg font-bold text-foreground uppercase tracking-[0.04em] whitespace-nowrap truncate">Tip Harmony+</h1>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               {(history && history.length > 0) || streak >= 2 ? (
-                <div className="flex items-center border-3 border-foreground bg-background">
+                <div className="flex items-stretch border-2 border-border bg-background">
                   {history && history.length > 0 && (
-                    <div className="text-right px-2 py-1">
-                      <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em] font-mono leading-none mb-0.5">Month</p>
-                      <p className="text-sm font-black text-foreground leading-none font-mono">
+                    <div className="text-right px-1.5 py-[5px]">
+                      <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.06em] leading-none mb-[3px]">Month</p>
+                      <p className="text-sm font-bold text-foreground leading-none font-mono">
                         €{history.filter(calc => {
                           if (!calc.createdAt) return false;
                           const date = new Date(calc.createdAt);
@@ -842,12 +835,15 @@ export default function Home() {
                     </div>
                   )}
                   {history && history.length > 0 && streak >= 2 && (
-                    <div className="w-[3px] self-stretch bg-foreground"></div>
+                    <div className="w-[2px] self-stretch bg-border"></div>
                   )}
                   {streak >= 2 && (
-                    <div className="text-right px-2 py-1">
-                      <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em] font-mono leading-none mb-0.5">Streak</p>
-                      <p className="text-sm font-black text-foreground leading-none font-mono">🔥 {streak}</p>
+                    <div className="text-right px-1.5 py-[5px]">
+                      <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.06em] leading-none mb-[3px]">Streak</p>
+                      <p className="text-sm font-bold text-foreground leading-none font-mono flex items-center justify-end gap-[3px]">
+                        <Flame className="w-3.5 h-3.5 text-role-waiter" />
+                        {streak}
+                      </p>
                     </div>
                   )}
                 </div>

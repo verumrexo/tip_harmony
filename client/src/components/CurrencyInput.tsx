@@ -68,14 +68,14 @@ export function CurrencyInput({ label, value, onValueChange, className, ...props
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-xs font-bold text-muted-foreground uppercase tracking-[0.2em] font-mono">{label}</label>
+      <label className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.08em]">{label}</label>
       <div className="relative group">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground font-mono font-bold text-xl z-20">€</span>
+        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground font-mono font-bold text-[22px] z-20">€</span>
 
         {/* Visual Layer (Ghost) */}
         <div className={cn(
-          "absolute inset-0 w-full pl-10 pr-4 py-2.5 border-3 bg-card flex items-center text-2xl font-bold font-mono pointer-events-none z-0 transition-all",
-          isFocused ? "border-primary shadow-[2px_2px_0px_0px_hsl(var(--primary))] translate-x-[2px] translate-y-[2px]" : "border-foreground brutal-shadow",
+          "absolute inset-0 w-full pl-[42px] pr-4 border-2 bg-card flex items-center text-[28px] font-bold font-mono pointer-events-none z-0 transition-all",
+          isFocused ? "border-primary shadow-[2px_2px_0px_0px_hsl(var(--primary))] translate-x-[1px] translate-y-[1px]" : "border-border brutal-shadow",
           className
         )}>
           <span className="text-muted-foreground/20 select-none">{gray}</span>
@@ -95,7 +95,7 @@ export function CurrencyInput({ label, value, onValueChange, className, ...props
             setTimeout(() => setIsFocused(false), 150);
           }}
           className={cn(
-            "w-full pl-10 pr-4 py-2.5 border-3 border-transparent bg-transparent text-2xl font-bold font-mono text-transparent caret-primary focus:outline-none z-10 rounded-none",
+            "w-full h-[60px] pl-[42px] pr-4 border-2 border-transparent bg-transparent text-[28px] font-bold font-mono text-transparent caret-primary focus:outline-none z-10 rounded-none",
             "placeholder:text-transparent selection:bg-transparent"
           )}
           style={{ textShadow: 'none' }}

@@ -292,7 +292,7 @@ export function OrderModal({ open, onOpenChange, inline }: { open: boolean; onOp
     const cards = organizeIntoCards(currentMenuData);
 
     const headerContent = (
-        <div className={`px-4 py-3 border-b-3 border-foreground bg-card ${inline ? "" : ""}`}>
+        <div className={`px-4 py-3 border-b-2 border-border bg-card ${inline ? "" : ""}`}>
             <div className="flex items-center justify-between">
                 <h2 className="text-xl font-black uppercase tracking-wider flex items-center gap-2">
                     <FileText className="w-5 h-5" />
@@ -300,7 +300,7 @@ export function OrderModal({ open, onOpenChange, inline }: { open: boolean; onOp
                 </h2>
             </div>
             <select
-                className="w-full p-2 mt-2 border-3 border-foreground bg-background font-mono text-sm uppercase font-black"
+                className="w-full p-2 mt-2 border-2 border-border bg-background font-mono text-sm uppercase font-black"
                 value={activeMenu}
                 onChange={(e) => setActiveMenu(e.target.value as any)}
             >
@@ -322,7 +322,7 @@ export function OrderModal({ open, onOpenChange, inline }: { open: boolean; onOp
                         {card.desc && (
                             <p className="text-xs text-muted-foreground font-mono leading-relaxed">{card.desc}</p>
                         )}
-                        <div className="border-3 border-foreground bg-card brutal-shadow-sm divide-y-3 divide-foreground">
+                        <div className="border-2 border-border bg-card brutal-shadow-sm divide-y-2 divide-border">
                             {card.items.map((item, i) => {
                                 const count = orderState[item.name!] || 0;
                                 return (
@@ -334,14 +334,14 @@ export function OrderModal({ open, onOpenChange, inline }: { open: boolean; onOp
                                         <div className="flex items-center gap-3 shrink-0">
                                             <button
                                                 onClick={() => updateItem(item.name!, -1)}
-                                                className="w-8 h-8 flex items-center justify-center border-2 border-foreground bg-background active:bg-foreground active:text-background transition-colors"
+                                                className="w-8 h-8 flex items-center justify-center border-2 border-border bg-background active:bg-foreground active:text-background transition-colors"
                                             >
                                                 <Minus className="w-4 h-4" />
                                             </button>
                                             <span className={`text-base font-black font-mono w-4 text-center ${count > 0 ? "text-primary" : "text-foreground"}`}>{count}</span>
                                             <button
                                                 onClick={() => updateItem(item.name!, 1)}
-                                                className="w-8 h-8 flex items-center justify-center border-2 border-foreground bg-primary text-primary-foreground active:opacity-70 transition-opacity"
+                                                className="w-8 h-8 flex items-center justify-center border-2 border-border bg-primary text-primary-foreground active:opacity-70 transition-opacity"
                                             >
                                                 <Plus className="w-4 h-4" />
                                             </button>
@@ -357,18 +357,18 @@ export function OrderModal({ open, onOpenChange, inline }: { open: boolean; onOp
     );
 
     const actionBar = (
-        <div className={`border-t-3 border-foreground bg-card p-4 flex gap-3 items-center sticky bottom-0 ${inline ? "" : "pb-safe"}`}>
+        <div className={`border-t-2 border-border bg-card p-4 flex gap-3 items-center sticky bottom-0 ${inline ? "" : "pb-safe"}`}>
             <Button
                 variant="outline"
                 onClick={resetOrder}
-                className="flex-1 border-3 border-foreground rounded-none h-12 brutal-hover font-black uppercase tracking-wider"
+                className="flex-1 border-2 border-border rounded-none h-12 brutal-hover font-black uppercase tracking-wider"
             >
                 <RefreshCcw className="w-4 h-4 mr-2" />
                 Reset
             </Button>
             <Button
                 onClick={copyOrder}
-                className="flex-[2] border-3 border-foreground rounded-none h-12 brutal-hover bg-primary hover:bg-primary font-black uppercase tracking-wider brutal-shadow-sm"
+                className="flex-[2] border-2 border-border rounded-none h-12 brutal-hover bg-primary hover:bg-primary font-black uppercase tracking-wider brutal-shadow-sm"
             >
                 <Copy className="w-4 h-4 mr-2" />
                 Copy Order
@@ -392,7 +392,7 @@ export function OrderModal({ open, onOpenChange, inline }: { open: boolean; onOp
                 className="max-w-md p-0 overflow-hidden bg-background h-[80vh] flex flex-col pt-safe px-0"
                 onOpenAutoFocus={(e) => e.preventDefault()}
             >
-                <DialogHeader className="px-4 py-3 border-b-3 border-foreground bg-card">
+                <DialogHeader className="px-4 py-3 border-b-2 border-border bg-card">
                     <div className="flex items-center justify-between">
                         <DialogTitle className="text-xl font-black uppercase tracking-wider flex items-center gap-2">
                             <FileText className="w-5 h-5" />
@@ -400,7 +400,7 @@ export function OrderModal({ open, onOpenChange, inline }: { open: boolean; onOp
                         </DialogTitle>
                     </div>
                     <select
-                        className="w-full p-2 mt-2 border-3 border-foreground bg-background font-mono text-sm uppercase font-black"
+                        className="w-full p-2 mt-2 border-2 border-border bg-background font-mono text-sm uppercase font-black"
                         value={activeMenu}
                         onChange={(e) => setActiveMenu(e.target.value as any)}
                     >
@@ -413,18 +413,18 @@ export function OrderModal({ open, onOpenChange, inline }: { open: boolean; onOp
                 {bodyContent}
 
                 {/* Action Bar */}
-                <div className="border-t-3 border-foreground bg-card p-4 flex gap-3 pb-safe items-center sticky bottom-0">
+                <div className="border-t-2 border-border bg-card p-4 flex gap-3 pb-safe items-center sticky bottom-0">
                     <Button
                         variant="outline"
                         onClick={resetOrder}
-                        className="flex-1 border-3 border-foreground rounded-none h-12 brutal-hover font-black uppercase tracking-wider"
+                        className="flex-1 border-2 border-border rounded-none h-12 brutal-hover font-black uppercase tracking-wider"
                     >
                         <RefreshCcw className="w-4 h-4 mr-2" />
                         Reset
                     </Button>
                     <Button
                         onClick={copyOrder}
-                        className="flex-[2] border-3 border-foreground rounded-none h-12 brutal-hover bg-primary hover:bg-primary font-black uppercase tracking-wider brutal-shadow-sm"
+                        className="flex-[2] border-2 border-border rounded-none h-12 brutal-hover bg-primary hover:bg-primary font-black uppercase tracking-wider brutal-shadow-sm"
                     >
                         <Copy className="w-4 h-4 mr-2" />
                         Copy Order

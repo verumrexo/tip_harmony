@@ -48,15 +48,15 @@ export function Leaderboard() {
     if (!leaderboardStats) return null;
 
     return (
-        <div className="border-3 border-foreground bg-card brutal-shadow mt-4">
+        <div className="border-2 border-border bg-card brutal-shadow mt-4">
             <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
-                <div className="flex items-center justify-between p-3 border-b-3 border-foreground">
+                <div className="flex items-center justify-between p-3 border-b-2 border-border">
                     <div className="flex items-center gap-2">
-                        <Flame className="w-4 h-4 text-orange-500" />
+                        <Flame className="w-4 h-4 text-role-waiter" />
                         <h2 className="text-sm font-black text-foreground uppercase tracking-wider">Hall of Fame</h2>
                     </div>
                     <CollapsibleTrigger asChild>
-                        <Button variant="ghost" size="sm" className="w-8 h-8 p-0 border-2 border-foreground bg-card hover:bg-muted rounded-none">
+                        <Button variant="ghost" size="sm" className="w-8 h-8 p-0 border-2 border-border bg-card hover:bg-muted rounded-none">
                             {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                             <span className="sr-only">Toggle Leaderboard</span>
                         </Button>
@@ -65,7 +65,7 @@ export function Leaderboard() {
 
                 <CollapsibleContent>
                     <div className="p-0">
-                        <div className="flex items-center gap-2 px-4 py-2.5 border-b-3 border-foreground/20">
+                        <div className="flex items-center gap-2 px-4 py-2.5 border-b-2 border-foreground/20">
                             <Trophy className="w-4 h-4 text-yellow-500" />
                             <span className="text-xs font-black uppercase tracking-wider text-muted-foreground">Best Days to Not Quit</span>
                         </div>

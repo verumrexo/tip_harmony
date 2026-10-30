@@ -7,7 +7,7 @@ export type TabId = "history" | "writeoff" | "japasuta" | "tips" | "supplier" | 
 
 const TABS: { id: TabId; label: string; icon: typeof Coins }[] = [
     { id: "history", label: "History", icon: History },
-    { id: "writeoff", label: "Write Off/Jāpasūta", icon: UtensilsCrossed },
+    { id: "writeoff", label: "Write-off", icon: UtensilsCrossed },
     { id: "tips", label: "Tips", icon: Coins },
     { id: "supplier", label: "Supplier", icon: FileText },
     { id: "stats", label: "Stats", icon: Trophy },
@@ -22,8 +22,8 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
     const [popoverOpen, setPopoverOpen] = useState(false);
 
     return (
-        <nav className="shrink-0 z-50 border-t-3 border-foreground bg-card pb-safe touch-none">
-            <div className="flex items-center justify-around px-1 h-16">
+        <nav className="shrink-0 z-50 border-t-2 border-border bg-card pb-safe touch-none">
+            <div className="flex items-center justify-around px-1 h-[68px]">
                 {TABS.map((tab) => {
                     const isWriteOff = tab.id === "writeoff";
                     const isActive = activeTab === tab.id || (isWriteOff && activeTab === "japasuta");
@@ -33,51 +33,41 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
                     const content = (
                         <div
                             className={`
-                                relative flex flex-col items-center justify-center gap-0.5 flex-1 pt-1
+                                relative flex flex-col items-center justify-center gap-1 flex-1
                                 transition-all duration-150 tap-highlight-transparent
-                                ${isCenter ? "-mt-4" : ""}
+                                ${isCenter ? "-mt-[18px]" : "pt-1.5"}
                             `}
                         >
                             {/* Icon container */}
                             <motion.div
-                                animate={isActive ? { scale: 1 } : { scale: 0.9 }}
+                                animate={isActive ? { scale: 1 } : { scale: 0.95 }}
                                 transition={{ type: "spring", stiffness: 500, damping: 30 }}
                                 className={`
                                     flex items-center justify-center transition-colors duration-150
                                     ${isCenter
-                                        ? `w-16 h-16 border-3 border-foreground ${isActive
+                                        ? `w-14 h-14 border-2 border-ink ${isActive
                                             ? "bg-primary text-primary-foreground brutal-shadow-sm"
                                             : "bg-card text-muted-foreground"
                                         }`
-                                        : `w-12 h-12 ${isActive
-                                            ? "bg-primary text-primary-foreground border-3 border-foreground"
+                                        : `h-[30px] px-3 ${isActive
+                                            ? "bg-primary text-primary-foreground border-2 border-ink"
                                             : "text-muted-foreground"
                                         }`
                                     }
                                 `}
                             >
-                                <Icon className={isCenter ? "w-8 h-8" : "w-6 h-6"} />
+                                <Icon className={isCenter ? "w-7 h-7" : "w-[22px] h-[22px]"} />
                             </motion.div>
 
                             {/* Label */}
                             <span
                                 className={`
-                                    text-[8px] font-black uppercase tracking-[0.1em] font-mono leading-none
-                                    transition-colors duration-150 min-h-[16px] flex items-center justify-center text-center px-0.5
-                                    ${isActive ? "text-foreground" : "text-muted-foreground"}
+                                    text-[11px] leading-none transition-colors duration-150
+                                    ${isActive ? "font-bold text-foreground" : "font-semibold text-muted-foreground"}
                                 `}
                             >
                                 {tab.label}
                             </span>
-
-                            {/* Active dot indicator */}
-                            {isActive && !isCenter && (
-                                <motion.div
-                                    layoutId="nav-dot"
-                                    className="absolute -bottom-0.5 w-1 h-1 bg-primary"
-                                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                                />
-                            )}
                         </div>
                     );
 
@@ -90,18 +80,18 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
                                 <PopoverContent
                                     side="top"
                                     align="center"
-                                    className="w-40 p-1 mb-2 border-3 border-foreground bg-card rounded-none brutal-shadow-sm"
+                                    className="w-40 p-1 mb-2 border-2 border-border bg-card rounded-none brutal-shadow-sm"
                                 >
                                     <div className="flex flex-col gap-1">
                                         <button
                                             onClick={() => { onTabChange("writeoff"); setPopoverOpen(false); }}
-                                            className={`p-2 text-[10px] font-black uppercase tracking-wider text-left hover:bg-primary hover:text-primary-foreground transition-colors ${activeTab === "writeoff" ? "bg-primary/20" : ""}`}
+                                            className={`p-2.5 text-xs font-bold uppercase tracking-wider text-left hover:bg-primary hover:text-primary-foreground transition-colors ${activeTab === "writeoff" ? "bg-primary/20" : ""}`}
                                         >
                                             Norakstīt
                                         </button>
                                         <button
                                             onClick={() => { onTabChange("japasuta"); setPopoverOpen(false); }}
-                                            className={`p-2 text-[10px] font-black uppercase tracking-wider text-left hover:bg-primary hover:text-primary-foreground transition-colors ${activeTab === "japasuta" ? "bg-primary/20" : ""}`}
+                                            className={`p-2.5 text-xs font-bold uppercase tracking-wider text-left hover:bg-primary hover:text-primary-foreground transition-colors ${activeTab === "japasuta" ? "bg-primary/20" : ""}`}
                                         >
                                             Jāpasūta
                                         </button>

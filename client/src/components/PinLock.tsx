@@ -56,7 +56,7 @@ export function PinLock({ children }: { children: React.ReactNode }) {
             <div className="w-full max-w-sm brutal-card p-0 bg-card relative z-10">
                 <div className="p-8 text-center space-y-6">
                     {/* Lock Icon */}
-                    <div className="mx-auto w-16 h-16 border-3 border-foreground bg-primary flex items-center justify-center brutal-shadow-sm">
+                    <div className="mx-auto w-16 h-16 border-2 border-border bg-primary flex items-center justify-center brutal-shadow-sm">
                         <Lock className="w-7 h-7 text-primary-foreground" />
                     </div>
 
@@ -73,7 +73,7 @@ export function PinLock({ children }: { children: React.ReactNode }) {
                             inputMode="numeric"
                             pattern="[0-9]*"
                             placeholder="PIN Code"
-                            className="text-center text-2xl tracking-[0.5em] font-mono font-bold h-14 border-3 border-foreground bg-background focus:ring-2 focus:ring-primary rounded-none"
+                            className="text-center text-2xl tracking-[0.5em] font-mono font-bold h-14 border-2 border-border bg-background focus:ring-2 focus:ring-primary rounded-none"
                             maxLength={4}
                             value={pin}
                             onChange={(e) => setPin(e.target.value)}
@@ -82,7 +82,7 @@ export function PinLock({ children }: { children: React.ReactNode }) {
                         />
                         <Button
                             type="submit"
-                            className="w-full h-12 text-base font-bold uppercase tracking-wider border-3 border-foreground bg-primary text-primary-foreground hover:bg-primary/90 brutal-shadow brutal-hover rounded-none"
+                            className="w-full h-12 text-base font-bold uppercase tracking-wider border-2 border-border bg-primary text-primary-foreground hover:bg-primary/90 brutal-shadow brutal-hover rounded-none"
                             disabled={pin.length < 4}
                         >
                             Unlock <ArrowRight className="w-5 h-5 ml-2" />

@@ -41,59 +41,58 @@
 
     --radius: 0rem;
 
-    /* Brutalist tokens */
-    --brutal-border: 3px solid hsl(0 0% 5%);
-    --brutal-shadow: 4px 4px 0px 0px hsl(0 0% 5%);
-    --brutal-shadow-sm: 2px 2px 0px 0px hsl(0 0% 5%);
-    --brutal-shadow-hover: 6px 6px 0px 0px hsl(0 0% 5%);
+    /* Offset shadow color, and the darker "ink" outline on filled accent elements */
+    --shadow: 0 0% 5%;
+    --ink: 0 0% 5%;
 
-    --color-1: 0 100% 63%;
-    --color-2: 270 100% 63%;
-    --color-3: 210 100% 63%;
-    --color-4: 195 100% 63%;
-    --color-5: 90 100% 63%;
+    /* Role colors: waiters, cooks, dishwashers */
+    --role-waiter: 22 78% 45%;
+    --role-cook: 150 55% 32%;
+    --role-dish: 216 65% 45%;
+
+    /* Brutalist tokens (shared by both themes, they follow the colors above) */
+    --brutal-border: 2px solid hsl(var(--border));
+    --brutal-shadow: 3px 3px 0px 0px hsl(var(--shadow));
+    --brutal-shadow-sm: 2px 2px 0px 0px hsl(var(--shadow));
+    --brutal-shadow-hover: 4px 4px 0px 0px hsl(var(--shadow));
   }
 
+  /* Soft charcoal: warm dark greys, with dimmed borders and shadows instead of pure white */
   .dark {
-    --background: 0 0% 4%;
-    --foreground: 0 0% 95%;
+    --background: 40 7% 8%;
+    --foreground: 40 32% 89%;
 
-    --card: 0 0% 7%;
-    --card-foreground: 0 0% 95%;
+    --card: 36 8% 12%;
+    --card-foreground: 40 32% 89%;
 
-    --popover: 0 0% 7%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 36 8% 12%;
+    --popover-foreground: 40 32% 89%;
 
-    --primary: 80 80% 55%;
-    --primary-foreground: 0 0% 5%;
+    --primary: 76 51% 62%;
+    --primary-foreground: 70 60% 8%;
 
-    --secondary: 0 0% 14%;
-    --secondary-foreground: 0 0% 95%;
+    --secondary: 40 8% 15%;
+    --secondary-foreground: 40 32% 89%;
 
-    --muted: 0 0% 12%;
-    --muted-foreground: 0 0% 55%;
+    --muted: 40 8% 15%;
+    --muted-foreground: 39 10% 62%;
 
-    --accent: 330 80% 65%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 38 8% 19%;
+    --accent-foreground: 40 32% 89%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 6 58% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 95%;
-    --input: 0 0% 95%;
-    --ring: 80 80% 55%;
+    --border: 38 8% 27%;
+    --input: 38 8% 27%;
+    --ring: 76 51% 62%;
 
-    /* Dark brutalist tokens */
-    --brutal-border: 3px solid hsl(0 0% 95%);
-    --brutal-shadow: 4px 4px 0px 0px hsl(0 0% 95%);
-    --brutal-shadow-sm: 2px 2px 0px 0px hsl(0 0% 95%);
-    --brutal-shadow-hover: 6px 6px 0px 0px hsl(0 0% 95%);
+    --shadow: 38 8% 19%;
+    --ink: 40 13% 5%;
 
-    --color-1: 0 100% 63%;
-    --color-2: 270 100% 63%;
-    --color-3: 210 100% 63%;
-    --color-4: 195 100% 63%;
-    --color-5: 90 100% 63%;
+    --role-waiter: 23 73% 68%;
+    --role-cook: 143 35% 66%;
+    --role-dish: 216 62% 74%;
   }
 }
 
@@ -282,18 +281,4 @@ input[type=number] {
   .pr-safe {
     padding-right: var(--sar);
   }
-}
-
-@keyframes rainbow {
-  0% {
-    background-position: 0%;
-  }
-
-  100% {
-    background-position: 200%;
-  }
-}
-
-.animate-rainbow-custom {
-  animation: rainbow var(--speed, 5s) infinite linear !important;
 }

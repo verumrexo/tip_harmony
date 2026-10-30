@@ -54,6 +54,12 @@ export default {
           border: "var(--destructive-border)",
         },
         ring: "hsl(var(--ring) / <alpha-value>)",
+        ink: "hsl(var(--ink) / <alpha-value>)",
+        role: {
+          waiter: "hsl(var(--role-waiter) / <alpha-value>)",
+          cook: "hsl(var(--role-cook) / <alpha-value>)",
+          dish: "hsl(var(--role-dish) / <alpha-value>)",
+        },
         chart: {
           "1": "hsl(var(--chart-1) / <alpha-value>)",
           "2": "hsl(var(--chart-2) / <alpha-value>)",
@@ -105,9 +111,9 @@ export default {
         body: ["'Space Grotesk'", "system-ui", "sans-serif"],
       },
       boxShadow: {
-        brutal: "4px 4px 0px 0px hsl(var(--foreground))",
-        "brutal-sm": "2px 2px 0px 0px hsl(var(--foreground))",
-        "brutal-lg": "6px 6px 0px 0px hsl(var(--foreground))",
+        brutal: "3px 3px 0px 0px hsl(var(--shadow))",
+        "brutal-sm": "2px 2px 0px 0px hsl(var(--shadow))",
+        "brutal-lg": "4px 4px 0px 0px hsl(var(--shadow))",
         "brutal-primary": "4px 4px 0px 0px hsl(var(--primary))",
       },
       keyframes: {
@@ -129,17 +135,12 @@ export default {
           "25%": { transform: "translateX(-4px)" },
           "75%": { transform: "translateX(4px)" },
         },
-        "rainbow": {
-          "0%": { "background-position": "0%" },
-          "100%": { "background-position": "200%" },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "brutal-pop": "brutal-pop 0.3s ease-in-out",
         "brutal-shake": "brutal-shake 0.3s ease-in-out",
-        "rainbow": "rainbow var(--speed, 30s) infinite linear",
       },
     },
   },

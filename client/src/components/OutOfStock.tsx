@@ -59,27 +59,27 @@ export function OutOfStock({ allowDelete = true, showHeader = true, inline = fal
     return (
         <div className={`flex flex-col min-h-0 ${inline ? "h-full" : "max-h-[85vh]"}`}>
             {showHeader && (
-                <div className="px-4 pt-4 pb-2.5 border-b-3 border-foreground bg-card">
+                <div className="px-4 pt-4 pb-2.5 border-b-2 border-border bg-card">
                     <h2 className="text-base font-black uppercase tracking-wider">Jāpasūta</h2>
-                    <p className="text-[10px] text-muted-foreground font-mono uppercase">Preces, kas beigušās</p>
+                    <p className="text-[11px] text-muted-foreground font-mono uppercase">Preces, kas beigušās</p>
                 </div>
             )}
 
             {(
-                <div className="p-4 border-b-3 border-foreground bg-background">
+                <div className="p-4 border-b-2 border-border bg-background">
                     <form onSubmit={handleAdd} className="flex gap-2">
                         <Input
                             autoFocus
                             placeholder="Ieraksti preci... (piem. San Pellegrino 0.7)"
                             value={newItemName}
                             onChange={(e) => setNewItemName(e.target.value)}
-                            className="h-11 border-3 border-foreground rounded-none brutal-shadow-sm focus-visible:ring-0 focus-visible:border-primary transition-all font-bold uppercase text-xs"
+                            className="h-11 border-2 border-border rounded-none brutal-shadow-sm focus-visible:ring-0 focus-visible:border-primary transition-all font-bold uppercase text-xs"
                             disabled={createItem.isPending}
                         />
                         <Button
                             type="submit"
                             disabled={!newItemName.trim() || createItem.isPending}
-                            className="h-11 w-11 shrink-0 border-3 border-foreground bg-primary text-primary-foreground rounded-none brutal-shadow-sm brutal-hover p-0"
+                            className="h-11 w-11 shrink-0 border-2 border-border bg-primary text-primary-foreground rounded-none brutal-shadow-sm brutal-hover p-0"
                         >
                             {createItem.isPending ? (
                                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -105,13 +105,13 @@ export function OutOfStock({ allowDelete = true, showHeader = true, inline = fal
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: 20 }}
-                                    className="flex items-center justify-between p-3 border-3 border-foreground bg-card brutal-shadow-sm"
+                                    className="flex items-center justify-between p-3 border-2 border-border bg-card brutal-shadow-sm"
                                 >
                                     <div className="flex-1 min-w-0 pr-4">
                                         <p className="text-sm font-black uppercase tracking-wide break-words whitespace-normal">
                                             {item.name}
                                         </p>
-                                        <p className="text-[9px] font-mono text-muted-foreground">
+                                        <p className="text-[11px] font-mono text-muted-foreground">
                                             {item.createdAt?.toLocaleString()}
                                         </p>
                                     </div>
@@ -119,7 +119,7 @@ export function OutOfStock({ allowDelete = true, showHeader = true, inline = fal
                                         <button
                                             onClick={() => handleDelete(item.id, item.name)}
                                             disabled={deleteItem.isPending}
-                                            className="w-9 h-9 border-2 border-foreground bg-card flex items-center justify-center hover:bg-destructive hover:text-destructive-foreground transition-all active:translate-x-[1px] active:translate-y-[1px] shrink-0"
+                                            className="w-9 h-9 border-2 border-border bg-card flex items-center justify-center hover:bg-destructive hover:text-destructive-foreground transition-all active:translate-x-[1px] active:translate-y-[1px] shrink-0"
                                         >
                                             <Trash2 className="w-4 h-4" />
                                         </button>
@@ -128,7 +128,7 @@ export function OutOfStock({ allowDelete = true, showHeader = true, inline = fal
                             ))}
                         </AnimatePresence>
                     ) : (
-                        <div className="text-center py-12 border-3 border-dashed border-foreground/20">
+                        <div className="text-center py-12 border-2 border-dashed border-foreground/20">
                             <p className="text-xs text-muted-foreground font-mono uppercase tracking-wider">
                                 Viss ir uz vietas ✓
                             </p>
