@@ -37,7 +37,6 @@ export default function Home() {
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [lastSaved, setLastSaved] = useState<{
     waiterTotal: number; cookTotal: number; dishwasherTotal: number;
-    waiterSharePct: number; cookSharePct: number; dishwasherSharePct: number;
     waiterCount: number; cookCount: number; dishwasherCount: number;
   } | null>(null);
 
@@ -358,7 +357,6 @@ export default function Home() {
 
       setLastSaved({
         waiterTotal, cookTotal, dishwasherTotal,
-        waiterSharePct, cookSharePct, dishwasherSharePct,
         waiterCount, cookCount, dishwasherCount,
       });
       setTotalAmount("");
@@ -374,10 +372,14 @@ export default function Home() {
 
   // ─── Tab Content Renderers ───────────────────────────────────
 
-  const renderTipsTab = () => (
-    <div className="p-5 space-y-6">
-      {/* Input Section */}
-      <section className="space-y-3">
+  const renderTipsTab = () => {
+    // After saving, the input clears but the summary keeps showing the split that was just saved
+    const shown = amount > 0
+      ? { waiterTotal, cookTotal, dishwasherTotal, waiterCount, cookCount, dishwasherCount }
+      : (lastSaved ?? { waiterTotal: 0, cookTotal: 0, dishwasherTotal: 0, waiterCount, cookCount, dishwasherCount });
+
+    return (
+      <div className="p-5 space-y-5">
         <CurrencyInput
           label="Total tips"
           placeholder="0.00"
@@ -385,139 +387,79 @@ export default function Home() {
           onValueChange={setTotalAmount}
         />
 
-        <div className="space-y-3">
+        {/* What each person gets, right under the amount so it stays in view while typing */}
+        <section aria-label="What each person gets" className="grid grid-cols-3 border-2 border-border bg-card brutal-shadow">
+          <ResultCard
+            title="Waiters"
+            amount={shown.waiterTotal}
+            count={shown.waiterCount}
+            icon={Utensils}
+            colorClass="text-role-waiter"
+            tintClass="bg-role-waiter/15"
+          />
+          <ResultCard
+            title="Cooks"
+            amount={shown.cookTotal}
+            count={shown.cookCount}
+            icon={ChefHat}
+            colorClass="text-role-cook"
+            tintClass="bg-role-cook/15"
+          />
+          <ResultCard
+            title="Dish"
+            amount={shown.dishwasherTotal}
+            count={shown.dishwasherCount}
+            icon={Waves}
+            colorClass="text-role-dish"
+            tintClass="bg-role-dish/15"
+            bgClass={shown.dishwasherCount > 0 ? "" : "opacity-40 grayscale"}
+          />
+        </section>
+
+        <section className="space-y-2.5">
+          <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.08em]">Who worked</h2>
           <PersonSelector
             label="Waiters"
+            hint={`${Math.round(waiterSharePct * 100)}%`}
             icon={<Utensils className="w-4 h-4 text-role-waiter" />}
             value={waiterCount}
             options={[1, 2, 3, 4]}
             onChange={setWaiterCount}
           />
-
           <PersonSelector
             label="Cooks"
+            hint={`${Math.round(cookSharePct * 100)}%`}
             icon={<ChefHat className="w-4 h-4 text-role-cook" />}
             value={cookCount}
             options={[1, 2, 3]}
             onChange={setCookCount}
           />
-
           <PersonSelector
             label="Dishwashers"
+            hint={`${Math.round(dishwasherSharePct * 100)}%`}
             icon={<Waves className="w-4 h-4 text-role-dish" />}
             value={dishwasherCount}
             options={[0, 1]}
             onChange={setDishwasherCount}
           />
-        </div>
-      </section>
-
-      {/* Save Section — The primary action */}
-      <section className="pt-2">
-        {amount > 0 ? (
-          <Button
-            className="w-full h-14 text-base gap-2.5 font-bold uppercase tracking-[0.1em] rounded-none border-2 border-ink bg-primary text-primary-foreground hover:bg-primary brutal-shadow brutal-hover [&_svg]:size-5"
-            onClick={handleSave}
-            disabled={createCalculation.isPending}
-          >
-            {createCalculation.isPending ? (
-              <>Saving...</>
-            ) : (
-              <>
-                <Save />
-                Save split
-              </>
-            )}
-          </Button>
-        ) : (
-          <Button
-            className="w-full h-14 text-base gap-2.5 font-bold uppercase tracking-[0.1em] border-2 border-border rounded-none transition-all duration-300 bg-muted text-muted-foreground cursor-not-allowed [&_svg]:size-5"
-            disabled
-          >
-            <Save />
-            Save split
-          </Button>
-        )}
-      </section>
-
-      {/* Distribution Section */}
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-[15px] font-bold text-foreground uppercase tracking-[0.06em]">Distribution</h2>
-        </div>
-
-        {(() => {
-          const dw = amount > 0 ? waiterTotal : (lastSaved?.waiterTotal ?? 0);
-          const dc = amount > 0 ? cookTotal : (lastSaved?.cookTotal ?? 0);
-          const dd = amount > 0 ? dishwasherTotal : (lastSaved?.dishwasherTotal ?? 0);
-          const dpw = amount > 0 ? waiterSharePct : (lastSaved?.waiterSharePct ?? waiterSharePct);
-          const dpc = amount > 0 ? cookSharePct : (lastSaved?.cookSharePct ?? cookSharePct);
-          const dpd = amount > 0 ? dishwasherSharePct : (lastSaved?.dishwasherSharePct ?? dishwasherSharePct);
-          const dcw = amount > 0 ? waiterCount : (lastSaved?.waiterCount ?? waiterCount);
-          const dcc = amount > 0 ? cookCount : (lastSaved?.cookCount ?? cookCount);
-          const dcd = amount > 0 ? dishwasherCount : (lastSaved?.dishwasherCount ?? dishwasherCount);
-          return (
-            <div className="grid gap-3">
-              <ResultCard
-                title="Waiters"
-                percentage={dpw * 100}
-                amount={dw}
-                count={dcw}
-                icon={Utensils}
-                colorClass="text-role-waiter"
-                iconBgClass="bg-role-waiter"
-                stripBgClass="bg-role-waiter/15"
-                bgClass=""
-              />
-              <ResultCard
-                title="Cooks"
-                percentage={dpc * 100}
-                amount={dc}
-                count={dcc}
-                icon={ChefHat}
-                colorClass="text-role-cook"
-                iconBgClass="bg-role-cook"
-                stripBgClass="bg-role-cook/15"
-                bgClass=""
-              />
-              <ResultCard
-                title="Dishwashers"
-                percentage={dpd * 100}
-                amount={dd}
-                count={dcd}
-                icon={Waves}
-                colorClass="text-role-dish"
-                iconBgClass="bg-role-dish"
-                stripBgClass="bg-role-dish/15"
-                bgClass={dcd > 0 ? "" : "opacity-40 grayscale"}
-              />
-            </div>
-          );
-        })()}
-      </section>
-
-      {/* Today's Splits Section */}
-      {todaysSplits.length > 0 && (
-        <section className="space-y-3">
-          <div className="flex items-center">
-            <h2 className="text-xs font-black text-muted-foreground uppercase tracking-wider">Today's Splits</h2>
-          </div>
-          <div className="space-y-2">
-            {todaysSplits.map((calc, idx) => (
-              <motion.div
-                key={calc.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2, delay: idx * 0.05 }}
-              >
-                <HistoryItem calculation={calc} />
-              </motion.div>
-            ))}
-          </div>
         </section>
-      )}
-    </div>
-  );
+
+        {todaysSplits.length > 0 && (
+          <section className="space-y-2">
+            <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.08em]">Saved today</h2>
+            {todaysSplits.map((calc) => (
+              <div key={calc.id} className="flex items-center justify-between gap-3 px-3 py-2.5 border-2 border-border bg-card">
+                <span className="text-[13px] text-muted-foreground font-mono">
+                  {calc.createdAt && new Date(calc.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} · {calc.waiterCount}W · {calc.cookCount}C · {calc.dishwasherCount}D
+                </span>
+                <span className="text-[15px] font-bold font-mono">€{Number(calc.totalAmount).toFixed(2)}</span>
+              </div>
+            ))}
+          </section>
+        )}
+      </div>
+    );
+  };
 
   const renderHistoryTab = () => (
     <div className="p-5 space-y-4">
@@ -873,6 +815,36 @@ export default function Home() {
             </AnimatePresence>
           </div>
         </ScrollArea>
+
+      {/* Save bar: sits above the tabs on the Tips screen, so it's always in reach */}
+      {activeTab === "tips" && (
+        <div className="shrink-0 relative z-10 px-5 py-3 bg-background border-t-2 border-border">
+          {amount > 0 ? (
+            <Button
+              className="w-full h-14 text-base gap-2.5 font-bold uppercase tracking-[0.1em] rounded-none border-2 border-ink bg-primary text-primary-foreground hover:bg-primary brutal-shadow brutal-hover [&_svg]:size-5"
+              onClick={handleSave}
+              disabled={createCalculation.isPending}
+            >
+              {createCalculation.isPending ? (
+                <>Saving...</>
+              ) : (
+                <>
+                  <Save />
+                  Save split · €{amount.toFixed(2)}
+                </>
+              )}
+            </Button>
+          ) : (
+            <Button
+              className="w-full h-14 text-base gap-2.5 font-bold uppercase tracking-[0.1em] border-2 border-border rounded-none transition-all duration-300 bg-muted text-muted-foreground cursor-not-allowed [&_svg]:size-5"
+              disabled
+            >
+              <Save />
+              Save split
+            </Button>
+          )}
+        </div>
+      )}
 
       {/* Bottom Navigation */}
       <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />

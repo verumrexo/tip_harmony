@@ -8,9 +8,10 @@ interface PersonSelectorProps {
   options: number[];
   onChange: (value: number) => void;
   icon?: React.ReactNode;
+  hint?: string;
 }
 
-export function PersonSelector({ label, value, options, onChange, icon }: PersonSelectorProps) {
+export function PersonSelector({ label, value, options, onChange, icon, hint }: PersonSelectorProps) {
   const labelId = useId();
 
   const handleSelect = (option: number) => {
@@ -25,20 +26,21 @@ export function PersonSelector({ label, value, options, onChange, icon }: Person
 
   return (
     <div
-      className="flex flex-col gap-1.5"
+      className="flex items-center justify-between gap-3"
       role="group"
       aria-labelledby={labelId}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 min-w-0">
         {icon || <Users className="w-4 h-4 text-primary" />}
         <label
           id={labelId}
           className="text-sm font-semibold text-foreground/85"
         >
           {label}
+          {hint && <span className="ml-1.5 text-xs font-medium text-muted-foreground">{hint}</span>}
         </label>
       </div>
-      <div className="flex gap-0 border-2 border-border brutal-shadow-sm">
+      <div className="flex w-[188px] shrink-0 border-2 border-border brutal-shadow-sm">
         {options.map((option, idx) => (
           <button
             key={option}
@@ -46,7 +48,7 @@ export function PersonSelector({ label, value, options, onChange, icon }: Person
             onClick={() => handleSelect(option)}
             aria-pressed={value === option}
             className={cn(
-              "flex-1 min-w-[3rem] h-11 font-bold text-[17px] font-mono transition-all duration-100 tap-highlight-transparent select-none",
+              "flex-1 h-11 font-bold text-base font-mono transition-all duration-100 tap-highlight-transparent select-none",
               idx < options.length - 1 && "border-r-2 border-border",
               value === option
                 ? "bg-primary text-primary-foreground scale-100"

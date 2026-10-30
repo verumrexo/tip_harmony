@@ -23,45 +23,30 @@ interface ResultCardProps {
   title: string;
   amount: number;
   count: number;
-  percentage: number;
   icon: LucideIcon;
   colorClass: string;
   // Full class names, not built from colorClass: Tailwind only generates classes it can find in the source
-  iconBgClass: string;
-  stripBgClass: string;
-  bgClass: string;
+  tintClass: string;
+  bgClass?: string;
 }
 
-export function ResultCard({ title, amount, count, percentage, icon: Icon, colorClass, iconBgClass, stripBgClass, bgClass }: ResultCardProps) {
+// One column of the split summary: what each person in a role gets
+export function ResultCard({ title, amount, count, icon: Icon, colorClass, tintClass, bgClass }: ResultCardProps) {
   const perPerson = count > 0 ? amount / count : 0;
 
   return (
-    <div className={cn("border-2 border-border bg-card brutal-shadow", bgClass)}>
-      {/* Top: role, share and role total */}
-      <div className="flex items-center gap-3 px-3.5 py-3">
-        <div className={cn("w-9 h-9 border-2 border-ink flex items-center justify-center shrink-0", iconBgClass)}>
-          <Icon className="w-[18px] h-[18px] text-ink" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-bold text-foreground leading-tight">{title}</p>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            {Math.round(percentage)}% · <AnimatedNumber value={amount} className="font-mono" /> total
-          </p>
-        </div>
-      </div>
-
-      {/* Bottom: per person — THE MAIN EVENT */}
-      {count > 0 && (
-        <div className={cn("border-t-2 border-border px-3.5 py-3 flex items-center justify-between", stripBgClass)}>
-          <span className="text-xs font-semibold uppercase tracking-[0.08em] text-foreground/80">
-            Each · {count} {count === 1 ? "person" : "people"}
-          </span>
-          <AnimatedNumber
-            value={perPerson}
-            className={cn("text-[34px] font-black font-mono tracking-tight leading-none", colorClass)}
-          />
-        </div>
-      )}
+    <div className={cn("min-w-0 px-2.5 py-3 flex flex-col gap-[7px] border-r-2 border-border last:border-r-0", tintClass, bgClass)}>
+      <p className="flex items-center gap-1.5 text-xs font-semibold text-foreground/85">
+        <Icon className={cn("w-3.5 h-3.5 shrink-0", colorClass)} />
+        {title}
+      </p>
+      <AnimatedNumber
+        value={perPerson}
+        className={cn("text-[22px] font-black font-mono tracking-tight leading-none", colorClass)}
+      />
+      <p className="text-[11px] text-muted-foreground">
+        {count > 0 ? `each · ${count} ${count === 1 ? "person" : "people"}` : "nobody"}
+      </p>
     </div>
   );
 }
