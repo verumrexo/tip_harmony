@@ -6,6 +6,7 @@ import { CurrencyInput } from "@/components/CurrencyInput";
 import { PersonSelector } from "@/components/PersonSelector";
 import { ResultCard } from "@/components/ResultCard";
 import { HistoryItem } from "@/components/HistoryItem";
+import { TodayTable } from "@/components/TodayTable";
 import { Button } from "@/components/ui/button";
 import { useCalculations, useCreateCalculation, useDeleteCalculation } from "@/hooks/use-calculations";
 import { useToast } from "@/hooks/use-toast";
@@ -49,13 +50,10 @@ export default function Home() {
   const todaysSplits = useMemo(() => {
     if (!history) return [];
     const todayStr = new Date().toLocaleDateString();
+    // TodayTable puts them in time order itself
     return history.filter((calc) => {
       if (!calc.createdAt) return false;
       return new Date(calc.createdAt).toLocaleDateString() === todayStr;
-    }).sort((a, b) => {
-      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-      return dateB - dateA; // Newest first
     });
   }, [history]);
 
@@ -444,19 +442,7 @@ export default function Home() {
           />
         </section>
 
-        {todaysSplits.length > 0 && (
-          <section className="space-y-2">
-            <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.08em]">Saved today</h2>
-            {todaysSplits.map((calc) => (
-              <div key={calc.id} className="flex items-center justify-between gap-3 px-3 py-2.5 border-2 border-border bg-card">
-                <span className="text-[13px] text-muted-foreground font-mono">
-                  {calc.createdAt && new Date(calc.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} · {calc.waiterCount}W · {calc.cookCount}C · {calc.dishwasherCount}D
-                </span>
-                <span className="text-[15px] font-bold font-mono">€{Number(calc.totalAmount).toFixed(2)}</span>
-              </div>
-            ))}
-          </section>
-        )}
+        {todaysSplits.length > 0 && <TodayTable splits={todaysSplits} />}
       </div>
     );
   };
