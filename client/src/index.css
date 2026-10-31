@@ -281,4 +281,15 @@ input[type=number] {
   .pr-safe {
     padding-right: var(--sar);
   }
+
+  /* Top bar: below the status bar and the blur iOS draws just under it */
+  .pt-safe-bar {
+    padding-top: calc(var(--sat) + 18px);
+  }
+
+  /* Full-screen app shell. iPhone home-screen apps can get a page shorter than the screen
+     (measured in main.tsx), so grow by that gap, but never by more than the status bar */
+  .h-app {
+    height: calc(100% + min(var(--viewport-gap, 0px), var(--sat)));
+  }
 }

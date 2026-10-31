@@ -21,9 +21,8 @@
   <meta name="description" content="Calculate and distribute daily tips easily.">
   <link rel="apple-touch-icon" href="/logo.png">
   <script>
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      document.documentElement.classList.add('dark');
-    }
+    // Dark by default, set before the first paint so nothing flashes light
+    document.documentElement.classList.add('dark');
   </script>
 </head>
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Lock, Unlock, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,15 +12,9 @@ const SESSION_KEY = "tip_harmony_unlocked";
 export function PinLock({ children }: { children: React.ReactNode }) {
     const isReadOnly = useIOSInputZoomFix();
     const [pin, setPin] = useState("");
-    const [isUnlocked, setIsUnlocked] = useState(false);
+    // Read right away, so an unlocked phone doesn't flash the lock screen on every open
+    const [isUnlocked, setIsUnlocked] = useState(() => localStorage.getItem(SESSION_KEY) === "true");
     const { toast } = useToast();
-
-    useEffect(() => {
-        const unlocked = localStorage.getItem(SESSION_KEY);
-        if (unlocked === "true") {
-            setIsUnlocked(true);
-        }
-    }, []);
 
     const handleUnlock = (e?: React.FormEvent) => {
         e?.preventDefault();

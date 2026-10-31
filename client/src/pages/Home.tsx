@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { ChefHat, Utensils, Waves, Save, History, Coins, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Flame } from "lucide-react";
@@ -32,7 +32,11 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<TabId>("tips");
   const [showAverages, setShowAverages] = useState(false);
   const [showCalendar, setShowCalendar] = useState(true);
-  const [calendarMonth, setCalendarMonth] = useState(() => new Date());
+  // Always the 1st, so stepping a month can't overflow (Oct 31 + 1 month would be Dec 1)
+  const [calendarMonth, setCalendarMonth] = useState(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1);
+  });
   const [selectedCalendarDay, setSelectedCalendarDay] = useState<string | null>(null);
   const [showDrinkFlow, setShowDrinkFlow] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
@@ -47,15 +51,22 @@ export default function Home() {
   const deleteCalculation = useDeleteCalculation();
   const { toast } = useToast();
 
+  // Checked again when the app comes back on screen, so "today" moves on after midnight
+  const [todayStr, setTodayStr] = useState(() => new Date().toLocaleDateString());
+  useEffect(() => {
+    const refresh = () => setTodayStr(new Date().toLocaleDateString());
+    document.addEventListener("visibilitychange", refresh);
+    return () => document.removeEventListener("visibilitychange", refresh);
+  }, []);
+
   const todaysSplits = useMemo(() => {
     if (!history) return [];
-    const todayStr = new Date().toLocaleDateString();
     // TodayTable puts them in time order itself
     return history.filter((calc) => {
       if (!calc.createdAt) return false;
       return new Date(calc.createdAt).toLocaleDateString() === todayStr;
     });
-  }, [history]);
+  }, [history, todayStr]);
 
   const streak = useMemo(() => {
     if (!history || history.length === 0) return 0;
@@ -98,7 +109,7 @@ export default function Home() {
     }
 
     return count;
-  }, [history]);
+  }, [history, todayStr]); // todayStr: count again once the date changes
 
   const processedHistory = useMemo(() => {
     if (!history || history.length === 0) return [];
@@ -135,14 +146,15 @@ export default function Home() {
       groupedByMonth[monthKey][dateKey].push(calc);
     });
 
-    // Sort months in descending order
+    // Newest first, by save time: the labels can't be parsed back ("31/10/2026" isn't a date to new Date())
+    const timeOf = (calcs: typeof history) => (calcs[0].createdAt ? new Date(calcs[0].createdAt).getTime() : 0);
     const sortedMonths = Object.keys(groupedByMonth).sort((a, b) => {
-      return new Date(b).getTime() - new Date(a).getTime();
+      return timeOf(Object.values(groupedByMonth[b])[0]) - timeOf(Object.values(groupedByMonth[a])[0]);
     });
 
     return sortedMonths.map((month) => {
       const monthData = groupedByMonth[month];
-      const sortedDates = Object.keys(monthData).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+      const sortedDates = Object.keys(monthData).sort((a, b) => timeOf(monthData[b]) - timeOf(monthData[a]));
 
       let monthTotal = 0;
       const flatMonthData = [];
@@ -563,7 +575,7 @@ export default function Home() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => setCalendarMonth(prev => { const d = new Date(prev); d.setMonth(d.getMonth() - 1); return d; })}
+                        onClick={() => { setCalendarMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1)); setSelectedCalendarDay(null); }}
                         className="w-8 h-8 p-0 border-2 border-border bg-card hover:bg-muted rounded-none"
                       >
                         <ChevronLeft className="w-4 h-4" />
@@ -575,7 +587,7 @@ export default function Home() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => setCalendarMonth(prev => { const d = new Date(prev); d.setMonth(d.getMonth() + 1); return d; })}
+                        onClick={() => { setCalendarMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1)); setSelectedCalendarDay(null); }}
                         className="w-8 h-8 p-0 border-2 border-border bg-card hover:bg-muted rounded-none"
                       >
                         <ChevronRight className="w-4 h-4" />
@@ -736,9 +748,9 @@ export default function Home() {
   );
 
   return (
-    <div className="h-[100dvh] w-full flex flex-col overflow-hidden text-foreground bg-background select-none">
+    <div className="fixed inset-x-0 top-0 h-app flex flex-col overflow-hidden text-foreground bg-background select-none">
       {/* Header */}
-      <header className="shrink-0 relative z-50 px-4 py-3 pt-safe bg-card border-b-2 border-border touch-none">
+      <header className="shrink-0 relative z-50 px-4 pb-3 pt-safe-bar bg-card border-b-2 border-border touch-none">
         <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 min-w-0">
               <div className="w-8 h-8 sm:w-9 sm:h-9 border-2 border-ink bg-primary flex items-center justify-center brutal-shadow-sm shrink-0">

@@ -6,7 +6,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import { PinLock } from "@/components/PinLock";
 import Home from "@/pages/Home";
-import { useEffect } from "react";
 
 function AppRouter() {
   return (
@@ -18,10 +17,6 @@ function AppRouter() {
 }
 
 function App() {
-  useEffect(() => {
-    document.documentElement.classList.add('dark');
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -29,8 +24,9 @@ function App() {
           <WouterRouter base={import.meta.env.BASE_URL}>
             <AppRouter />
           </WouterRouter>
-          <Toaster />
         </PinLock>
+        {/* Outside the lock, so "Incorrect PIN code" can show too */}
+        <Toaster />
       </TooltipProvider>
     </QueryClientProvider>
   );
